@@ -19,7 +19,7 @@
 
 namespace rspgen {
 
-  const double GrbResponse::s_keV_per_MeV;
+  const double GrbResponse::s_keV_per_MeV = 1000.;
 
   GrbResponse::GrbResponse(double theta, const evtbin::Binner * true_en_binner, const evtbin::Binner * app_en_binner,
     latResponse::Irfs * irfs, const IWindow * window): m_theta(theta), m_true_en_binner(0), m_app_en_binner(0), m_irfs(0),
