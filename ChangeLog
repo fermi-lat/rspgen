@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: peachey  Tue Jul 20 19:01:06 PDT 2004
+users/peachey/rspgen/src
+
+Added Files:
+	IResponse.cxx 
+Log Message:
+Add class IResponse, base class for all response calculators.
+    *
+------------------------------------------------------------
+User: peachey  Tue Jul 20 19:01:06 PDT 2004
 users/peachey/rspgen/rspgen
 
 Added Files:
