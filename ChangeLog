@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: peachey  Thu Aug  5 12:46:50 PDT 2004
+users/peachey/rspgen/src
+
+Added Files:
+	Gti.cxx 
+Log Message:
+New class encapulating GTI information.
+    *
+------------------------------------------------------------
+User: peachey  Thu Aug  5 12:46:50 PDT 2004
 users/peachey/rspgen/rspgen
 
 Added Files:
