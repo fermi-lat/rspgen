@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Tue Jul 20 19:03:51 PDT 2004
+users/peachey/rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Add test for PointResponse class.
+    *
+------------------------------------------------------------
 User: peachey  Tue Jul 20 19:03:33 PDT 2004
 users/peachey/rspgen/src
 
