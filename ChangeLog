@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Mon Jul 19 04:10:01 PDT 2004
+users/peachey/rspgen/data
+
+Added Files:
+	D2.fits LatResponseTemplate PHA1.pha StdEnergyBin.fits 
+Log Message:
+Add test data.
+    *
+------------------------------------------------------------
 User: peachey  Mon Jul 19 04:08:26 PDT 2004
 users/peachey/rspgen/src/test
 
