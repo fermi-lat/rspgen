@@ -11,11 +11,13 @@
 #include "evtbin/LinearBinner.h"
 
 #include "rspgen/CircularWindow.h"
+#include "rspgen/Gti.h"
 #include "rspgen/PointResponse.h"
 
 #include "tip/IFileSvc.h"
 #include "tip/LinearInterp.h"
 #include "tip/Table.h"
+#include "tip/TipException.h"
 
 namespace rspgen {
 
@@ -31,14 +33,36 @@ namespace rspgen {
     // Set up a histogram to hold the binned differential exposure (theta vs. DeltaT).
     std::auto_ptr<evtbin::Hist1D> diff_exp(new evtbin::Hist1D(evtbin::LinearBinner(0., theta_cut, theta_bin_size)));
 
+    // Get GTI information.
+    Gti gti(spec_file);
+
+    // Start with first GTI in the GTI table.
+    Gti::ConstIterator gti_pos = gti.begin();
+
     // Read SC Z positions, bin them into a histogram:
     for (tip::Table::ConstIterator itor = sc_table->begin(); itor != sc_table->end(); ++itor) {
-      // Get size of interval.
-      double delta_t = (*itor)["LIVETIME"].get();
+      double start = (*itor)["START"].get();
+      double stop = (*itor)["STOP"].get();
+
+      double fract = gti.getFraction(start, stop, gti_pos);
+      // Save some time by not computing further if fraction is 0.
+      if (0. == fract) continue;
+
+      // If we fell off the edge of the last GTI, no point in continuing this loop.
+      if (gti.end() == gti_pos) break;
+
+      // Get size of interval, multiply by the fraction of the time which overlapped the GTI.
+      double delta_t = fract * (*itor)["LIVETIME"].get();
     
-      // Get SC coordinates.
-      double ra_scz = (*itor)["RA_SCZ"].get();
-      double dec_scz = (*itor)["DEC_SCZ"].get();
+      // Get object for interpolating values from the table.
+      tip::LinearInterp sc_record(itor, sc_table->end());
+
+      // Get interpolated SC coordinates.
+      sc_record.interpolate("START", (start + stop) / 2.);
+
+      double ra_scz = sc_record.get("RA_SCZ");
+      double dec_scz = sc_record.get("DEC_SCZ");
+
       astro::SkyDir scz_pos(ra_scz, dec_scz);
 
       // Compute inclination angle from the source position to the sc.
