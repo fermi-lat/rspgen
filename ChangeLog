@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Wed Jul 21 09:35:59 PDT 2004
+users/peachey/rspgen/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Use irfs package instead of latResponse.
+    *
+------------------------------------------------------------
 User: peachey  Wed Jul 21 06:49:00 PDT 2004
 users/peachey/rspgen/src/test
 
