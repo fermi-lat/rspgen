@@ -11,6 +11,9 @@
 #include <typeinfo>
 #include <vector>
 
+// Main appliation class RspGenApp.
+#include "RspGenApp.h"
+
 // Sky directions use astro::SkyDir.
 #include "astro/SkyDir.h"
 
@@ -89,6 +92,10 @@ class RspGenTestApp : public st_app::StApp {
     */
     void test5();
 
+    /** \brief Test RspGenApp class for GrbResponse.
+    */
+    void test6();
+
   private:
     std::string m_data_dir;
     bool m_failed;
@@ -109,6 +116,7 @@ void RspGenTestApp::run() {
   test3();
   test4();
   test5();
+  test6();
   if (m_failed) throw std::runtime_error("test_rspgen failed");
 }
 
@@ -636,6 +644,38 @@ void RspGenTestApp::test5() {
   } catch (const std::exception & x) {
     m_failed = true;
     std::cerr << "Unexpected: test5 caught " << typeid(x).name() << ": " << x.what() << std::endl;
+  }
+
+}
+
+// Test application class.
+void RspGenTestApp::test6() {
+  using namespace rspgen;
+
+  try {
+    RspGenApp app;
+
+    st_app::AppParGroup & pars(getParGroup("rspgen"));
+
+    // Set parameters "by hand"
+    pars["specfile"] = m_data_dir + "PHA1.pha";
+    pars["scfile"] = m_data_dir + "D2.fits";
+    pars["outfile"] = "test_response6.rsp";
+    pars["ra"] = 22.;
+    pars["dec"] = -27.;
+    pars["time"] = 105.;
+    pars["psfradius"] = 1.4;
+    pars["resptype"] = "DC1::Front";
+    pars["resptpl"] = "";
+    pars["energybinalg"] = "FILE";
+    pars["energybinfile"] = m_data_dir + "StdEnergyBin.fits";
+
+    // And writing the output.
+    app.writeResponse(pars);
+
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "Unexpected: test6 caught " << typeid(x).name() << ": " << x.what() << std::endl;
   }
 
 }
