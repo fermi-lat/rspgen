@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Mon Jul 19 12:17:50 PDT 2004
+users/peachey/rspgen/src
+
+Added Files:
+	RspGenApp.cxx RspGenApp.h 
+Log Message:
+Add RspGenApp, main application class.
+    *
+------------------------------------------------------------
 User: peachey  Mon Jul 19 06:51:42 PDT 2004
 users/peachey/rspgen/src/test
 
