@@ -762,7 +762,7 @@ void RspGenTestApp::test6() {
   try {
     RspGenApp app;
 
-    st_app::AppParGroup & pars(getParGroup("rspgen"));
+    st_app::AppParGroup & pars(getParGroup("gtrspgen"));
 
     // Set parameters "by hand"
     pars["respalg"] = "GRB";
@@ -835,7 +835,7 @@ void RspGenTestApp::test8() {
   try {
     RspGenApp app;
 
-    st_app::AppParGroup & pars(getParGroup("rspgen"));
+    st_app::AppParGroup & pars(getParGroup("gtrspgen"));
 
     // Set parameters "by hand"
     pars["respalg"] = "PS";
@@ -958,4 +958,4 @@ std::string RspGenTestApp::findFile(const std::string & file_root) const {
 }
 
 // Factory object to create this test executable.
-st_app::StAppFactory<RspGenTestApp> g_factory;
+st_app::StAppFactory<RspGenTestApp> g_factory("gtrspgen");

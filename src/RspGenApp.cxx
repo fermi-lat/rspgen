@@ -22,7 +22,7 @@ namespace rspgen {
   RspGenApp::~RspGenApp() throw() { delete m_response; }
 
   void RspGenApp::run() {
-    st_app::AppParGroup & pars(getParGroup("rspgen"));
+    st_app::AppParGroup & pars(getParGroup("gtrspgen"));
     loadResponses();
     prompt(pars);
     writeResponse(pars);
@@ -89,7 +89,7 @@ namespace rspgen {
     }
 
     // Write the output response file.
-    m_response->writeOutput("rspgen", pars["outfile"], resp_tpl);
+    m_response->writeOutput("gtrspgen", pars["outfile"], resp_tpl);
   }
 
   void RspGenApp::loadResponses() {
