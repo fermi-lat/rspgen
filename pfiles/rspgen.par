@@ -1,0 +1,24 @@
+#-------------------------------------------------------------------------------
+# General parameters.
+specfile,      s, a, , , , "Name of the input spectrum file"
+scfile,        s, a, , , , "Name of the input spacecraft data file"
+outfile,       s, a, , , , "Name of the output file"
+ra,            r, a, , , , "True RA of point source (degrees)"
+dec,           r, a, , , , "True DEC of point source (degrees)"
+time,          r, a, , , , "Time of GRB (s)"
+psfradius,     r, a, , , , "Radius of circle for PSF integration (degrees)"
+resptype,      s, h, "DC1::Front", , , "Name of the type of response function to use"
+resptpl,       s, h, , , , "Name of the template file to use to create output file"
+mode,          s, h, "ql", , ,"Behavior for automatic parameters"
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# Energy binning parameters.
+energybinalg,  s, a, "LOG", , , "Algorithm for defining energy bins (FILE, LIN, LOG)"
+energyfield,   s, h, "ENERGY", , ,"Name of energy field to bin"
+emin,          r, a, , , , "Start value for first energy bin"
+emax,          r, a, , , , "Stop value for last energy bin"
+enumbins,      i, a, , , , "Number of logarithmically uniform energy bins"
+deltaenergy,   r, a, , , , "Width of linearly uniform energy bins"
+energybinfile, s, a, , , , "Name of the file containing the energy bin definition"
+#-------------------------------------------------------------------------------
