@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Wed Oct 13 10:25:42 PDT 2004
+rspgen/rspgen
+
+Modified Files:
+	IResponse.h 
+Log Message:
+Add dictionary for response pseudonyms.
+
+    *
+------------------------------------------------------------
 User: peachey  Wed Oct 13 06:16:11 PDT 2004
 rspgen/doc
 
