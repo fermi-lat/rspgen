@@ -9,6 +9,7 @@
 08-oct-2004    v0r4p0 Updated to use new bin definition formats, consistent with evtbin. Also uses st_facilities
                       to find its data files.
 09-oct-2004    v0r4p1 Use st_facilities::Env to find data files.
+13-oct-2004    v0r4p2 JP  Add documentation about application parameters.
 \endverbatim
 
 */
