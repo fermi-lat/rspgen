@@ -1,4 +1,18 @@
 ------------------------------------------------------------
+User: peachey  Fri Oct  8 07:13:34 PDT 2004
+rspgen/data
+
+Modified Files:
+	PHA1.pha 
+Added Files:
+	ft2tiny.fits rspgen_energy_bins.fits 
+Removed Files:
+	D2.fits StdEnergyBin.fits 
+Log Message:
+Replace test files.
+
+    *
+------------------------------------------------------------
 User: peachey  Fri Oct  8 06:22:38 PDT 2004
 rspgen/src
 
