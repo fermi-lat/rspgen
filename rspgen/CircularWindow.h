@@ -28,7 +28,7 @@ namespace rspgen {
           \param theta The true inclination angle of the incident photon.
           \param phi The true asimuthal angle of the incident photon.
       */
-      virtual double integrate(latResponse::IPsf * psf, double true_energy, double theta, double phi = 0.) const;
+      virtual double integrate(irfInterface::IPsf * psf, double true_energy, double theta, double phi = 0.) const;
 
     private:
       double m_radius;

@@ -9,7 +9,7 @@
 
 #include "astro/SkyDir.h"
 
-#include "latResponse/IPsf.h"
+#include "irfInterface/IPsf.h"
 
 namespace rspgen {
 
@@ -24,12 +24,12 @@ namespace rspgen {
       virtual IWindow * clone() const = 0;
 
       /** \brief Integrate the psf over this window for the given values.
-          \param psf The psf object obtained from the latResponse package.
+          \param psf The psf object obtained from the irfs package.
           \param true_energy The true energy for which to evaluate the integral.
           \param theta The true inclination angle of the incident photon.
           \param phi The true asimuthal angle of the incident photon.
       */
-      virtual double integrate(latResponse::IPsf * psf, double true_energy, double theta, double phi = 0.) const = 0;
+      virtual double integrate(irfInterface::IPsf * psf, double true_energy, double theta, double phi = 0.) const = 0;
   };
 
 }

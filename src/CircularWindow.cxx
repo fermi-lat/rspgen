@@ -14,9 +14,9 @@ namespace rspgen {
 
   IWindow * CircularWindow::clone() const { return new CircularWindow(*this); }
 
-  double CircularWindow::integrate(latResponse::IPsf * psf, double true_energy, double theta, double phi) const {
+  double CircularWindow::integrate(irfInterface::IPsf * psf, double true_energy, double theta, double phi) const {
     // This case is very simple. The region is a circle of the given radius. The psf
-    // object from latResponse is immediately capable of this integration.
+    // object is immediately capable of this integration.
     return psf->angularIntegral(true_energy, theta, phi, m_radius);
   }
 

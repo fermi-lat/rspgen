@@ -7,7 +7,7 @@
 
 #include "evtbin/OrderedBinner.h"
 
-#include "latResponse/IrfsFactory.h"
+#include "irfInterface/IrfsFactory.h"
 
 #include "rspgen/IResponse.h"
 
@@ -60,9 +60,8 @@ namespace rspgen {
     // Create apparent energy binner.
     std::auto_ptr<evtbin::Binner> app_en_binner(new evtbin::OrderedBinner(app_intervals));
 
-    // Get irfs object from latResponse.
-    std::auto_ptr<latResponse::Irfs> irfs(latResponse::irfsFactory().create(resp_type));
-
+    // Get irfs object.
+    std::auto_ptr<irfInterface::Irfs> irfs(irfInterface::IrfsFactory::instance()->create(resp_type));
 
     // Everything succeeded, so release the pointers from their auto_ptrs.
     m_true_en_binner = true_en_auto_ptr.release();
