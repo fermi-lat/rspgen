@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Mon Jul 19 04:08:26 PDT 2004
+users/peachey/rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Patch a couple memory leaks.
+    *
+------------------------------------------------------------
 User: peachey  Thu Jul 15 19:52:16 PDT 2004
 users/peachey/rspgen/src/test
 
