@@ -13,6 +13,8 @@
 #include "rspgen/IResponse.h"
 #include "rspgen/PointResponse.h"
 
+#include "st_facilities/Env.h"
+
 namespace rspgen {
 
   RspGenApp::RspGenApp(): m_bin_config(), m_data_dir(), m_response(0) {}
@@ -67,7 +69,7 @@ namespace rspgen {
     std::string resp_tpl = pars["resptpl"];
 
     // If it was not defined, get default template file name.
-    if (0 == resp_tpl.compare("DEFAULT")) resp_tpl = getDataDir() + "LatResponseTemplate";
+    if (0 == resp_tpl.compare("DEFAULT")) resp_tpl = st_facilities::Env::appendFileName(getDataDir(), "LatResponseTemplate");
 
     // Determine which algorithm to use.
     std::string alg = pars["respalg"];
@@ -95,9 +97,7 @@ namespace rspgen {
   }
 
   std::string RspGenApp::getDataDir() const {
-    std::string retval;
-    const char * value = getenv("RSPGENROOT");
-    if (0 != value) retval = std::string(value) + "/data/";
+    static std::string retval = st_facilities::Env::getDataDir("rspgen");
     return retval;
   }
 
