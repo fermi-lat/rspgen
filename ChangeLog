@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Tue Jan 25 09:03:39 PST 2005
+rspgen/pfiles
+
+Removed Files:
+	rspgen.par 
+Log Message:
+Change name of rspgen app to gtrspgen. Removing old files.
+
+    *
+------------------------------------------------------------
 User: peachey  Tue Jan 25 07:32:45 PST 2005
 rspgen/src/test
 
