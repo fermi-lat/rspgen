@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Fri Oct  8 20:59:19 PDT 2004
+rspgen/src
+
+Modified Files:
+	RspGenApp.cxx 
+Log Message:
+Use st_facilities::Env to locate data files.
+
+    *
+------------------------------------------------------------
 User: peachey  Fri Oct  8 14:25:51 PDT 2004
 rspgen/cmt
 
