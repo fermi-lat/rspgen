@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: peachey  Fri Oct  8 07:19:16 PDT 2004
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Use latest test files. Use irfLoader to load all irfs. Use test irfs
+instead of DC1 irfs. Use 100 x 100 response matrix to reduce size of
+output as well as speed of test.
+
+    *
+------------------------------------------------------------
 User: peachey  Fri Oct  8 07:13:34 PDT 2004
 rspgen/data
 
