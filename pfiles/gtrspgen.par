@@ -9,7 +9,11 @@ dec,           r, a, , , , "True DEC of point source (degrees)"
 psfradius,     r, a, , , , "Radius of circle for PSF integration (degrees)"
 resptype,      s, a, "DC1F", DC1F|DC1B|G25F|G25B, , "Name of the type of response function to use"
 resptpl,       f, h, "DEFAULT", , , "Name of the template file to use to create output file"
-mode,          s, h, "ql", , ,"Behavior for automatic parameters"
+chatter,       i, h, 2, 0, 4, "Chattiness of output"
+clobber,       b, h, yes, , , "Overwrite existing output files with new output files"
+debug,         b, h, no, , , "Debugging mode activated"
+gui,           b, h, no, , , "GUI mode activated"
+mode,          s, h, "ql", , ,"Mode of automatic parameters"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -32,4 +36,3 @@ emax,          r, a, 5.e3, , , "Stop value for last energy bin"
 enumbins,      i, a, 100, , , "Number of logarithmically uniform energy bins"
 deltaenergy,   r, a, 50., , , "Width of linearly uniform energy bins"
 energybinfile, f, a, "NONE", , , "Name of the file containing the energy bin definition"
-#-------------------------------------------------------------------------------
