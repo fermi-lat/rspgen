@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Wed Aug 18 14:07:38 PDT 2004
+rspgen/pfiles
+
+Modified Files:
+	rspgen.par 
+Log Message:
+Use type f for file parameters. Use a non-empty DEFAULT value for resptpl.
+    *
+------------------------------------------------------------
 User: peachey  Wed Aug 18 13:48:52 PDT 2004
 rspgen/src/rspgen
 
