@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: peachey  Wed Oct 13 10:26:34 PDT 2004
+rspgen/pfiles
+
+Modified Files:
+	rspgen.par 
+Log Message:
+Add default values for all parameters which may not be prompted
+for in all modes of the tool. Use enumerated list of supported response functions.
+
+    *
+------------------------------------------------------------
 User: peachey  Wed Oct 13 10:25:42 PDT 2004
 rspgen/src
 
