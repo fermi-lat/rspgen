@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: peachey  Wed Jul 21 09:38:17 PDT 2004
+users/peachey/rspgen/src
+
+Modified Files:
+	CircularWindow.cxx GrbResponse.cxx IResponse.cxx 
+Log Message:
+Use irfs package instead of latResponse.
+    *
+------------------------------------------------------------
+User: peachey  Wed Jul 21 09:38:17 PDT 2004
 users/peachey/rspgen/rspgen
 
 Modified Files:
