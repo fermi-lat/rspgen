@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Fri Oct  8 06:22:38 PDT 2004
+rspgen/src
+
+Modified Files:
+	PointResponse.cxx 
+Log Message:
+Fix typo in error message.
+
+    *
+------------------------------------------------------------
 User: peachey  Fri Aug 20 10:34:31 PDT 2004
 rspgen/doc
 
