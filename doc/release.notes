@@ -3,6 +3,8 @@
     \author Yasushi Ikebe, James Peachey
 
 \verbatim
+18-aug-2004    v0r3p0 Add rspgen application.
+18-aug-2004    v0r3p1 Change file type parameters to type f, add default value.
 \endverbatim
 
 */
