@@ -120,7 +120,7 @@ void RspGenTestApp::test1() {
   double dec_scz = 30.; // DEC of spacecraft Z axis
 
   // Open input pha file.
-  const tip::Table * ebounds_ext = tip::IFileSvc::instance().readTable(m_data_dir + "PHA1.pha", "EBOUNDS");
+  std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(m_data_dir + "PHA1.pha", "EBOUNDS"));
 
   // Read the detchans keyword. This determines the number of channels used for apparent energy.
   int detchans = 0;
@@ -209,18 +209,20 @@ void RspGenTestApp::test1() {
   // Write the ebounds extension.
   tip::Table * out_ebounds = tip::IFileSvc::instance().editTable("test_response1.rsp", "EBOUNDS");
 
+  // Set detchans explicitly.
+  out_ebounds->getHeader()["DETCHANS"].set(detchans);
+
   out_ebounds->setNumRecords(num_rec);
 
   // Just copy the input ebounds extension.
   tip::Table::ConstIterator in_itor = ebounds_ext->begin();
-  for (out_itor = out_ebounds->begin(); out_itor != out_ebounds->end(); ++out_itor) {
+  for (out_itor = out_ebounds->begin(); out_itor != out_ebounds->end(); ++in_itor, ++out_itor) {
     *out_itor = *in_itor;
   }
 
   delete out_ebounds;
   delete resp_table;
   delete irfs;
-  delete ebounds_ext;
 }
 
 // In this example. "true" energy comes from bin definition file.
@@ -250,7 +252,7 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   double dec_scz = dec_ps; // DEC of spacecraft Z axis
 
   // Open input ebounds extension, used for apparent energy bins.
-  const tip::Table * ebounds_ext = tip::IFileSvc::instance().readTable(m_data_dir + "PHA1.pha", "EBOUNDS");
+  std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(m_data_dir + "PHA1.pha", "EBOUNDS"));
 
   // Read the detchans keyword. This determines the number of channels used for apparent energy.
   int detchans = 0;
@@ -332,17 +334,19 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   // Copy input ebounds extension to the output.
   tip::Table * out_ebounds = tip::IFileSvc::instance().editTable(file_name, "EBOUNDS");
 
+  // Set detchans explicitly.
+  out_ebounds->getHeader()["DETCHANS"].set(detchans);
+
   out_ebounds->setNumRecords(num_rec);
 
   tip::Table::ConstIterator in_itor = ebounds_ext->begin();
-  for (out_itor = out_ebounds->begin(); out_itor != out_ebounds->end(); ++out_itor) {
+  for (out_itor = out_ebounds->begin(); out_itor != out_ebounds->end(); ++in_itor, ++out_itor) {
     *out_itor = *in_itor;
   }
 
   delete out_ebounds;
   delete resp_table;
   delete irfs;
-  delete ebounds_ext;
 }
 
 // In this example. "true" energy comes from bin definition file.
@@ -408,7 +412,7 @@ void RspGenTestApp::test3() {
   long num_bins = binner.getNumBins();
 
   // Open input pha file.
-  const tip::Table * ebounds_ext = tip::IFileSvc::instance().readTable(m_data_dir + "PHA1.pha", "EBOUNDS");
+  std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(m_data_dir + "PHA1.pha", "EBOUNDS"));
 
   // Read the detchans keyword. This determines the number of channels used for apparent energy.
   int detchans = 0;
@@ -499,17 +503,19 @@ void RspGenTestApp::test3() {
   // Copy ebounds extension from input to output.
   tip::Table * out_ebounds = tip::IFileSvc::instance().editTable("test_response3.rsp", "EBOUNDS");
 
+  // Set detchans explicitly.
+  out_ebounds->getHeader()["DETCHANS"].set(detchans);
+
   out_ebounds->setNumRecords(num_rec);
 
   tip::Table::ConstIterator in_itor = ebounds_ext->begin();
-  for (out_itor = out_ebounds->begin(); out_itor != out_ebounds->end(); ++out_itor) {
+  for (out_itor = out_ebounds->begin(); out_itor != out_ebounds->end(); ++in_itor, ++out_itor) {
     *out_itor = *in_itor;
   }
 
   delete out_ebounds;
   delete resp_table;
   delete irfs;
-  delete ebounds_ext;
 }
 
 // Test GrbResponse class constructors and compute method.
