@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <memory>
 #include <stdexcept>
+#include <string>
 
 #include "irfLoader/Loader.h"
 
@@ -15,9 +16,14 @@
 
 #include "st_facilities/Env.h"
 
+static std::string s_cvs_id = "$Name$";
+
 namespace rspgen {
 
-  RspGenApp::RspGenApp(): m_bin_config(0), m_data_dir(), m_response(0) {}
+  RspGenApp::RspGenApp(): m_bin_config(0), m_data_dir(), m_response(0) {
+    setName("gtrspgen");
+    setVersion(s_cvs_id);
+  }
 
   RspGenApp::~RspGenApp() throw() { delete m_response; delete m_bin_config; }
 
