@@ -51,8 +51,9 @@
 #include "tip/LinearInterp.h"
 #include "tip/Table.h"
 
-// Obvious unit conversion.
+// Obvious unit conversions.
 static double s_keV_per_MeV = 1000.;
+static double s_MeV_per_keV = .001;
 
 /** \class RspGenTestApp
     \brief The main test application itself.
@@ -240,8 +241,8 @@ void RspGenTestApp::test1() {
     --index; // Arrays start with 0, channels with 1.
     (*ebounds_itor)["E_MIN"].get(min_app_en[index]);
     (*ebounds_itor)["E_MAX"].get(max_app_en[index]);
-    min_app_en[index] /= s_keV_per_MeV;
-    max_app_en[index] /= s_keV_per_MeV;
+    min_app_en[index] *= s_MeV_per_keV;
+    max_app_en[index] *= s_MeV_per_keV;
   }
   // Add a check here to make sure all the channels were set. We can't compute response if any are missing.
   
@@ -339,9 +340,9 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   // Open the file for true energy bin definition.
   std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(m_data_dir + "rspgen_energy_bins.fits", "ENERGYBINS"));
 
-  // Iterate over the file, saving the relevant values into the interval array.
+  // Iterate over the file, saving the relevant values into the interval array, converting to MeV on the fly.
   for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
-    intervals.push_back(Binner::Interval((*itor)["E_MIN"].get(), (*itor)["E_MAX"].get()));
+    intervals.push_back(Binner::Interval(s_MeV_per_keV*(*itor)["E_MIN"].get(), s_MeV_per_keV*(*itor)["E_MAX"].get()));
   }
 
   // Create binner from these intervals.
@@ -373,8 +374,8 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
     --index; // Arrays start with 0, channels with 1.
     (*ebounds_itor)["E_MIN"].get(min_app_en[index]);
     (*ebounds_itor)["E_MAX"].get(max_app_en[index]);
-    min_app_en[index] /= s_keV_per_MeV;
-    max_app_en[index] /= s_keV_per_MeV;
+    min_app_en[index] *= s_MeV_per_keV;
+    max_app_en[index] *= s_MeV_per_keV;
   }
   // Add a check here to make sure all the channels were set. We can't compute response if any are missing.
   
@@ -507,9 +508,9 @@ void RspGenTestApp::test3() {
   // Open the data file.
   std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(m_data_dir + "rspgen_energy_bins.fits", "ENERGYBINS"));
 
-  // Iterate over the file, saving the relevant values into the interval array.
+  // Iterate over the file, saving the relevant values into the interval array, converting to MeV on the fly.
   for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
-    intervals.push_back(Binner::Interval((*itor)["E_MIN"].get(), (*itor)["E_MAX"].get()));
+    intervals.push_back(Binner::Interval(s_MeV_per_keV * (*itor)["E_MIN"].get(), s_MeV_per_keV * (*itor)["E_MAX"].get()));
   }
 
   // Create binner from these intervals.
@@ -538,8 +539,8 @@ void RspGenTestApp::test3() {
     --index; // Arrays start with 0, channels with 1.
     (*ebounds_itor)["E_MIN"].get(min_app_en[index]);
     (*ebounds_itor)["E_MAX"].get(max_app_en[index]);
-    min_app_en[index] /= s_keV_per_MeV;
-    max_app_en[index] /= s_keV_per_MeV;
+    min_app_en[index] *= s_MeV_per_keV;
+    max_app_en[index] *= s_MeV_per_keV;
   }
   // Add a check here to make sure all the channels were set. We can't compute response if any are missing.
   
@@ -674,7 +675,7 @@ void RspGenTestApp::test4() {
     int index = 0;
     evtbin::OrderedBinner::IntervalCont_t app_intervals(detchans);
     for (tip::Table::ConstIterator itor = in_ebounds->begin(); itor != in_ebounds->end() && index < detchans; ++itor, ++index)
-      app_intervals[index] = evtbin::Binner::Interval((*itor)["E_MIN"].get()/s_keV_per_MeV, (*itor)["E_MAX"].get()/s_keV_per_MeV);
+      app_intervals[index] = evtbin::Binner::Interval(s_MeV_per_keV*(*itor)["E_MIN"].get(), s_MeV_per_keV*(*itor)["E_MAX"].get());
 
     // Create apparent energy binner.
     evtbin::OrderedBinner app_en_binner(app_intervals);
@@ -689,7 +690,7 @@ void RspGenTestApp::test4() {
     // Read true energy bin definitions into interval object.
     index = 0;
     for (tip::Table::ConstIterator itor = true_en->begin(); itor != true_en->end(); ++itor, ++index)
-      true_intervals[index] = evtbin::Binner::Interval((*itor)["E_MIN"].get(), (*itor)["E_MAX"].get());
+      true_intervals[index] = evtbin::Binner::Interval(s_MeV_per_keV*(*itor)["E_MIN"].get(), s_MeV_per_keV*(*itor)["E_MAX"].get());
 
     // Create a binner for true energy.
     evtbin::OrderedBinner true_en_binner(true_intervals);
@@ -937,7 +938,7 @@ evtbin::Binner * RspGenTestApp::createStdBinner() {
   // Read true energy bin definitions into interval object.
   int index = 0;
   for (tip::Table::ConstIterator itor = true_en->begin(); itor != true_en->end(); ++itor, ++index)
-    true_intervals[index] = evtbin::Binner::Interval(1.e-3*(*itor)["E_MIN"].get(), 1.e-3*(*itor)["E_MAX"].get());
+    true_intervals[index] = evtbin::Binner::Interval(s_MeV_per_keV*(*itor)["E_MIN"].get(), s_MeV_per_keV*(*itor)["E_MAX"].get());
 
   // Create a binner for true energy.
   return new evtbin::OrderedBinner(true_intervals);
