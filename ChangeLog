@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: peachey  Wed Oct 13 10:25:42 PDT 2004
+rspgen/src
+
+Modified Files:
+	IResponse.cxx 
+Log Message:
+Add dictionary for response pseudonyms.
+
+    *
+------------------------------------------------------------
+User: peachey  Wed Oct 13 10:25:42 PDT 2004
 rspgen/rspgen
 
 Modified Files:
