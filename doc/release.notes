@@ -8,6 +8,7 @@
 18-aug-2004    v0r3p2 Bug fix: unit test needs to set name of template file to "DEFAULT"
 08-oct-2004    v0r4p0 Updated to use new bin definition formats, consistent with evtbin. Also uses st_facilities
                       to find its data files.
+09-oct-2004    v0r4p1 Use st_facilities::Env to find data files.
 \endverbatim
 
 */
