@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Wed Aug 18 14:07:39 PDT 2004
+rspgen/src
+
+Modified Files:
+	RspGenApp.cxx 
+Log Message:
+Use type f for file parameters. Use a non-empty DEFAULT value for resptpl.
+    *
+------------------------------------------------------------
 User: peachey  Wed Aug 18 14:07:38 PDT 2004
 rspgen/pfiles
 
