@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: peachey  Wed Aug 18 13:48:52 PDT 2004
+rspgen/src/rspgen
+
+Added Files:
+	rspgen.cxx 
+Log Message:
+Add rspgen application.
+    *
+------------------------------------------------------------
+User: peachey  Wed Aug 18 13:48:52 PDT 2004
 rspgen/cmt
 
 Modified Files:
