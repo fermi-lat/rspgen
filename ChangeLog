@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: peachey  Fri Oct  8 10:51:01 PDT 2004
+rspgen/src
+
+Modified Files:
+	IResponse.cxx 
+Log Message:
+Make conversions between keV and MeV consistent.
+
+    *
+------------------------------------------------------------
+User: peachey  Fri Oct  8 10:51:01 PDT 2004
 rspgen/rspgen
 
 Modified Files:
