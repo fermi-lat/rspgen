@@ -1,0 +1,26 @@
+------------------------------------------------------------
+User: peachey  Wed Jul 14 12:32:12 PDT 2004
+users/peachey/rspgen
+
+Log Message:
+New response generation package.
+
+Status:
+
+Vendor Tag:	GLAST
+Release Tags:	v0
+		
+N users/peachey/rspgen/cmt/requirements
+N users/peachey/rspgen/src/GrbResponse.cxx
+N users/peachey/rspgen/src/IWindow.cxx
+N users/peachey/rspgen/src/mainpage.h
+N users/peachey/rspgen/src/CircularWindow.cxx
+N users/peachey/rspgen/src/test/test_rspgen.cxx
+N users/peachey/rspgen/doc/release.notes
+N users/peachey/rspgen/rspgen/GrbResponse.h
+N users/peachey/rspgen/rspgen/CircularWindow.h
+N users/peachey/rspgen/rspgen/IWindow.h
+
+No conflicts created by this import
+
+    *
