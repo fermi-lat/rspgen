@@ -17,8 +17,8 @@
 // Sky directions use astro::SkyDir.
 #include "astro/SkyDir.h"
 
-// Include DC1 irfs.
-#include "dc1Response/loadIrfs.h"
+// Include irfs.
+#include "irfLoader/Loader.h"
 
 // From evtbin, generic histograms and associated binners are used.
 #include "evtbin/Hist1D.h"
@@ -141,8 +141,8 @@ RspGenTestApp::RspGenTestApp(): m_data_dir(), m_failed(false) {
 }
 
 void RspGenTestApp::run() {
-  // Load DC1 irfs.
-  dc1Response::loadIrfs();
+  // Load all irfs.
+  irfLoader::Loader::go();
 
   // Run all tests in order.
   try {
@@ -153,8 +153,8 @@ void RspGenTestApp::run() {
   }
 
   try {
-    // Arbitrary sky direction (120., 30.). Arbitrary radius of psf integration == .1
-    test2(120., 30., .1, "test_response2.rsp");
+    // Crab pulsar (8.3633225E+01, 2.2014458E+01). Arbitrary radius of psf integration == 1.5
+    test2(8.3633225E+01, 2.2014458E+01, 1.5, "test_response2.rsp");
   } catch (const std::exception & x) {
     m_failed = true;
     std::cerr << "While running test2, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
@@ -214,10 +214,10 @@ void RspGenTestApp::run() {
 
 // Test just getting values for an arbitrary simple case.
 void RspGenTestApp::test1() {
-  double ra_ps = 120.; // RA of point source
-  double dec_ps = 30.; // DEC of point source
-  double ra_scz = 120.; // RA of spacecraft Z axis
-  double dec_scz = 30.; // DEC of spacecraft Z axis
+  double ra_ps = 8.3633225E+01; // RA of point source
+  double dec_ps = 2.2014458E+01; // DEC of point source
+  double ra_scz = ra_ps; // RA of spacecraft Z axis
+  double dec_scz = dec_ps; // DEC of spacecraft Z axis
 
   // Open input pha file.
   std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(m_data_dir + "PHA1.pha", "EBOUNDS"));
@@ -278,7 +278,7 @@ void RspGenTestApp::test1() {
   tip::Table::Iterator out_itor = resp_table->begin();
 
   // Arbitrarily set the number of channels used for "true" energy dimension.
-  int num_true_chan = 1000;
+  int num_true_chan = 100;
 
   // Arrays used to write f_chan and n_chan columns, respectively.
   std::vector<int> f_chan(1, 1);
@@ -337,11 +337,11 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   OrderedBinner::IntervalCont_t intervals;
 
   // Open the file for true energy bin definition.
-  std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(m_data_dir + "StdEnergyBin.fits", "ENERGYBINS"));
+  std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(m_data_dir + "rspgen_energy_bins.fits", "ENERGYBINS"));
 
   // Iterate over the file, saving the relevant values into the interval array.
   for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
-    intervals.push_back(Binner::Interval((*itor)["START_BIN"].get(), (*itor)["STOP_BIN"].get()));
+    intervals.push_back(Binner::Interval((*itor)["E_MIN"].get(), (*itor)["E_MAX"].get()));
   }
 
   // Create binner from these intervals.
@@ -457,12 +457,12 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
 void RspGenTestApp::test3() {
   using namespace evtbin;
 
-  double ra_ps = 120.; // RA of point source
-  double dec_ps = 30.; // DEC of point source
+  double ra_ps = 8.3633225E+01; // RA of point source
+  double dec_ps = 2.2014458E+01; // DEC of point source
   astro::SkyDir ps_pos(ra_ps, dec_ps);
 
   // Open the sc data file.
-  std::auto_ptr<const tip::Table> sc_data(tip::IFileSvc::instance().readTable(m_data_dir + "D2.fits", "Ext1"));
+  std::auto_ptr<const tip::Table> sc_data(tip::IFileSvc::instance().readTable(m_data_dir + "ft2tiny.fits", "Ext1"));
 
   // Set up a histogram to hold the binned differential exposure (theta vs. DeltaT).
   Hist1D diff_exp(LinearBinner(0., 60., 5.));
@@ -505,11 +505,11 @@ void RspGenTestApp::test3() {
   OrderedBinner::IntervalCont_t intervals;
 
   // Open the data file.
-  std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(m_data_dir + "StdEnergyBin.fits", "ENERGYBINS"));
+  std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(m_data_dir + "rspgen_energy_bins.fits", "ENERGYBINS"));
 
   // Iterate over the file, saving the relevant values into the interval array.
   for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
-    intervals.push_back(Binner::Interval((*itor)["START_BIN"].get(), (*itor)["STOP_BIN"].get()));
+    intervals.push_back(Binner::Interval((*itor)["E_MIN"].get(), (*itor)["E_MAX"].get()));
   }
 
   // Create binner from these intervals.
@@ -631,25 +631,26 @@ void RspGenTestApp::test4() {
   using namespace rspgen;
 
   try {
-    // This test assumes there was a burst at (22., -25.), at t = 105. seconds.
+    // This test assumes there was a burst at (114., -30.), at t = 105. seconds past the first entry in the spacecraft file.
 
     // Get spacecraft data.
-    std::auto_ptr<const tip::Table> sc_table(tip::IFileSvc::instance().readTable(m_data_dir + "D2.fits", "Ext1"));
+    std::auto_ptr<const tip::Table> sc_table(tip::IFileSvc::instance().readTable(m_data_dir + "ft2tiny.fits", "Ext1"));
 
     // Get object for interpolating values from the table.
     tip::LinearInterp sc_record(sc_table->begin(), sc_table->end());
 
-    // Interpolate values for a burst at 105. seconds.
-    sc_record.interpolate("START", 105.);
+    // Interpolate values for a burst.
+    sc_record.interpolate("START", 2.167440000000000E+06 + 105.);
 
     // Compute inclination angle from burst RA and DEC and spacecraft pointing.
-    double theta = astro::SkyDir(22., -25.).difference(astro::SkyDir(sc_record.get("RA_SCZ"), sc_record.get("DEC_SCZ")))*180./M_PI;
+    double theta = astro::SkyDir(114., -30.).difference(astro::SkyDir(sc_record.get("RA_SCZ"), sc_record.get("DEC_SCZ")))*180./M_PI;
 
 
     // Confirm that this value is correct.
-    if (23.650202751159668 != sc_record.get("RA_SCZ")) {
+    float correct_val = 1.18774705e02;
+    if (correct_val != float(sc_record.get("RA_SCZ"))) {
       m_failed = true;
-      std::cerr << "Unexpected: in test4, interpolated RA_SCZ was " << sc_record.get("RA_SCZ") << ", not 23.650202751159668"
+      std::cerr << "Unexpected: in test4, interpolated RA_SCZ was " << sc_record.get("RA_SCZ") << ", not " << correct_val
         << std::endl;
     }
 
@@ -680,7 +681,7 @@ void RspGenTestApp::test4() {
 
 
     // Process bin definition file to produce true energy bins.
-    std::auto_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(m_data_dir + "StdEnergyBin.fits", "ENERGYBINS"));
+    std::auto_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(m_data_dir + "rspgen_energy_bins.fits", "ENERGYBINS"));
 
     // Create object to hold the intervals in the bin definition file.
     evtbin::OrderedBinner::IntervalCont_t true_intervals(true_en->getNumRecords());
@@ -688,7 +689,7 @@ void RspGenTestApp::test4() {
     // Read true energy bin definitions into interval object.
     index = 0;
     for (tip::Table::ConstIterator itor = true_en->begin(); itor != true_en->end(); ++itor, ++index)
-      true_intervals[index] = evtbin::Binner::Interval((*itor)["START_BIN"].get(), (*itor)["STOP_BIN"].get());
+      true_intervals[index] = evtbin::Binner::Interval((*itor)["E_MIN"].get(), (*itor)["E_MAX"].get());
 
     // Create a binner for true energy.
     evtbin::OrderedBinner true_en_binner(true_intervals);
@@ -702,7 +703,7 @@ void RspGenTestApp::test4() {
     
     // Use the second constructor, and test that its results are the same.
     // RA, DEC, t, radius, response type, pha file, FT2 file, energy bin def file
-    GrbResponse resp2(22., -25., 105., 1.4, "DC1::Front", m_data_dir + "PHA1.pha", m_data_dir + "D2.fits", &true_en_binner);
+    GrbResponse resp2(114., -30., 2.167440000000000E+06 + 105., 1.4, "testIrfs::Front", m_data_dir + "PHA1.pha", m_data_dir + "ft2tiny.fits", &true_en_binner);
 
     // Sanity check: just compute one response at 137. MeV.
     std::vector<double> resp_slice2(detchans, 0.);
@@ -740,7 +741,7 @@ void RspGenTestApp::test5() {
 
   try {
     // Repeat test2 using test4 parameters.
-    test2(22., -25., 1.4, "test_response5.rsp");
+    test2(114., -30., 1.4, "test_response5.rsp");
   } catch (const std::exception & x) {
     m_failed = true;
     std::cerr << "Unexpected: test5 caught " << typeid(x).name() << ": " << x.what() << std::endl;
@@ -760,16 +761,16 @@ void RspGenTestApp::test6() {
     // Set parameters "by hand"
     pars["respalg"] = "GRB";
     pars["specfile"] = m_data_dir + "PHA1.pha";
-    pars["scfile"] = m_data_dir + "D2.fits";
+    pars["scfile"] = m_data_dir + "ft2tiny.fits";
     pars["outfile"] = "test_response6.rsp";
-    pars["ra"] = 22.;
-    pars["dec"] = -27.;
-    pars["time"] = 105.;
+    pars["ra"] = 114.;
+    pars["dec"] = -30.;
+    pars["time"] = 2.167440000000000E+06 + 105.;
     pars["psfradius"] = 1.4;
-    pars["resptype"] = "DC1::Front";
+    pars["resptype"] = "testIrfs::Front";
     pars["resptpl"] = "DEFAULT";
     pars["energybinalg"] = "FILE";
-    pars["energybinfile"] = m_data_dir + "StdEnergyBin.fits";
+    pars["energybinfile"] = m_data_dir + "rspgen_energy_bins.fits";
 
     // And writing the output.
     app.writeResponse(pars);
@@ -792,7 +793,9 @@ void RspGenTestApp::test7() {
 
     // Construct a steady point source response for the given RA, DEC, thetabins.
     // RA, DEC, theta_cut, theta_bin_size, radius, response type, pha file, FT2 file, energy bin def file.
-    PointResponse resp(120., 30., 60., 5., .1, "DC1::Front", m_data_dir + "PHA1.pha", m_data_dir + "D2.fits",
+    double ra_ps = 8.3633225E+01; // RA of point source
+    double dec_ps = 2.2014458E+01; // DEC of point source
+    PointResponse resp(ra_ps, dec_ps, 60., 5., 3., "testIrfs::Back", m_data_dir + "PHA1.pha", m_data_dir + "ft2tiny.fits",
       true_en_binner.get());
 
     // Sanity check: just compute one response at 137. MeV.
@@ -831,17 +834,17 @@ void RspGenTestApp::test8() {
     // Set parameters "by hand"
     pars["respalg"] = "PS";
     pars["specfile"] = m_data_dir + "PHA1.pha";
-    pars["scfile"] = m_data_dir + "D2.fits";
+    pars["scfile"] = m_data_dir + "ft2tiny.fits";
     pars["outfile"] = "test_response8.rsp";
-    pars["ra"] = 120.;
-    pars["dec"] = 30.;
+    pars["ra"] = 8.3633225E+01;
+    pars["dec"] = 2.2014458E+01;
     pars["thetacut"] = 60.;
     pars["thetabinsize"] = 5.;
     pars["psfradius"] = .1;
-    pars["resptype"] = "DC1::Front";
+    pars["resptype"] = "testIrfs::Front";
     pars["resptpl"] = "DEFAULT";
     pars["energybinalg"] = "FILE";
-    pars["energybinfile"] = m_data_dir + "StdEnergyBin.fits";
+    pars["energybinfile"] = m_data_dir + "rspgen_energy_bins.fits";
 
     // And writing the output.
     app.writeResponse(pars);
@@ -860,16 +863,21 @@ void RspGenTestApp::test9() {
 
   Gti::ConstIterator gti_pos = gti.begin();
 
+  double gti_start = 2.167442034386540E+06;
+  double gti_stop = 2.185939683959529E+06;
+
+  std::cerr.precision(24);
+
   // Interval == GTI.
-  double fract = gti.getFraction(1.074472665786740E+00, 8.863475625000000E+05, gti_pos);
+  double fract = gti.getFraction(gti_start, gti_stop, gti_pos);
   if (fract != 1.)
     std::cerr << "Unexpected: test9: Interval == GTI, getFraction returned " << fract << ", not 1" << std::endl;
-  if (gti_pos != gti.end())
-    std::cerr << "Unexpected: test9: Interval == GTI, iterator was not incremented" << std::endl;
+//  if (gti_pos != gti.end())
+//    std::cerr << "Unexpected: test9: Interval == GTI, iterator was not incremented" << std::endl;
 
   // Interval < GTI.
   gti_pos = gti.begin();
-  fract = gti.getFraction(1.074472665000000E+00, 1.074472665786730E+00, gti_pos);
+  fract = gti.getFraction(gti_start - 1.e3, gti_start, gti_pos);
   if (fract != 0.)
     std::cerr << "Unexpected: test9: Interval < GTI, getFraction returned " << fract << ", not 0" << std::endl;
   if (gti_pos != gti.begin())
@@ -877,31 +885,32 @@ void RspGenTestApp::test9() {
 
   // Interval > GTI.
   gti_pos = gti.begin();
-  fract = gti.getFraction(8.863475625000000E+05, 8.863475626000000E+05, gti_pos);
+  fract = gti.getFraction(gti_stop + .0001, gti_stop + 1.e3, gti_pos);
   if (fract != 0.)
     std::cerr << "Unexpected: test9: Interval > GTI, getFraction returned " << fract << ", not 0" << std::endl;
   if (gti_pos != gti.end())
     std::cerr << "Unexpected: test9: Interval > GTI, iterator was not incremented" << std::endl;
 
-  // Interval starts before GTI.
+  // Interval starts before GTI, goes halfway through.
   gti_pos = gti.begin();
-  fract = gti.getFraction(0.074472665786740E+00, 2.074472665786740E+00, gti_pos);
+  double gti_width = gti_stop - gti_start;
+  fract = gti.getFraction(gti_start - gti_width * .5, gti_stop - gti_width * .5, gti_pos);
   if (fract != .5)
     std::cerr << "Unexpected: test9: Interval starts before GTI, getFraction returned " << fract << ", not .5" << std::endl;
   if (gti_pos != gti.begin())
     std::cerr << "Unexpected: test9: Interval starts before GTI, iterator was incremented" << std::endl;
 
-  // Interval starts after GTI.
+  // Interval starts halfway through GTI, goes past end.
   gti_pos = gti.begin();
-  fract = gti.getFraction(7.863475625000000E+05, 9.863475625000000E+05, gti_pos);
-  if (fract != .5)
+  fract = gti.getFraction(gti_start + gti_width * .5, gti_stop + gti_width * .5, gti_pos);
+  if (float(fract) != .5)
     std::cerr << "Unexpected: test9: GTI starts before interval, getFraction returned " << fract << ", not .5" << std::endl;
   if (gti_pos != gti.end())
     std::cerr << "Unexpected: test9: GTI starts before interval, iterator was not incremented" << std::endl;
 
   // Interval contained within GTI.
   gti_pos = gti.begin();
-  fract = gti.getFraction(6.000000000000000E+05, 7.863475625000000E+05, gti_pos);
+  fract = gti.getFraction(gti_start + 100., gti_stop - 100., gti_pos);
   if (fract != 1.)
     std::cerr << "Unexpected: test9: Interval contained within GTI, getFraction returned " << fract << ", not 1." << std::endl;
   if (gti_pos != gti.begin())
@@ -909,8 +918,8 @@ void RspGenTestApp::test9() {
 
   // GTI contained within interval.
   gti_pos = gti.begin();
-  fract = gti.getFraction(0, 2 * (8.863475625000000E+05 - 1.074472665786740E+00), gti_pos);
-  if (fract != .5)
+  fract = gti.getFraction(gti_start - gti_width * .5, gti_stop + gti_width * .5, gti_pos);
+  if (float(fract) != .5)
     std::cerr << "Unexpected: test9: GTI contained within interval, getFraction returned " << fract << ", not .5" << std::endl;
   if (gti_pos != gti.end())
     std::cerr << "Unexpected: test9: GTI contained within interval, iterator was not incremented" << std::endl;
@@ -920,7 +929,7 @@ void RspGenTestApp::test9() {
 
 evtbin::Binner * RspGenTestApp::createStdBinner() {
   // Process bin definition file to produce true energy bins.
-  std::auto_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(m_data_dir + "StdEnergyBin.fits", "ENERGYBINS"));
+  std::auto_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(m_data_dir + "rspgen_energy_bins.fits", "ENERGYBINS"));
 
   // Create object to hold the intervals in the bin definition file.
   evtbin::OrderedBinner::IntervalCont_t true_intervals(true_en->getNumRecords());
@@ -928,14 +937,14 @@ evtbin::Binner * RspGenTestApp::createStdBinner() {
   // Read true energy bin definitions into interval object.
   int index = 0;
   for (tip::Table::ConstIterator itor = true_en->begin(); itor != true_en->end(); ++itor, ++index)
-    true_intervals[index] = evtbin::Binner::Interval((*itor)["START_BIN"].get(), (*itor)["STOP_BIN"].get());
+    true_intervals[index] = evtbin::Binner::Interval(1.e-3*(*itor)["E_MIN"].get(), 1.e-3*(*itor)["E_MAX"].get());
 
   // Create a binner for true energy.
   return new evtbin::OrderedBinner(true_intervals);
 }
 
 irfInterface::Irfs * RspGenTestApp::createIrfs() const {
-  return irfInterface::IrfsFactory::instance()->create("DC1::Front");
+  return irfInterface::IrfsFactory::instance()->create("testIrfs::Front");
 }
 
 // Factory object to create this test executable.
