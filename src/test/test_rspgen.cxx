@@ -46,6 +46,9 @@
 #include "st_app/StApp.h"
 #include "st_app/StAppFactory.h"
 
+// Use st_facilities to find data files.
+#include "st_facilities/Env.h"
+
 // Table access through tip.
 #include "tip/IFileSvc.h"
 #include "tip/LinearInterp.h"
@@ -130,15 +133,17 @@ class RspGenTestApp : public st_app::StApp {
     */
     irfInterface::Irfs * createIrfs() const;
 
+    /** \brief Return the full path to the given data file.
+    */
+    std::string findFile(const std::string & file_root) const;
+
     std::string m_data_dir;
     bool m_failed;
 };
 
 RspGenTestApp::RspGenTestApp(): m_data_dir(), m_failed(false) {
-  // Get the root directory from which to find the input data files.
-  const char * data_dir = getenv("RSPGENROOT");
-  if (0 != data_dir) m_data_dir = data_dir;
-  m_data_dir += "/data/";
+  // Get the directory in which to find the input data files.
+  m_data_dir = st_facilities::Env::getDataDir("rspgen");
 }
 
 void RspGenTestApp::run() {
@@ -221,7 +226,7 @@ void RspGenTestApp::test1() {
   double dec_scz = dec_ps; // DEC of spacecraft Z axis
 
   // Open input pha file.
-  std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(m_data_dir + "PHA1.pha", "EBOUNDS"));
+  std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(findFile("PHA1.pha"), "EBOUNDS"));
 
   // Read the detchans keyword. This determines the number of channels used for apparent energy.
   int detchans = 0;
@@ -245,7 +250,7 @@ void RspGenTestApp::test1() {
     max_app_en[index] *= s_MeV_per_keV;
   }
   // Add a check here to make sure all the channels were set. We can't compute response if any are missing.
-  
+
   // Make a couple directions.
   astro::SkyDir ps_dir(ra_ps, dec_ps);
   astro::SkyDir scz_dir(ra_scz, dec_scz);
@@ -263,7 +268,7 @@ void RspGenTestApp::test1() {
   double radius = 0.1;
 
   // Create output response file from template:
-  tip::IFileSvc::instance().createFile("test_response1.rsp", m_data_dir + "LatResponseTemplate");
+  tip::IFileSvc::instance().createFile("test_response1.rsp", findFile("LatResponseTemplate"));
 
   // Open the response file:
   tip::Table * resp_table = tip::IFileSvc::instance().editTable("test_response1.rsp", "MATRIX");
@@ -307,7 +312,7 @@ void RspGenTestApp::test1() {
     (*out_itor)["N_CHAN"].set(n_chan);
     (*out_itor)["MATRIX"].set(response);
   }
-  
+
   // Write the ebounds extension.
   tip::Table * out_ebounds = tip::IFileSvc::instance().editTable("test_response1.rsp", "EBOUNDS");
 
@@ -338,7 +343,7 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   OrderedBinner::IntervalCont_t intervals;
 
   // Open the file for true energy bin definition.
-  std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(m_data_dir + "rspgen_energy_bins.fits", "ENERGYBINS"));
+  std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
 
   // Iterate over the file, saving the relevant values into the interval array, converting to MeV on the fly.
   for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
@@ -347,14 +352,14 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
 
   // Create binner from these intervals.
   OrderedBinner binner(intervals);
- 
+
   long num_bins = binner.getNumBins();
 
   double ra_scz = ra_ps; // RA of spacecraft Z axis
   double dec_scz = dec_ps; // DEC of spacecraft Z axis
 
   // Open input ebounds extension, used for apparent energy bins.
-  std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(m_data_dir + "PHA1.pha", "EBOUNDS"));
+  std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(findFile("PHA1.pha"), "EBOUNDS"));
 
   // Read the detchans keyword. This determines the number of channels used for apparent energy.
   int detchans = 0;
@@ -378,7 +383,7 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
     max_app_en[index] *= s_MeV_per_keV;
   }
   // Add a check here to make sure all the channels were set. We can't compute response if any are missing.
-  
+
   astro::SkyDir ps_dir(ra_ps, dec_ps);
   astro::SkyDir scz_dir(ra_scz, dec_scz);
 
@@ -394,7 +399,7 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   double phi = 0.;
 
   // Create output response file from template:
-  tip::IFileSvc::instance().createFile(file_name, m_data_dir + "LatResponseTemplate");
+  tip::IFileSvc::instance().createFile(file_name, findFile("LatResponseTemplate"));
 
   // Open the response file:
   tip::Table * resp_table = tip::IFileSvc::instance().editTable(file_name, "MATRIX");
@@ -434,7 +439,7 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
     (*out_itor)["N_CHAN"].set(n_chan);
     (*out_itor)["MATRIX"].set(response);
   }
-  
+
   // Copy input ebounds extension to the output.
   tip::Table * out_ebounds = tip::IFileSvc::instance().editTable(file_name, "EBOUNDS");
 
@@ -463,7 +468,7 @@ void RspGenTestApp::test3() {
   astro::SkyDir ps_pos(ra_ps, dec_ps);
 
   // Open the sc data file.
-  std::auto_ptr<const tip::Table> sc_data(tip::IFileSvc::instance().readTable(m_data_dir + "ft2tiny.fits", "Ext1"));
+  std::auto_ptr<const tip::Table> sc_data(tip::IFileSvc::instance().readTable(findFile("ft2tiny.fits"), "Ext1"));
 
   // Set up a histogram to hold the binned differential exposure (theta vs. DeltaT).
   Hist1D diff_exp(LinearBinner(0., 60., 5.));
@@ -474,7 +479,7 @@ void RspGenTestApp::test3() {
   for (tip::Table::ConstIterator itor = sc_data->begin(); itor != sc_data->end(); ++itor) {
     // Get size of interval.
     double delta_t = (*itor)["LIVETIME"].get();
-    
+
     // Get SC coordinates.
     double ra_scz = (*itor)["RA_SCZ"].get();
     double dec_scz = (*itor)["DEC_SCZ"].get();
@@ -506,7 +511,7 @@ void RspGenTestApp::test3() {
   OrderedBinner::IntervalCont_t intervals;
 
   // Open the data file.
-  std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(m_data_dir + "rspgen_energy_bins.fits", "ENERGYBINS"));
+  std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
 
   // Iterate over the file, saving the relevant values into the interval array, converting to MeV on the fly.
   for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
@@ -515,11 +520,11 @@ void RspGenTestApp::test3() {
 
   // Create binner from these intervals.
   OrderedBinner binner(intervals);
- 
+
   long num_bins = binner.getNumBins();
 
   // Open input pha file.
-  std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(m_data_dir + "PHA1.pha", "EBOUNDS"));
+  std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(findFile("PHA1.pha"), "EBOUNDS"));
 
   // Read the detchans keyword. This determines the number of channels used for apparent energy.
   int detchans = 0;
@@ -543,7 +548,7 @@ void RspGenTestApp::test3() {
     max_app_en[index] *= s_MeV_per_keV;
   }
   // Add a check here to make sure all the channels were set. We can't compute response if any are missing.
-  
+
   // Obtain test response functor.
   irfInterface::Irfs * irfs = createIrfs();
 
@@ -557,7 +562,7 @@ void RspGenTestApp::test3() {
   double radius = 0.1;
 
   // Create output response file from template:
-  tip::IFileSvc::instance().createFile("test_response3.rsp", m_data_dir + "LatResponseTemplate");
+  tip::IFileSvc::instance().createFile("test_response3.rsp", findFile("LatResponseTemplate"));
 
   // Open the response file:
   tip::Table * resp_table = tip::IFileSvc::instance().editTable("test_response3.rsp", "MATRIX");
@@ -594,11 +599,11 @@ void RspGenTestApp::test3() {
       double theta = theta_bins->getInterval(theta_bin).midpoint();
       double aeff_val = aeff->value(true_en, theta, phi);
       double int_psf_val = psf->angularIntegral(true_en, theta, phi, radius);
-  
+
       for (index = 0; index < detchans; ++index) {
         response[index] += diff_exp[theta_bin] / total_exposure * aeff_val * edisp->integral(min_app_en[index], max_app_en[index], true_en, theta, phi) * int_psf_val;
       }
-  
+
       // Write response to file, using keV.
       (*out_itor)["ENERG_LO"].set(s_keV_per_MeV * binner.getInterval(true_en_idx).begin());
       (*out_itor)["ENERG_HI"].set(s_keV_per_MeV * binner.getInterval(true_en_idx).end());
@@ -608,7 +613,7 @@ void RspGenTestApp::test3() {
       (*out_itor)["MATRIX"].set(response);
     }
   }
-  
+
   // Copy ebounds extension from input to output.
   tip::Table * out_ebounds = tip::IFileSvc::instance().editTable("test_response3.rsp", "EBOUNDS");
 
@@ -635,7 +640,7 @@ void RspGenTestApp::test4() {
     // This test assumes there was a burst at (114., -30.), at t = 105. seconds past the first entry in the spacecraft file.
 
     // Get spacecraft data.
-    std::auto_ptr<const tip::Table> sc_table(tip::IFileSvc::instance().readTable(m_data_dir + "ft2tiny.fits", "Ext1"));
+    std::auto_ptr<const tip::Table> sc_table(tip::IFileSvc::instance().readTable(findFile("ft2tiny.fits"), "Ext1"));
 
     // Get object for interpolating values from the table.
     tip::LinearInterp sc_record(sc_table->begin(), sc_table->end());
@@ -665,12 +670,12 @@ void RspGenTestApp::test4() {
 
 
     // Get input ebounds extension.
-    std::auto_ptr<const tip::Table> in_ebounds(tip::IFileSvc::instance().readTable(m_data_dir + "PHA1.pha", "EBOUNDS"));
+    std::auto_ptr<const tip::Table> in_ebounds(tip::IFileSvc::instance().readTable(findFile("PHA1.pha"), "EBOUNDS"));
 
     // Get number of channels currently in use.
     int detchans = 0;
     in_ebounds->getHeader()["DETCHANS"].get(detchans);
-    
+
     // Get apparent energy binner from ebounds extension.
     int index = 0;
     evtbin::OrderedBinner::IntervalCont_t app_intervals(detchans);
@@ -682,7 +687,7 @@ void RspGenTestApp::test4() {
 
 
     // Process bin definition file to produce true energy bins.
-    std::auto_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(m_data_dir + "rspgen_energy_bins.fits", "ENERGYBINS"));
+    std::auto_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
 
     // Create object to hold the intervals in the bin definition file.
     evtbin::OrderedBinner::IntervalCont_t true_intervals(true_en->getNumRecords());
@@ -701,10 +706,10 @@ void RspGenTestApp::test4() {
     // Sanity check: just compute one response at 137. MeV.
     std::vector<double> resp_slice(detchans, 0.);
     resp.compute(137., resp_slice);
-    
+
     // Use the second constructor, and test that its results are the same.
     // RA, DEC, t, radius, response type, pha file, FT2 file, energy bin def file
-    GrbResponse resp2(114., -30., 2.167440000000000E+06 + 105., 1.4, "testIrfs::Front", m_data_dir + "PHA1.pha", m_data_dir + "ft2tiny.fits", &true_en_binner);
+    GrbResponse resp2(114., -30., 2.167440000000000E+06 + 105., 1.4, "testIrfs::Front", findFile("PHA1.pha"), findFile("ft2tiny.fits"), &true_en_binner);
 
     // Sanity check: just compute one response at 137. MeV.
     std::vector<double> resp_slice2(detchans, 0.);
@@ -727,7 +732,7 @@ void RspGenTestApp::test4() {
     }
 
     // Write output rsp file.
-    resp2.writeOutput("test_rspgen", "test_response4.rsp", m_data_dir + "LatResponseTemplate");
+    resp2.writeOutput("test_rspgen", "test_response4.rsp", findFile("LatResponseTemplate"));
 
   } catch (const std::exception & x) {
     m_failed = true;
@@ -761,8 +766,8 @@ void RspGenTestApp::test6() {
 
     // Set parameters "by hand"
     pars["respalg"] = "GRB";
-    pars["specfile"] = m_data_dir + "PHA1.pha";
-    pars["scfile"] = m_data_dir + "ft2tiny.fits";
+    pars["specfile"] = findFile("PHA1.pha");
+    pars["scfile"] = findFile("ft2tiny.fits");
     pars["outfile"] = "test_response6.rsp";
     pars["ra"] = 114.;
     pars["dec"] = -30.;
@@ -771,7 +776,7 @@ void RspGenTestApp::test6() {
     pars["resptype"] = "testIrfs::Front";
     pars["resptpl"] = "DEFAULT";
     pars["energybinalg"] = "FILE";
-    pars["energybinfile"] = m_data_dir + "rspgen_energy_bins.fits";
+    pars["energybinfile"] = findFile("rspgen_energy_bins.fits");
 
     // And writing the output.
     app.writeResponse(pars);
@@ -796,7 +801,7 @@ void RspGenTestApp::test7() {
     // RA, DEC, theta_cut, theta_bin_size, radius, response type, pha file, FT2 file, energy bin def file.
     double ra_ps = 8.3633225E+01; // RA of point source
     double dec_ps = 2.2014458E+01; // DEC of point source
-    PointResponse resp(ra_ps, dec_ps, 60., 5., 3., "testIrfs::Back", m_data_dir + "PHA1.pha", m_data_dir + "ft2tiny.fits",
+    PointResponse resp(ra_ps, dec_ps, 60., 5., 3., "testIrfs::Back", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
       true_en_binner.get());
 
     // Sanity check: just compute one response at 137. MeV.
@@ -814,7 +819,7 @@ void RspGenTestApp::test7() {
     }
 
     // Write output rsp file.
-    resp.writeOutput("test_rspgen", "test_response7.rsp", m_data_dir + "LatResponseTemplate");
+    resp.writeOutput("test_rspgen", "test_response7.rsp", findFile("LatResponseTemplate"));
 
   } catch (const std::exception & x) {
     m_failed = true;
@@ -834,8 +839,8 @@ void RspGenTestApp::test8() {
 
     // Set parameters "by hand"
     pars["respalg"] = "PS";
-    pars["specfile"] = m_data_dir + "PHA1.pha";
-    pars["scfile"] = m_data_dir + "ft2tiny.fits";
+    pars["specfile"] = findFile("PHA1.pha");
+    pars["scfile"] = findFile("ft2tiny.fits");
     pars["outfile"] = "test_response8.rsp";
     pars["ra"] = 8.3633225E+01;
     pars["dec"] = 2.2014458E+01;
@@ -845,7 +850,7 @@ void RspGenTestApp::test8() {
     pars["resptype"] = "testIrfs::Front";
     pars["resptpl"] = "DEFAULT";
     pars["energybinalg"] = "FILE";
-    pars["energybinfile"] = m_data_dir + "rspgen_energy_bins.fits";
+    pars["energybinfile"] = findFile("rspgen_energy_bins.fits");
 
     // And writing the output.
     app.writeResponse(pars);
@@ -860,7 +865,7 @@ void RspGenTestApp::test8() {
 void RspGenTestApp::test9() {
   using namespace rspgen;
 
-  Gti gti(m_data_dir + "PHA1.pha", "GTI");
+  Gti gti(findFile("PHA1.pha"), "GTI");
 
   Gti::ConstIterator gti_pos = gti.begin();
 
@@ -930,7 +935,7 @@ void RspGenTestApp::test9() {
 
 evtbin::Binner * RspGenTestApp::createStdBinner() {
   // Process bin definition file to produce true energy bins.
-  std::auto_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(m_data_dir + "rspgen_energy_bins.fits", "ENERGYBINS"));
+  std::auto_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
 
   // Create object to hold the intervals in the bin definition file.
   evtbin::OrderedBinner::IntervalCont_t true_intervals(true_en->getNumRecords());
@@ -946,6 +951,10 @@ evtbin::Binner * RspGenTestApp::createStdBinner() {
 
 irfInterface::Irfs * RspGenTestApp::createIrfs() const {
   return irfInterface::IrfsFactory::instance()->create("testIrfs::Front");
+}
+
+std::string RspGenTestApp::findFile(const std::string & file_root) const {
+  return st_facilities::Env::appendFileName(m_data_dir, file_root);
 }
 
 // Factory object to create this test executable.
