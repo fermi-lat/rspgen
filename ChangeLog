@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: peachey  Mon Mar 21 07:45:00 PST 2005
+rspgen/src
+
+Modified Files:
+	IResponse.cxx 
+Log Message:
+Add dictionary entries for testIrfs::Front, testIrfs::Back, and perform
+lookup of response functions in dictionary case-insensitively.
+
+    *
+------------------------------------------------------------
 User: peachey  Mon Mar 21 07:43:12 PST 2005
 rspgen/pfiles
 
