@@ -164,6 +164,9 @@ namespace rspgen {
     // Open ebounds table for writing.
     std::auto_ptr<tip::Table> ebounds(tip::IFileSvc::instance().editTable(file_name, "EBOUNDS"));
 
+    // Set detchans explicitly.
+    ebounds->getHeader()["DETCHANS"].set(app_num_elem);
+
     // Resize the table to hold number of records == the number of apparent energy bins.
     ebounds->setNumRecords(app_num_elem);
 
