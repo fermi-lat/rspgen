@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: peachey  Thu Jul 15 19:52:00 PDT 2004
+users/peachey/rspgen/src
+
+Modified Files:
+	GrbResponse.cxx 
+Log Message:
+Initialize static member in implementation file.
+    *
+------------------------------------------------------------
+User: peachey  Thu Jul 15 19:52:00 PDT 2004
 users/peachey/rspgen/rspgen
 
 Modified Files:
