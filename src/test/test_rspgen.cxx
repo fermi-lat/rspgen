@@ -241,9 +241,9 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   }
 
   // Create binner from these intervals.
-  Binner * binner = new OrderedBinner(intervals);
+  OrderedBinner binner(intervals);
  
-  long num_bins = binner->getNumBins();
+  long num_bins = binner.getNumBins();
 
   double ra_scz = ra_ps; // RA of spacecraft Z axis
   double dec_scz = dec_ps; // DEC of spacecraft Z axis
@@ -309,7 +309,7 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   std::vector<int> f_chan(1, 1);
   std::vector<int> n_chan(1, detchans);
   for (long true_en_idx = 0; true_en_idx < num_true_chan; ++true_en_idx, ++out_itor) {
-    double true_en = binner->getInterval(true_en_idx).midpoint();
+    double true_en = binner.getInterval(true_en_idx).midpoint();
     double aeff_val = aeff->value(true_en, theta, phi);
     double int_psf_val = psf->angularIntegral(true_en, theta, phi, radius);
 
@@ -320,8 +320,8 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
     }
 
     // Write response to file, using keV.
-    (*out_itor)["ENERG_LO"].set(s_keV_per_MeV * binner->getInterval(true_en_idx).begin());
-    (*out_itor)["ENERG_HI"].set(s_keV_per_MeV * binner->getInterval(true_en_idx).end());
+    (*out_itor)["ENERG_LO"].set(s_keV_per_MeV * binner.getInterval(true_en_idx).begin());
+    (*out_itor)["ENERG_HI"].set(s_keV_per_MeV * binner.getInterval(true_en_idx).end());
     (*out_itor)["N_GRP"].set(1);
     (*out_itor)["F_CHAN"].set(f_chan);
     (*out_itor)["N_CHAN"].set(n_chan);
@@ -362,8 +362,7 @@ void RspGenTestApp::test3() {
 
   // Read SC Z positions, bin them into a histogram:
   for (tip::Table::ConstIterator itor = sc_data->begin(); itor != sc_data->end(); ++itor) {
-    // Get start/stop time of intervals.
-    double start = (*itor)["START"].get();
+    // Get size of interval.
     double delta_t = (*itor)["LIVETIME"].get();
     
     // Get SC coordinates.
@@ -402,9 +401,9 @@ void RspGenTestApp::test3() {
   }
 
   // Create binner from these intervals.
-  Binner * binner = new OrderedBinner(intervals);
+  OrderedBinner binner(intervals);
  
-  long num_bins = binner->getNumBins();
+  long num_bins = binner.getNumBins();
 
   // Open input pha file.
   const tip::Table * ebounds_ext = tip::IFileSvc::instance().readTable(m_data_dir + "PHA1.pha", "EBOUNDS");
@@ -470,7 +469,7 @@ void RspGenTestApp::test3() {
   long num_theta_bins = theta_bins->getNumBins();
 
   for (long true_en_idx = 0; true_en_idx < num_true_chan; ++true_en_idx, ++out_itor) {
-    double true_en = binner->getInterval(true_en_idx).midpoint();
+    double true_en = binner.getInterval(true_en_idx).midpoint();
 
     // Populate response vector.
     std::vector<double> response(detchans, 0.);
@@ -486,8 +485,8 @@ void RspGenTestApp::test3() {
       }
   
       // Write response to file, using keV.
-      (*out_itor)["ENERG_LO"].set(s_keV_per_MeV * binner->getInterval(true_en_idx).begin());
-      (*out_itor)["ENERG_HI"].set(s_keV_per_MeV * binner->getInterval(true_en_idx).end());
+      (*out_itor)["ENERG_LO"].set(s_keV_per_MeV * binner.getInterval(true_en_idx).begin());
+      (*out_itor)["ENERG_HI"].set(s_keV_per_MeV * binner.getInterval(true_en_idx).end());
       (*out_itor)["N_GRP"].set(1);
       (*out_itor)["F_CHAN"].set(f_chan);
       (*out_itor)["N_CHAN"].set(n_chan);
