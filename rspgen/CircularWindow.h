@@ -23,7 +23,7 @@ namespace rspgen {
       virtual IWindow * clone() const;
 
       /** \brief Integrate the psf over this window for the given values.
-          \param psf The psf object obtained from the latResponse package.
+          \param psf The psf object.
           \param true_energy The true energy for which to evaluate the integral.
           \param theta The true inclination angle of the incident photon.
           \param phi The true asimuthal angle of the incident photon.
