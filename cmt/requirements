@@ -4,7 +4,7 @@ version v0
 
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
-# $Id: requirements,v 1.2 2004/07/19 19:18:57 peachey Exp $
+# $Id: requirements,v 1.3 2004/07/21 16:35:59 peachey Exp $
 
 use STpolicy *
 use astro *
@@ -15,5 +15,5 @@ use tip *
 
 apply_pattern ST_library option=-no_share
 apply_pattern ST_pfiles
-
+application rspgen rspgen/*.cxx
 private
