@@ -1,0 +1,18 @@
+package rspgen
+
+version v0
+
+author James Peachey <peachey@lheamail.gsfc.nasa.gov>
+
+# $Id$
+
+use STpolicy *
+use astro *
+use evtbin *
+use latResponse *
+use st_app *
+use tip *
+
+apply_pattern ST_library option=-no_share
+
+private
