@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Thu Aug  5 12:47:05 PDT 2004
+users/peachey/rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Add test for new Gti class.
+    *
+------------------------------------------------------------
 User: peachey  Thu Aug  5 12:46:50 PDT 2004
 users/peachey/rspgen/src
 
