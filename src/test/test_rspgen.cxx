@@ -767,7 +767,7 @@ void RspGenTestApp::test6() {
     pars["time"] = 105.;
     pars["psfradius"] = 1.4;
     pars["resptype"] = "DC1::Front";
-    pars["resptpl"] = "";
+    pars["resptpl"] = "DEFAULT";
     pars["energybinalg"] = "FILE";
     pars["energybinfile"] = m_data_dir + "StdEnergyBin.fits";
 
@@ -839,7 +839,7 @@ void RspGenTestApp::test8() {
     pars["thetabinsize"] = 5.;
     pars["psfradius"] = .1;
     pars["resptype"] = "DC1::Front";
-    pars["resptpl"] = "";
+    pars["resptpl"] = "DEFAULT";
     pars["energybinalg"] = "FILE";
     pars["energybinfile"] = m_data_dir + "StdEnergyBin.fits";
 
