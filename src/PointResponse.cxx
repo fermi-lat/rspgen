@@ -75,7 +75,7 @@ namespace rspgen {
     }
 
     // Check that something was actually accumulated.
-    if (0. == m_total_exposure) throw std::runtime_error("PointReseponse constructor: cannot continue with 0. total exposure.");
+    if (0. == m_total_exposure) throw std::runtime_error("PointResponse constructor: cannot continue with 0. total exposure.");
 
     // Create window object for circular psf integration with the given inclination angle and psf radius.
     m_window = new CircularWindow(psf_radius);
