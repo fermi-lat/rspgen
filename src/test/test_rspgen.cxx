@@ -106,6 +106,10 @@ class RspGenTestApp : public st_app::StApp {
     */
     void test7();
 
+    /** \brief Test RspGenApp class for PointResponse.
+    */
+    void test8();
+
   private:
     /** \brief Return a standard energy binner used throughout the tests.
     */
@@ -132,6 +136,7 @@ void RspGenTestApp::run() {
   test5();
   test6();
   test7();
+  test8();
   if (m_failed) throw std::runtime_error("test_rspgen failed");
 }
 
@@ -663,7 +668,7 @@ void RspGenTestApp::test5() {
 
 }
 
-// Test application class.
+// Test application class for GrbResponse case.
 void RspGenTestApp::test6() {
   using namespace rspgen;
 
@@ -673,6 +678,7 @@ void RspGenTestApp::test6() {
     st_app::AppParGroup & pars(getParGroup("rspgen"));
 
     // Set parameters "by hand"
+    pars["respalg"] = "GRB";
     pars["specfile"] = m_data_dir + "PHA1.pha";
     pars["scfile"] = m_data_dir + "D2.fits";
     pars["outfile"] = "test_response6.rsp";
@@ -729,6 +735,40 @@ void RspGenTestApp::test7() {
   } catch (const std::exception & x) {
     m_failed = true;
     std::cerr << "Unexpected: test7 caught " << typeid(x).name() << ": " << x.what() << std::endl;
+  }
+
+}
+
+// Test application class for PointResponse case.
+void RspGenTestApp::test8() {
+  using namespace rspgen;
+
+  try {
+    RspGenApp app;
+
+    st_app::AppParGroup & pars(getParGroup("rspgen"));
+
+    // Set parameters "by hand"
+    pars["respalg"] = "PS";
+    pars["specfile"] = m_data_dir + "PHA1.pha";
+    pars["scfile"] = m_data_dir + "D2.fits";
+    pars["outfile"] = "test_response8.rsp";
+    pars["ra"] = 120.;
+    pars["dec"] = 30.;
+    pars["thetacut"] = 60.;
+    pars["thetabinsize"] = 5.;
+    pars["psfradius"] = .1;
+    pars["resptype"] = "DC1::Front";
+    pars["resptpl"] = "";
+    pars["energybinalg"] = "FILE";
+    pars["energybinfile"] = m_data_dir + "StdEnergyBin.fits";
+
+    // And writing the output.
+    app.writeResponse(pars);
+
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "Unexpected: test8 caught " << typeid(x).name() << ": " << x.what() << std::endl;
   }
 
 }

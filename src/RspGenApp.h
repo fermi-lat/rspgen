@@ -14,21 +14,26 @@
 
 namespace rspgen {
 
+  class IResponse;
+
   class RspGenApp : public st_app::StApp {
     public:
-      virtual ~RspGenApp() throw() {}
+      RspGenApp();
+
+      virtual ~RspGenApp() throw();
 
       virtual void run();
 
       virtual void prompt(st_app::AppParGroup & pars);
 
-      virtual void writeResponse(const st_app::AppParGroup & pars) const;
+      virtual void writeResponse(const st_app::AppParGroup & pars);
 
     private:
       std::string getDataDir() const;
 
       evtbin::BinConfig m_bin_config;
       std::string m_data_dir;
+      IResponse * m_response;
   };
 
 }
