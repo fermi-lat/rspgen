@@ -17,15 +17,18 @@
 // Sky directions use astro::SkyDir.
 #include "astro/SkyDir.h"
 
+// Include DC1 irfs.
+#include "dc1Response/loadIrfs.h"
+
 // From evtbin, generic histograms and associated binners are used.
 #include "evtbin/Hist1D.h"
 #include "evtbin/Binner.h"
 #include "evtbin/LinearBinner.h"
 #include "evtbin/OrderedBinner.h"
 
-// From latResponse, use instrument response function abstractions.
-#include "latResponse/Irfs.h"
-#include "latResponse/IrfsFactory.h"
+// Use instrument response function abstractions from irfInterface.
+#include "irfInterface/Irfs.h"
+#include "irfInterface/IrfsFactory.h"
 
 // Tests include circular region (window) abstractions.
 #include "rspgen/CircularWindow.h"
@@ -115,6 +118,10 @@ class RspGenTestApp : public st_app::StApp {
     */
     evtbin::Binner * createStdBinner();
 
+    /** \brief Return a standard test Irfs object.
+    */
+    irfInterface::Irfs * createIrfs() const;
+
     std::string m_data_dir;
     bool m_failed;
 };
@@ -127,6 +134,9 @@ RspGenTestApp::RspGenTestApp(): m_data_dir(), m_failed(false) {
 }
 
 void RspGenTestApp::run() {
+  // Load DC1 irfs.
+  dc1Response::loadIrfs();
+
   // Run all tests in order.
   try {
     test1();
@@ -188,7 +198,7 @@ void RspGenTestApp::run() {
   if (m_failed) throw std::runtime_error("test_rspgen failed");
 }
 
-// Test just getting values from latResponse for an arbitrary simple case.
+// Test just getting values for an arbitrary simple case.
 void RspGenTestApp::test1() {
   double ra_ps = 120.; // RA of point source
   double dec_ps = 30.; // DEC of point source
@@ -225,10 +235,11 @@ void RspGenTestApp::test1() {
   astro::SkyDir ps_dir(ra_ps, dec_ps);
   astro::SkyDir scz_dir(ra_scz, dec_scz);
 
-  // Arbitrarily choose a response.
-  latResponse::Irfs * irfs = latResponse::irfsFactory().create("DC1::Front");
+  // Obtain test response functor.
+  irfInterface::Irfs * irfs = createIrfs();
+
   // First get psf.
-  latResponse::IPsf * psf = irfs->psf();
+  irfInterface::IPsf * psf = irfs->psf();
 
   // Compute angle, which should be 0.
   double theta = ps_dir.difference(scz_dir) * 180. / M_PI;
@@ -245,10 +256,10 @@ void RspGenTestApp::test1() {
   resp_table->getHeader()["DETCHANS"].set(detchans);
 
   // Next get aeff.
-  latResponse::IAeff * aeff = irfs->aeff();
+  irfInterface::IAeff * aeff = irfs->aeff();
 
   // And redistribution.
-  latResponse::IEdisp * edisp = irfs->edisp();
+  irfInterface::IEdisp * edisp = irfs->edisp();
 
   tip::Table::Iterator out_itor = resp_table->begin();
 
@@ -356,9 +367,11 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   astro::SkyDir ps_dir(ra_ps, dec_ps);
   astro::SkyDir scz_dir(ra_scz, dec_scz);
 
-  latResponse::Irfs * irfs = latResponse::irfsFactory().create("DC1::Front");
+  // Obtain test response functor.
+  irfInterface::Irfs * irfs = createIrfs();
+
   // First get psf.
-  latResponse::IPsf * psf = irfs->psf();
+  irfInterface::IPsf * psf = irfs->psf();
 
   // Compute angle, which should be 0.
   double theta = ps_dir.difference(scz_dir) * 180. / M_PI;
@@ -374,10 +387,10 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   resp_table->getHeader()["DETCHANS"].set(detchans);
 
   // Next get aeff.
-  latResponse::IAeff * aeff = irfs->aeff();
+  irfInterface::IAeff * aeff = irfs->aeff();
 
   // And redistribution.
-  latResponse::IEdisp * edisp = irfs->edisp();
+  irfInterface::IEdisp * edisp = irfs->edisp();
 
   tip::Table::Iterator out_itor = resp_table->begin();
 
@@ -516,9 +529,11 @@ void RspGenTestApp::test3() {
   }
   // Add a check here to make sure all the channels were set. We can't compute response if any are missing.
   
-  latResponse::Irfs * irfs = latResponse::irfsFactory().create("DC1::Front");
+  // Obtain test response functor.
+  irfInterface::Irfs * irfs = createIrfs();
+
   // First get psf.
-  latResponse::IPsf * psf = irfs->psf();
+  irfInterface::IPsf * psf = irfs->psf();
 
   // Theta varies over the histogram now.
   // double theta = ps_dir.difference(scz_dir) * 180. / M_PI;
@@ -535,10 +550,10 @@ void RspGenTestApp::test3() {
   resp_table->getHeader()["DETCHANS"].set(detchans);
 
   // Next get aeff.
-  latResponse::IAeff * aeff = irfs->aeff();
+  irfInterface::IAeff * aeff = irfs->aeff();
 
   // And redistribution.
-  latResponse::IEdisp * edisp = irfs->edisp();
+  irfInterface::IEdisp * edisp = irfs->edisp();
 
   tip::Table::Iterator out_itor = resp_table->begin();
 
@@ -625,8 +640,8 @@ void RspGenTestApp::test4() {
     }
 
 
-    // Get irfs object from latResponse.
-    std::auto_ptr<latResponse::Irfs> irfs(latResponse::irfsFactory().create("DC1::Front"));
+    // Obtain test response functor.
+    std::auto_ptr<irfInterface::Irfs> irfs(createIrfs());
 
 
     // Create window object for psf integration, a circle of radius 1.4 degrees.
@@ -838,6 +853,10 @@ evtbin::Binner * RspGenTestApp::createStdBinner() {
 
   // Create a binner for true energy.
   return new evtbin::OrderedBinner(true_intervals);
+}
+
+irfInterface::Irfs * RspGenTestApp::createIrfs() const {
+  return irfInterface::IrfsFactory::instance()->create("DC1::Front");
 }
 
 // Factory object to create this test executable.
