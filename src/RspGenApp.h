@@ -32,8 +32,9 @@ namespace rspgen {
 
     private:
       std::string getDataDir() const;
+      evtbin::BinConfig * getConfig(const st_app::AppParGroup & pars);
 
-      evtbin::BinConfig m_bin_config;
+      evtbin::BinConfig * m_bin_config;
       std::string m_data_dir;
       IResponse * m_response;
   };

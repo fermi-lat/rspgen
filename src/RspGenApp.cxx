@@ -17,13 +17,14 @@
 
 namespace rspgen {
 
-  RspGenApp::RspGenApp(): m_bin_config(), m_data_dir(), m_response(0) {}
+  RspGenApp::RspGenApp(): m_bin_config(0), m_data_dir(), m_response(0) {}
 
-  RspGenApp::~RspGenApp() throw() { delete m_response; }
+  RspGenApp::~RspGenApp() throw() { delete m_response; delete m_bin_config; }
 
   void RspGenApp::run() {
     st_app::AppParGroup & pars(getParGroup("gtrspgen"));
     loadResponses();
+    evtbin::BinConfig::load();
     prompt(pars);
     writeResponse(pars);
   }
@@ -56,14 +57,14 @@ namespace rspgen {
     pars.Prompt("resptpl");
 
     // Prompt for (true) energy binning parameters.
-    m_bin_config.energyParPrompt(pars);
+    getConfig(pars)->energyParPrompt(pars);
 
     pars.Save();
   }
 
   void RspGenApp::writeResponse(const st_app::AppParGroup & pars) {
     // Create energy binner from related parameters.
-    std::auto_ptr<evtbin::Binner> true_en_binner(m_bin_config.createEnergyBinner(pars));
+    std::auto_ptr<evtbin::Binner> true_en_binner(getConfig(pars)->createEnergyBinner(pars));
 
     // Get name of template for output file.
     std::string resp_tpl = pars["resptpl"];
@@ -99,6 +100,12 @@ namespace rspgen {
   std::string RspGenApp::getDataDir() const {
     static std::string retval = st_facilities::Env::getDataDir("rspgen");
     return retval;
+  }
+
+  evtbin::BinConfig * RspGenApp::getConfig(const st_app::AppParGroup & pars) {
+    if (0 == m_bin_config)
+      m_bin_config = evtbin::BinConfig::create(pars["specfile"]);
+    return m_bin_config;
   }
 
 }
