@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: peachey  Tue Jul 20 19:02:07 PDT 2004
+users/peachey/rspgen/src
+
+Modified Files:
+	GrbResponse.cxx 
+Log Message:
+Inherit from IResponse and use its methods when possible.
+    *
+------------------------------------------------------------
+User: peachey  Tue Jul 20 19:02:07 PDT 2004
 users/peachey/rspgen/rspgen
 
 Modified Files:
