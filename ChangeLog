@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Fri Aug 20 10:31:57 PDT 2004
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Template file name now needs to be DEFAULT instead of empty string.
+    *
+------------------------------------------------------------
 User: peachey  Wed Aug 18 14:09:55 PDT 2004
 rspgen/doc
 
