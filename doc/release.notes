@@ -10,6 +10,8 @@
                       to find its data files.
 09-oct-2004    v0r4p1 Use st_facilities::Env to find data files.
 13-oct-2004    v0r4p2 JP  Add documentation about application parameters.
+13-oct-2004    v0r5p0 JP  Assign default values to parameters which are not always prompted for. Use
+                          pseudonyms for supported response functions.
 \endverbatim
 
 */
