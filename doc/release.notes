@@ -15,7 +15,7 @@
 07-mar-2005    v0r5p1 JP  Rename rspgen application gtrspgen.
 08-mar-2005    v0r5p2 JP  Correct handling of binners for latest changes to evtbin. Add standard
                           parameters to par file.
-21-mar-2005    v0r5p1 JP  Add version number to startup banner.
+21-mar-2005    v0r5p3 JP  Add version number to startup banner.
 \endverbatim
 
 */
