@@ -128,15 +128,63 @@ RspGenTestApp::RspGenTestApp(): m_data_dir(), m_failed(false) {
 
 void RspGenTestApp::run() {
   // Run all tests in order.
-  test1();
-  // Arbitrary sky direction (120., 30.). Arbitrary radius of psf integration == .1
-  test2(120., 30., .1, "test_response2.rsp");
-  test3();
-  test4();
-  test5();
-  test6();
-  test7();
-  test8();
+  try {
+    test1();
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running test1, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+
+  try {
+    // Arbitrary sky direction (120., 30.). Arbitrary radius of psf integration == .1
+    test2(120., 30., .1, "test_response2.rsp");
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running test2, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+
+  try {
+    test3();
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running test3, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+
+  try {
+    test4();
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running test4, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+
+  try {
+    test5();
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running test5, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+
+  try {
+    test6();
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running test6, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+
+  try {
+    test7();
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running test7, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+
+  try {
+    test8();
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running test8, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+
   if (m_failed) throw std::runtime_error("test_rspgen failed");
 }
 
@@ -392,7 +440,7 @@ void RspGenTestApp::test3() {
   // Set up a histogram to hold the binned differential exposure (theta vs. DeltaT).
   Hist1D diff_exp(LinearBinner(0., 60., 5.));
 
-  double total_exposure = 0;
+  double total_exposure = 0.;
 
   // Read SC Z positions, bin them into a histogram:
   for (tip::Table::ConstIterator itor = sc_data->begin(); itor != sc_data->end(); ++itor) {
@@ -412,6 +460,9 @@ void RspGenTestApp::test3() {
 
     total_exposure += delta_t;
   }
+
+  // Confirm that something was accumulated.
+  if (0. == total_exposure) throw std::runtime_error("test3 cannot continue with 0. total exposure");
 
   // Make sure small differences will be printed correctly.
   std::cout.precision(24);
