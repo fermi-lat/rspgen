@@ -1,14 +1,14 @@
 #-------------------------------------------------------------------------------
 # General parameters.
 respalg,       s, a, ,[GRB PS] , , "Response calculation method (GRB, PS)"
-specfile,      s, a, , , , "Name of the input spectrum file"
-scfile,        s, a, , , , "Name of the input spacecraft data file"
-outfile,       s, a, , , , "Name of the output file"
+specfile,      f, a, , , , "Name of the input spectrum file"
+scfile,        f, a, , , , "Name of the input spacecraft data file"
+outfile,       f, a, , , , "Name of the output file"
 ra,            r, a, , , , "True RA of point source (degrees)"
 dec,           r, a, , , , "True DEC of point source (degrees)"
 psfradius,     r, a, , , , "Radius of circle for PSF integration (degrees)"
 resptype,      s, h, "DC1::Front", , , "Name of the type of response function to use"
-resptpl,       s, h, , , , "Name of the template file to use to create output file"
+resptpl,       f, h, "DEFAULT", , , "Name of the template file to use to create output file"
 mode,          s, h, "ql", , ,"Behavior for automatic parameters"
 #-------------------------------------------------------------------------------
 
@@ -31,5 +31,5 @@ emin,          r, a, , , , "Start value for first energy bin"
 emax,          r, a, , , , "Stop value for last energy bin"
 enumbins,      i, a, , , , "Number of logarithmically uniform energy bins"
 deltaenergy,   r, a, , , , "Width of linearly uniform energy bins"
-energybinfile, s, a, , , , "Name of the file containing the energy bin definition"
+energybinfile, f, a, , , , "Name of the file containing the energy bin definition"
 #-------------------------------------------------------------------------------

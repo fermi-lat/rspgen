@@ -67,7 +67,7 @@ namespace rspgen {
     std::string resp_tpl = pars["resptpl"];
 
     // If it was not defined, get default template file name.
-    if (resp_tpl.empty()) resp_tpl = getDataDir() + "LatResponseTemplate";
+    if (0 == resp_tpl.compare("DEFAULT")) resp_tpl = getDataDir() + "LatResponseTemplate";
 
     // Determine which algorithm to use.
     std::string alg = pars["respalg"];
