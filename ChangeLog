@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Wed Jul 21 05:59:24 PDT 2004
+users/peachey/rspgen/src
+
+Modified Files:
+	RspGenApp.cxx RspGenApp.h 
+Log Message:
+Handle steady point source as well as burst case.
+    *
+------------------------------------------------------------
 User: peachey  Wed Jul 21 05:46:02 PDT 2004
 users/peachey/rspgen/pfiles
 
