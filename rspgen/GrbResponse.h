@@ -60,7 +60,7 @@ namespace rspgen {
       virtual void compute(double true_energy, std::vector<double> & response);
 
     private:
-      static const double s_keV_per_MeV = 1000.;
+      static const double s_keV_per_MeV;
 
       tip::Header::KeyValCont_t m_kwds;
       double m_theta;
