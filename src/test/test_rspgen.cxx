@@ -19,6 +19,7 @@
 
 // From evtbin, generic histograms and associated binners are used.
 #include "evtbin/Hist1D.h"
+#include "evtbin/Binner.h"
 #include "evtbin/LinearBinner.h"
 #include "evtbin/OrderedBinner.h"
 
@@ -31,6 +32,9 @@
 
 // Response abstraction for burst case.
 #include "rspgen/GrbResponse.h"
+
+// Response abstraction for burst case.
+#include "rspgen/PointResponse.h"
 
 // Standard application-related code.
 #include "st_app/StApp.h"
@@ -96,7 +100,17 @@ class RspGenTestApp : public st_app::StApp {
     */
     void test6();
 
+    /** \brief Test utilizing PointResponse class to compute response for a given point source direction. The sc data are
+        binned to give a differential exposure. This is then integrated to produce the total response in the sc file.
+        This test produces test_response7.rsp.
+    */
+    void test7();
+
   private:
+    /** \brief Return a standard energy binner used throughout the tests.
+    */
+    evtbin::Binner * createStdBinner();
+
     std::string m_data_dir;
     bool m_failed;
 };
@@ -117,6 +131,7 @@ void RspGenTestApp::run() {
   test4();
   test5();
   test6();
+  test7();
   if (m_failed) throw std::runtime_error("test_rspgen failed");
 }
 
@@ -268,7 +283,7 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
 
   // Make sure there are at least detchans channels in the input ebounds. This is just a basic sanity check.
   tip::Index_t num_rec = ebounds_ext->getNumRecords();
-  if (num_rec < detchans) throw std::runtime_error("test1: Channel number mismatch");
+  if (num_rec < detchans) throw std::runtime_error("test2: Channel number mismatch");
   std::vector<double> min_app_en(detchans);
   std::vector<double> max_app_en(detchans);
 
@@ -428,7 +443,7 @@ void RspGenTestApp::test3() {
 
   // Make sure there are at least detchans channels in the input ebounds. This is just a basic sanity check.
   tip::Index_t num_rec = ebounds_ext->getNumRecords();
-  if (num_rec < detchans) throw std::runtime_error("test1: Channel number mismatch");
+  if (num_rec < detchans) throw std::runtime_error("test3: Channel number mismatch");
   std::vector<double> min_app_en(detchans);
   std::vector<double> max_app_en(detchans);
 
@@ -678,6 +693,60 @@ void RspGenTestApp::test6() {
     std::cerr << "Unexpected: test6 caught " << typeid(x).name() << ": " << x.what() << std::endl;
   }
 
+}
+
+// Test PointResponse class constructors and compute method. Parameters are such that
+// this test's output should be identical to test3's output.
+void RspGenTestApp::test7() {
+  using namespace rspgen;
+
+  try {
+    // Create a binner for true energy.
+    std::auto_ptr<evtbin::Binner> true_en_binner(createStdBinner());
+
+    // Construct a steady point source response for the given RA, DEC, thetabins.
+    // RA, DEC, theta_cut, theta_bin_size, radius, response type, pha file, FT2 file, energy bin def file.
+    PointResponse resp(120., 30., 60., 5., .1, "DC1::Front", m_data_dir + "PHA1.pha", m_data_dir + "D2.fits",
+      true_en_binner.get());
+
+    // Sanity check: just compute one response at 137. MeV.
+    std::vector<double> resp_slice;
+    resp.compute(137., resp_slice);
+
+    // Look for at least one non-zero value in the response computation.
+    std::vector<double>::iterator resp_itor;
+    for (resp_itor = resp_slice.begin(); resp_itor != resp_slice.end(); ++resp_itor)
+      if (0. != *resp_itor) break;
+
+    if (resp_slice.end() == resp_itor) {
+      m_failed = true;
+      std::cerr << "Unexpected: PointResponse computed an all zero response slice at 137. MeV" << std::endl;
+    }
+
+    // Write output rsp file.
+    resp.writeOutput("test_rspgen", "test_response7.rsp", m_data_dir + "LatResponseTemplate");
+
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "Unexpected: test7 caught " << typeid(x).name() << ": " << x.what() << std::endl;
+  }
+
+}
+
+evtbin::Binner * RspGenTestApp::createStdBinner() {
+  // Process bin definition file to produce true energy bins.
+  std::auto_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(m_data_dir + "StdEnergyBin.fits", "ENERGYBINS"));
+
+  // Create object to hold the intervals in the bin definition file.
+  evtbin::OrderedBinner::IntervalCont_t true_intervals(true_en->getNumRecords());
+
+  // Read true energy bin definitions into interval object.
+  int index = 0;
+  for (tip::Table::ConstIterator itor = true_en->begin(); itor != true_en->end(); ++itor, ++index)
+    true_intervals[index] = evtbin::Binner::Interval((*itor)["START_BIN"].get(), (*itor)["STOP_BIN"].get());
+
+  // Create a binner for true energy.
+  return new evtbin::OrderedBinner(true_intervals);
 }
 
 // Factory object to create this test executable.
