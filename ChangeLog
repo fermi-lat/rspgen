@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Wed Jul 21 09:38:17 PDT 2004
+users/peachey/rspgen/rspgen
+
+Modified Files:
+	CircularWindow.h GrbResponse.h IResponse.h IWindow.h 
+Log Message:
+Use irfs package instead of latResponse.
+    *
+------------------------------------------------------------
 User: peachey  Wed Jul 21 09:35:59 PDT 2004
 users/peachey/rspgen/cmt
 
