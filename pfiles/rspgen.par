@@ -1,15 +1,26 @@
 #-------------------------------------------------------------------------------
 # General parameters.
+respalg,       s, a, ,[GRB PS] , , "Response calculation method (GRB, PS)"
 specfile,      s, a, , , , "Name of the input spectrum file"
 scfile,        s, a, , , , "Name of the input spacecraft data file"
 outfile,       s, a, , , , "Name of the output file"
 ra,            r, a, , , , "True RA of point source (degrees)"
 dec,           r, a, , , , "True DEC of point source (degrees)"
-time,          r, a, , , , "Time of GRB (s)"
 psfradius,     r, a, , , , "Radius of circle for PSF integration (degrees)"
 resptype,      s, h, "DC1::Front", , , "Name of the type of response function to use"
 resptpl,       s, h, , , , "Name of the template file to use to create output file"
 mode,          s, h, "ql", , ,"Behavior for automatic parameters"
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# GRB-specific parameters.
+time,          r, a, , , , "Time of GRB (s)"
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# GRB-specific parameters.
+thetacut,      r, a, , , , "Cutoff angle for binning SC pointings (degrees)"
+thetabinsize,  r, a, , , , "Size of bins for binning SC pointings (degrees)"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
