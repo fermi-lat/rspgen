@@ -6,6 +6,8 @@
 #include <memory>
 #include <stdexcept>
 
+#include "irfLoader/Loader.h"
+
 #include "RspGenApp.h"
 #include "rspgen/GrbResponse.h"
 #include "rspgen/IResponse.h"
@@ -19,6 +21,7 @@ namespace rspgen {
 
   void RspGenApp::run() {
     st_app::AppParGroup & pars(getParGroup("rspgen"));
+    loadResponses();
     prompt(pars);
     writeResponse(pars);
   }
@@ -85,6 +88,10 @@ namespace rspgen {
 
     // Write the output response file.
     m_response->writeOutput("rspgen", pars["outfile"], resp_tpl);
+  }
+
+  void RspGenApp::loadResponses() {
+    irfLoader::Loader::go();
   }
 
   std::string RspGenApp::getDataDir() const {

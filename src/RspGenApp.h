@@ -28,6 +28,8 @@ namespace rspgen {
 
       virtual void writeResponse(const st_app::AppParGroup & pars);
 
+      virtual void loadResponses();
+
     private:
       std::string getDataDir() const;
 
