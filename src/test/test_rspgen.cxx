@@ -58,6 +58,8 @@
 static double s_keV_per_MeV = 1000.;
 static double s_MeV_per_keV = .001;
 
+static std::string s_cvs_id = "$Name$";
+
 /** \class RspGenTestApp
     \brief The main test application itself.
 */
@@ -144,6 +146,8 @@ class RspGenTestApp : public st_app::StApp {
 RspGenTestApp::RspGenTestApp(): m_data_dir(), m_failed(false) {
   // Get the directory in which to find the input data files.
   m_data_dir = st_facilities::Env::getDataDir("rspgen");
+  setName("test_rspgen");
+  setVersion(s_cvs_id);
 }
 
 void RspGenTestApp::run() {
