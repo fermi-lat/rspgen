@@ -1,0 +1,101 @@
+SIMPLE   =                    T / File conforms to NOST standard
+BITPIX   =                    8 / Bits per pixel
+NAXIS    =                    0 / No data is associated with this header
+EXTEND   =                    T / Extensions may be present
+DATE     =                      / Date file was made
+FILENAME =                      / Name of this file
+TELESCOP =                GLAST / Name of telescope generating data
+INSTRUME =                  LAT / Name of instrument generating data
+DATE-OBS                        / Start Date and Time of the observation (UTC)
+DATE-END                        / End Date and Time of the observation (UTC)
+DRM_NUM  =                      / Number of DRMs stored in this file
+CREATOR  =                      / Software and version creating file
+HISTORY                     $Id: LatResponseTemplate,v 1.3 2003/12/10 15:51:22 sbansal Exp $
+END
+
+
+
+##################################################################################
+XTENSION =             BINTABLE / Binary table extension
+BITPIX   =                    8 / Bits per pixel
+NAXIS    =                    2 / Required value
+NAXIS1   =                    0 / Number of bytes per row
+NAXIS2   =                    0 / Number of rows
+PCOUNT   =                    0 / Normally 0 (no varying arrays)
+GCOUNT   =                    1 / Required value
+TFIELDS  =                    0 / Number of columns in table
+EXTNAME  =               MATRIX / Extension name
+TELESCOP =                GLAST / Telescope or mission name
+INSTRUME =                  LAT / Instrument name
+FILTER   =                      / Instrument filter in use
+CHANTYPE =                   PI / Whether channels used in the file have been corrected in any way
+DETCHANS =                    0 / Total number of detector channels available
+HDUCLASS =                 OGIP / Format confirms to OGIP standard
+HDUCLAS1 =             RESPONSE / Indicating this is a response
+HDUCLAS2 =           RSP_MATRIX / Indicating this is a response matrix
+HDUVERS  =                1.2.0 / Version number of the format
+TLMIN4   =                      / First channel in the response
+NDSKEYS  =                    0 / Number of data subspace keywords in header
+DATE-OBS                        / Start Date and Time of the observation (UTC)
+DATE-END                        / End Date and Time of the observation (UTC)
+CREATOR  =                      / Software and version creating file
+HISTORY                     $Id: LatResponseTemplate,v 1.3 2003/12/10 15:51:22 sbansal Exp $
+
+
+TTYPE#  ENERG_LO                / Lower energy bound of the energy bin
+TFORM#  E                       / Data format of this field
+TUNIT#  keV                     / Unit of this field
+
+TTYPE#  ENERG_HI                / Upper energy bound of the energy bin
+TFORM#  E                       / Data format of this field
+TUNIT#  keV                     / Unit of this field
+
+TTYPE#  N_GRP                   / Number of channel subsets for the energy bin
+TFORM#  I                       / Data format of this field
+
+TTYPE#  F_CHAN                  / Channel number of start of each channel subset
+TFORM#  PI                      / Data format of this field
+
+TTYPE#  N_CHAN                  / Number of channels within each channel subset
+TFORM#  PI                      / Data format of this field
+
+TTYPE#  MATRIX                  / Response values for each channel subset
+TFORM#  PE                      / Data format of this field
+
+
+
+##################################################################################
+XTENSION =             BINTABLE / Binary table extension
+BITPIX   =                    8 / Bits per pixel
+NAXIS    =                    2 / Required value
+NAXIS1   =                    0 / Number of bytes per row
+NAXIS2   =                    0 / Number of rows
+PCOUNT   =                    0 / Normally 0 (no varying arrays)
+GCOUNT   =                    1 / Required value
+TFIELDS  =                    0 / Number of columns in table
+EXTNAME  =              EBOUNDS / Extension name
+TELESCOP =                GLAST / Telescope or mission name
+INSTRUME =                  LAT / Instrument name
+FILTER   =                      / Instrument filter in use (if any)
+CHANTYPE =                   PI / Energy channel type
+DETCHANS =                      / Total number of detector channels available. 
+HDUCLASS =                 OGIP / Format confirms to OGIP standard
+HDUCLAS1 =             RESPONSE / Extension contains response data
+HDUCLAS2 =              EBOUNDS / Extension contains response matrix
+HDUVERS  =                1.2.0 / Version number of the format
+DATE-OBS                        / Start Date and Time of the observation (UTC)
+DATE-END                        / End Date and Time of the observation (UTC)
+CREATOR  =                      / Software and version creating file
+HISTORY                     $Id: LatResponseTemplate,v 1.3 2003/12/10 15:51:22 sbansal Exp $
+
+
+TTYPE#  CHANNEL        / Raw channel number
+TFORM#  I              / Data format of this field
+
+TTYPE#  E_MIN          / Lower boundary of the detector channel
+TFORM#  1E             / Data format of this field
+TUNIT#  keV            / Unit of this field
+
+TTYPE#  E_MAX          / Upper boundary of the detector channel
+TFORM#  1E             / Data format of this field
+TUNIT#  keV            / Unit of this field
