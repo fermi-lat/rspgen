@@ -2,6 +2,7 @@
     \brief Implementation of generic response calculator.
     \author James Peachey, HEASARC
 */
+#include <map>
 #include <memory>
 #include <stdexcept>
 
@@ -62,7 +63,7 @@ namespace rspgen {
     std::auto_ptr<evtbin::Binner> app_en_binner(new evtbin::OrderedBinner(app_intervals));
 
     // Get irfs object.
-    std::auto_ptr<irfInterface::Irfs> irfs(irfInterface::IrfsFactory::instance()->create(resp_type));
+    std::auto_ptr<irfInterface::Irfs> irfs(irfInterface::IrfsFactory::instance()->create(IResponse::lookUpResponse(resp_type)));
 
     // Everything succeeded, so release the pointers from their auto_ptrs.
     m_true_en_binner = true_en_auto_ptr.release();
@@ -150,6 +151,20 @@ namespace rspgen {
       (*app_itor)["E_MAX"].set(s_keV_per_MeV * app_en.end());
     }
 
+  }
+
+  std::string IResponse::lookUpResponse(const std::string & resp) {
+    typedef std::map<std::string, std::string> Dict_t;
+    static Dict_t s_resp_dict;
+    if (s_resp_dict.empty()) {
+      s_resp_dict["DC1F"] = "DC1::Front";
+      s_resp_dict["DC1B"] = "DC1::Back";
+      s_resp_dict["G25F"] = "Glast25::Front";
+      s_resp_dict["G25B"] = "Glast25::Back";
+    }
+    Dict_t::const_iterator match = s_resp_dict.find(resp);
+    if (s_resp_dict.end() == match) return resp;
+    return match->second;
   }
 
   IResponse::IResponse(): m_true_en_binner(0), m_app_en_binner(0), m_irfs(0) {}

@@ -49,6 +49,11 @@ namespace rspgen {
       static const double s_keV_per_MeV;
       static const double s_MeV_per_keV;
 
+      /** \brief Look up response nicknames in dictionary. If not found, just return original string.
+          \param resp The response nickname.
+      */
+      static std::string lookUpResponse(const std::string & resp);
+
       IResponse();
 
       tip::Header::KeyValCont_t m_kwds;
