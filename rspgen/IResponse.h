@@ -47,6 +47,7 @@ namespace rspgen {
 
     protected:
       static const double s_keV_per_MeV;
+      static const double s_MeV_per_keV;
 
       IResponse();
 

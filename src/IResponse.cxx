@@ -17,6 +17,7 @@
 namespace rspgen {
 
   const double IResponse::s_keV_per_MeV = 1000.;
+  const double IResponse::s_MeV_per_keV = .001;
 
   IResponse::IResponse(const std::string resp_type, const std::string & spec_file, const evtbin::Binner * true_en_binner):
     m_kwds(), m_true_en_binner(0), m_app_en_binner(0), m_irfs(0) {
@@ -47,7 +48,7 @@ namespace rspgen {
       if (index > detchans) continue; // Skip any rows with channel numbers > the number of channels.
       if (0 >= index) throw std::logic_error("Response constructor encountered a non-positive channel number");
       --index; // Arrays start at 0, not 1. This may not always be true, hence the check above.
-      app_intervals[index] = evtbin::Binner::Interval((*itor)["E_MIN"].get()/s_keV_per_MeV, (*itor)["E_MAX"].get()/s_keV_per_MeV);
+      app_intervals[index] = evtbin::Binner::Interval(s_MeV_per_keV*(*itor)["E_MIN"].get(), s_MeV_per_keV*(*itor)["E_MAX"].get());
     }
 
 
@@ -145,8 +146,8 @@ namespace rspgen {
 
       // Write bin parameters to output extension.
       (*app_itor)["CHANNEL"].set(app_idx + 1);
-      (*app_itor)["E_MIN"].set(app_en.begin() * s_keV_per_MeV);
-      (*app_itor)["E_MAX"].set(app_en.end() * s_keV_per_MeV);
+      (*app_itor)["E_MIN"].set(s_keV_per_MeV * app_en.begin());
+      (*app_itor)["E_MAX"].set(s_keV_per_MeV * app_en.end());
     }
 
   }
