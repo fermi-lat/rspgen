@@ -150,6 +150,9 @@ void RspGenTestApp::run() {
   // Load all irfs.
   irfLoader::Loader::go();
 
+  // Load instrument-specific binner configurations.
+  evtbin::BinConfig::load();
+
   // Run all tests in order.
   try {
     test1();
