@@ -4,12 +4,15 @@
 */
 #ifndef rspgen_GrbResponse_h
 #define rspgen_GrbResponse_h
+
 #include <string>
+#include <vector>
 
 #include "evtbin/Binner.h"
 
 #include "latResponse/Irfs.h"
 
+#include "rspgen/IResponse.h"
 #include "rspgen/IWindow.h"
 
 #include "tip/Header.h"
@@ -19,8 +22,8 @@ namespace rspgen {
   /** \class GrbResponse
       \brief Interface for Grb-specific response calculations.
   */
- 
-  class GrbResponse {
+
+  class GrbResponse : public IResponse {
     public:
       /** \brief Create GrbResponse object for a given burst and spacecraft coordinates
           \param theta The inclination angle of the spacecraft wrt the GRB direction.
@@ -47,12 +50,6 @@ namespace rspgen {
 
       virtual ~GrbResponse() throw();
 
-      /** \brief Compute responses and write them to eh output file.
-          \param creator String to write for the CREATOR keyword.
-          \param file_name Name of the output file.
-      */
-      virtual void writeOutput(const std::string & creator, const std::string & file_name, const std::string & fits_template);
-
       /** \brief Compute the response for the given value of true energy.
           \param true_energy The energy for which to compute response.
           \param response The response (vector of apparent energy bins).
@@ -60,13 +57,7 @@ namespace rspgen {
       virtual void compute(double true_energy, std::vector<double> & response);
 
     private:
-      static const double s_keV_per_MeV;
-
-      tip::Header::KeyValCont_t m_kwds;
       double m_theta;
-      evtbin::Binner * m_true_en_binner;
-      evtbin::Binner * m_app_en_binner;
-      latResponse::Irfs * m_irfs;
       IWindow * m_window;
   };
 
