@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: peachey  Mon Jul 19 06:51:42 PDT 2004
+users/peachey/rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Increment input iterator, use auto_ptr for input ebounds, and update DETCHANS
+in the ebounds extension.
+    *
+------------------------------------------------------------
+User: peachey  Mon Jul 19 06:51:42 PDT 2004
 users/peachey/rspgen/src
 
 Modified Files:
