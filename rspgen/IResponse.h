@@ -10,7 +10,7 @@
 
 #include "evtbin/Binner.h"
 
-#include "latResponse/Irfs.h"
+#include "irfInterface/Irfs.h"
 
 #include "rspgen/IResponse.h"
 
@@ -53,7 +53,7 @@ namespace rspgen {
       tip::Header::KeyValCont_t m_kwds;
       evtbin::Binner * m_true_en_binner;
       evtbin::Binner * m_app_en_binner;
-      latResponse::Irfs * m_irfs;
+      irfInterface::Irfs * m_irfs;
   };
 
 }

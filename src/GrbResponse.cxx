@@ -17,7 +17,7 @@
 namespace rspgen {
 
   GrbResponse::GrbResponse(double theta, const evtbin::Binner * true_en_binner, const evtbin::Binner * app_en_binner,
-    latResponse::Irfs * irfs, const IWindow * window): m_theta(theta), m_window(0) {
+    irfInterface::Irfs * irfs, const IWindow * window): m_theta(theta), m_window(0) {
     // Check inputs.
     if (0 == true_en_binner || 0 == app_en_binner || 0 == irfs || 0 == window)
       throw std::logic_error("GrbResponse constructor was passed a null pointer");

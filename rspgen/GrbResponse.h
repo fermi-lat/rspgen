@@ -10,7 +10,7 @@
 
 #include "evtbin/Binner.h"
 
-#include "latResponse/Irfs.h"
+#include "irfInterface/Irfs.h"
 
 #include "rspgen/IResponse.h"
 #include "rspgen/IWindow.h"
@@ -33,7 +33,7 @@ namespace rspgen {
           \param window The window object, used to define integration regions.
       */
       GrbResponse(double theta, const evtbin::Binner * true_en_binner, const evtbin::Binner * app_en_binner,
-        latResponse::Irfs * irfs, const IWindow * window);
+        irfInterface::Irfs * irfs, const IWindow * window);
 
       /** \brief Create GrbResponse object for a given burst and spacecraft coordinates
           \param grb_ra The ra of the burst.

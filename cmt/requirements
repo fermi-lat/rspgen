@@ -4,12 +4,12 @@ version v0
 
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
-# $Id: requirements,v 1.1.1.1 2004/07/14 18:42:44 peachey Exp $
+# $Id: requirements,v 1.2 2004/07/19 19:18:57 peachey Exp $
 
 use STpolicy *
 use astro *
 use evtbin *
-use latResponse *
+use irfs *
 use st_app *
 use tip *
 
