@@ -13,6 +13,8 @@
 13-oct-2004    v0r5p0 JP  Assign default values to parameters which are not always prompted for. Use
                           pseudonyms for supported response functions.
 07-mar-2005    v0r5p1 JP  Rename rspgen application gtrspgen.
+08-mar-2005    v0r5p2 JP  Correct handling of binners for latest changes to evtbin. Add standard
+                          parameters to par file.
 \endverbatim
 
 */
