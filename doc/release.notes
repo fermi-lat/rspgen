@@ -16,6 +16,8 @@
 08-mar-2005    v0r5p2 JP  Correct handling of binners for latest changes to evtbin. Add standard
                           parameters to par file.
 21-mar-2005    v0r5p3 JP  Add version number to startup banner.
+21-mar-2005    v0r6p0 JP  Allow any response function in irfs package to be used. Add dictionary shortcut
+                          for testIrfs::Front/Back.
 \endverbatim
 
 */
