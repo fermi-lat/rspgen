@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Thu Aug  5 14:51:26 PDT 2004
+users/peachey/rspgen/src
+
+Modified Files:
+	PointResponse.cxx 
+Log Message:
+Use Gti class to apply GTI intervals to differential exposure.
+    *
+------------------------------------------------------------
 User: peachey  Thu Aug  5 12:47:05 PDT 2004
 users/peachey/rspgen/src/test
 
