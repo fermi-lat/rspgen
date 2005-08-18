@@ -4,12 +4,19 @@
 */
 // C++ standard inclusions.
 #include <cmath>
+#include <cstdio>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
 #include <vector>
+
+#ifndef WIN32
+#include <sys/types.h>
+#include <sys/stat.h>
+#endif
 
 // Main appliation class RspGenApp.
 #include "RspGenApp.h"
@@ -48,6 +55,7 @@
 #include "st_facilities/Env.h"
 
 // Table access through tip.
+#include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/LinearInterp.h"
 #include "tip/Table.h"
@@ -132,6 +140,8 @@ class RspGenTestApp : public st_app::StApp {
     /** \brief Return the full path to the given data file.
     */
     std::string findFile(const std::string & file_root) const;
+
+    void copyFile(const std::string & in_file, const std::string & out_file) const;
 
     std::string m_data_dir;
     bool m_failed;
@@ -758,9 +768,21 @@ void RspGenTestApp::test6() {
 
     st_app::AppParGroup & pars(getParGroup("gtrspgen"));
 
+    // Make copy of input spectrum file so that the original spectrum will not be changed by
+    // this test.
+    std::string orig_spec = findFile("PHA1.pha");
+    copyFile(orig_spec, "PHA1.pha");
+
+    // Write-protect copy of spectrum to make sure response still gets written even if
+    // keywords in spectrum cannot be updated.
+#ifndef WIN32
+    // Set mode 0444.
+    chmod("PHA1.pha", S_IRUSR | S_IRGRP | S_IROTH);
+#endif
+
     // Set parameters "by hand"
     pars["respalg"] = "GRB";
-    pars["specfile"] = findFile("PHA1.pha");
+    pars["specfile"] = "PHA1.pha";
     pars["scfile"] = findFile("ft2tiny.fits");
     pars["outfile"] = "test_response6.rsp";
     pars["ra"] = 114.;
@@ -774,6 +796,21 @@ void RspGenTestApp::test6() {
 
     // And writing the output.
     app.writeResponse(pars);
+
+#ifndef WIN32
+    // Make sure RESPFILE keyword was *not* written to spectrum file, which should be write protected.
+    std::auto_ptr<const tip::Table> spec(tip::IFileSvc::instance().readTable("PHA1.pha", "SPECTRUM"));
+    std::string resp_file;
+    spec->getHeader()["RESPFILE"].get(resp_file);
+    if (resp_file != "NONE") {
+      m_failed = true;
+      std::cerr << "Unexpected: after writing response, test6 found that RESPFILE keyword in PHA1.pha was " << resp_file <<
+        ", not \"NONE\", as expected." << std::endl;
+    }
+
+    // Set mode 0664.
+    chmod("PHA1.pha", S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP);
+#endif
 
   } catch (const std::exception & x) {
     m_failed = true;
@@ -831,9 +868,14 @@ void RspGenTestApp::test8() {
 
     st_app::AppParGroup & pars(getParGroup("gtrspgen"));
 
+    // Make copy of input spectrum file so that the original spectrum will not be changed by
+    // this test.
+    std::string orig_spec = findFile("PHA1.pha");
+    copyFile(orig_spec, "PHA1.pha");
+
     // Set parameters "by hand"
     pars["respalg"] = "PS";
-    pars["specfile"] = findFile("PHA1.pha");
+    pars["specfile"] = "PHA1.pha";
     pars["scfile"] = findFile("ft2tiny.fits");
     pars["outfile"] = "test_response8.rsp";
     pars["ra"] = 8.3633225E+01;
@@ -848,6 +890,16 @@ void RspGenTestApp::test8() {
 
     // And writing the output.
     app.writeResponse(pars);
+
+    // Make sure RESPFILE keyword was written to spectrum file.
+    std::auto_ptr<const tip::Table> spec(tip::IFileSvc::instance().readTable("PHA1.pha", "SPECTRUM"));
+    std::string resp_file;
+    spec->getHeader()["RESPFILE"].get(resp_file);
+    if (resp_file != "test_response8.rsp") {
+      m_failed = true;
+      std::cerr << "Unexpected: after writing response, test8 found that RESPFILE keyword in PHA1.pha was " << resp_file <<
+        ", not \"test_response8.rsp\", as expected." << std::endl;
+    }
 
   } catch (const std::exception & x) {
     m_failed = true;
@@ -878,6 +930,17 @@ irfInterface::Irfs * RspGenTestApp::createIrfs() const {
 
 std::string RspGenTestApp::findFile(const std::string & file_root) const {
   return st_facilities::Env::appendFileName(m_data_dir, file_root);
+}
+
+void RspGenTestApp::copyFile(const std::string & in_file, const std::string & out_file) const {
+  std::ifstream in_stream(in_file.c_str(), std::ios::in | std::ios::binary);
+  std::ofstream out_stream(out_file.c_str(), std::ios::out | std::ios::binary);
+  char c;
+  in_stream.get(c);
+  while (in_stream) {
+    out_stream.put(c);
+    in_stream.get(c);
+  }
 }
 
 // Factory object to create this test executable.
