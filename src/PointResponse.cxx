@@ -8,10 +8,10 @@
 
 #include "astro/SkyDir.h"
 
+#include "evtbin/Gti.h"
 #include "evtbin/LinearBinner.h"
 
 #include "rspgen/CircularWindow.h"
-#include "rspgen/Gti.h"
 #include "rspgen/PointResponse.h"
 
 #include "tip/IFileSvc.h"
@@ -24,6 +24,8 @@ namespace rspgen {
   PointResponse::PointResponse(double ps_ra, double ps_dec, double theta_cut, double theta_bin_size, double psf_radius,
     const std::string resp_type, const std::string & spec_file, const std::string & sc_file, const evtbin::Binner * true_en_binner):
     IResponse(resp_type, spec_file, true_en_binner), m_window(0), m_diff_exp(0), m_total_exposure(0.) {
+    using evtbin::Gti;
+
     // Process spacecraft data.
     std::auto_ptr<const tip::Table> sc_table(tip::IFileSvc::instance().readTable(sc_file, "Ext1"));
 
