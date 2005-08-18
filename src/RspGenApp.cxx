@@ -14,9 +14,13 @@
 #include "rspgen/IResponse.h"
 #include "rspgen/PointResponse.h"
 
+#include "tip/Header.h"
+#include "tip/IFileSvc.h"
+#include "tip/Table.h"
+
 #include "st_facilities/Env.h"
 
-static std::string s_cvs_id = "$Name$";
+static std::string s_cvs_id = "$Name:  $";
 
 namespace rspgen {
 
@@ -84,6 +88,18 @@ namespace rspgen {
     // Clean up any previous response.
     delete m_response; m_response = 0;
 
+    // Extract name of output file.
+    std::string out_file = pars["outfile"];
+
+    // Adjust keywords in spectrum.
+    try {
+      std::auto_ptr<tip::Table> spectrum(tip::IFileSvc::instance().editTable(pars["specfile"], "SPECTRUM"));
+      spectrum->getHeader()["RESPFILE"].set(out_file);
+    } catch (const tip::TipException &) {
+      // If it can't be written, e.g. because the spectrum is write protected, just issue a warning.
+      // TODO: add warning using st_stream.
+    }
+
     // Create response object.
     if (alg == "GRB") {
       m_response = new GrbResponse(pars["ra"], pars["dec"], pars["time"], pars["psfradius"],
@@ -96,7 +112,7 @@ namespace rspgen {
     }
 
     // Write the output response file.
-    m_response->writeOutput("gtrspgen", pars["outfile"], resp_tpl);
+    m_response->writeOutput("gtrspgen", out_file, resp_tpl);
   }
 
   void RspGenApp::loadResponses() {
