@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: peachey  Thu Aug 18 06:40:55 PDT 2005
+rspgen/rspgen
+
+Removed Files:
+	Gti.h 
+Log Message:
+Remove rspgen::Gti class. Replace its usages with evtbin::Gti.
+
+    *
+------------------------------------------------------------
+User: peachey  Thu Aug 18 06:40:55 PDT 2005
 rspgen/src/test
 
 Modified Files:
