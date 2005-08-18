@@ -33,8 +33,6 @@
 // Tests include circular region (window) abstractions.
 #include "rspgen/CircularWindow.h"
 
-// Tests include circular region (window) abstractions.
-#include "rspgen/Gti.h"
 
 // Response abstraction for burst case.
 #include "rspgen/GrbResponse.h"
@@ -58,7 +56,7 @@
 static double s_keV_per_MeV = 1000.;
 static double s_MeV_per_keV = .001;
 
-static std::string s_cvs_id = "$Name$";
+static std::string s_cvs_id = "$Name:  $";
 
 /** \class RspGenTestApp
     \brief The main test application itself.
@@ -121,10 +119,6 @@ class RspGenTestApp : public st_app::StApp {
     /** \brief Test RspGenApp class for PointResponse.
     */
     void test8();
-
-    /** \brief Test Gti class.
-    */
-    void test9();
 
   private:
     /** \brief Return a standard energy binner used throughout the tests.
@@ -213,13 +207,6 @@ void RspGenTestApp::run() {
   } catch (const std::exception & x) {
     m_failed = true;
     std::cerr << "While running test8, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
-  }
-
-  try {
-    test9();
-  } catch (const std::exception & x) {
-    m_failed = true;
-    std::cerr << "While running test9, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
   }
 
   if (m_failed) throw std::runtime_error("test_rspgen failed");
@@ -867,77 +854,6 @@ void RspGenTestApp::test8() {
     std::cerr << "Unexpected: test8 caught " << typeid(x).name() << ": " << x.what() << std::endl;
   }
 
-}
-
-void RspGenTestApp::test9() {
-  using namespace rspgen;
-
-  Gti gti(findFile("PHA1.pha"), "GTI");
-
-  Gti::ConstIterator gti_pos = gti.begin();
-
-  double gti_start = 2.167442034386540E+06;
-  double gti_stop = 2.185939683959529E+06;
-
-  std::cerr.precision(24);
-
-  // Interval == GTI.
-  double fract = gti.getFraction(gti_start, gti_stop, gti_pos);
-  if (fract != 1.)
-    std::cerr << "Unexpected: test9: Interval == GTI, getFraction returned " << fract << ", not 1" << std::endl;
-//  if (gti_pos != gti.end())
-//    std::cerr << "Unexpected: test9: Interval == GTI, iterator was not incremented" << std::endl;
-
-  // Interval < GTI.
-  gti_pos = gti.begin();
-  fract = gti.getFraction(gti_start - 1.e3, gti_start, gti_pos);
-  if (fract != 0.)
-    std::cerr << "Unexpected: test9: Interval < GTI, getFraction returned " << fract << ", not 0" << std::endl;
-  if (gti_pos != gti.begin())
-    std::cerr << "Unexpected: test9: Interval < GTI, iterator was incremented" << std::endl;
-
-  // Interval > GTI.
-  gti_pos = gti.begin();
-  fract = gti.getFraction(gti_stop + .0001, gti_stop + 1.e3, gti_pos);
-  if (fract != 0.)
-    std::cerr << "Unexpected: test9: Interval > GTI, getFraction returned " << fract << ", not 0" << std::endl;
-  if (gti_pos != gti.end())
-    std::cerr << "Unexpected: test9: Interval > GTI, iterator was not incremented" << std::endl;
-
-  // Interval starts before GTI, goes halfway through.
-  gti_pos = gti.begin();
-  double gti_width = gti_stop - gti_start;
-  fract = gti.getFraction(gti_start - gti_width * .5, gti_stop - gti_width * .5, gti_pos);
-  if (fract != .5)
-    std::cerr << "Unexpected: test9: Interval starts before GTI, getFraction returned " << fract << ", not .5" << std::endl;
-  if (gti_pos != gti.begin())
-    std::cerr << "Unexpected: test9: Interval starts before GTI, iterator was incremented" << std::endl;
-
-  // Interval starts halfway through GTI, goes past end.
-  gti_pos = gti.begin();
-  fract = gti.getFraction(gti_start + gti_width * .5, gti_stop + gti_width * .5, gti_pos);
-  if (float(fract) != .5)
-    std::cerr << "Unexpected: test9: GTI starts before interval, getFraction returned " << fract << ", not .5" << std::endl;
-  if (gti_pos != gti.end())
-    std::cerr << "Unexpected: test9: GTI starts before interval, iterator was not incremented" << std::endl;
-
-  // Interval contained within GTI.
-  gti_pos = gti.begin();
-  fract = gti.getFraction(gti_start + 100., gti_stop - 100., gti_pos);
-  if (fract != 1.)
-    std::cerr << "Unexpected: test9: Interval contained within GTI, getFraction returned " << fract << ", not 1." << std::endl;
-  if (gti_pos != gti.begin())
-    std::cerr << "Unexpected: test9: Interval contained within GTI, iterator was incremented" << std::endl;
-
-  // GTI contained within interval.
-  gti_pos = gti.begin();
-  fract = gti.getFraction(gti_start - gti_width * .5, gti_stop + gti_width * .5, gti_pos);
-  if (float(fract) != .5)
-    std::cerr << "Unexpected: test9: GTI contained within interval, getFraction returned " << fract << ", not .5" << std::endl;
-  if (gti_pos != gti.end())
-    std::cerr << "Unexpected: test9: GTI contained within interval, iterator was not incremented" << std::endl;
-
-  // TODO: Add tests with multiple GTIs.
 }
 
 evtbin::Binner * RspGenTestApp::createStdBinner() {
