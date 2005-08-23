@@ -18,6 +18,8 @@
 21-mar-2005    v0r5p3 JP  Add version number to startup banner.
 21-mar-2005    v0r6p0 JP  Allow any response function in irfs package to be used. Add dictionary shortcut
                           for testIrfs::Front/Back.
+23-aug-2005      v0r7 JP  Write RESPFILE keyword in PHA1/PHA2 files. Use Gti class
+                          from evtbin, remove local copy.
 \endverbatim
 
 */
