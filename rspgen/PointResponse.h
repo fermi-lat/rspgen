@@ -33,11 +33,12 @@ namespace rspgen {
           \param resp_type Identifies response function type.
           \param spec_file The name of the spectrum file.
           \param sc_file The name of the file containing spacecraft data.
+          \param sc_table The name of the table containing spacecraft data.
           \param true_en_binner Binner object used for true energy bin definitions.
       */
       PointResponse(double ps_ra, double ps_dec, double theta_cut, double theta_bin_size, double psf_radius,
         const std::string resp_type, const std::string & spec_file, const std::string & sc_file,
-        const evtbin::Binner * true_en_binner);
+        const std::string & sc_table, const evtbin::Binner * true_en_binner);
 
       virtual ~PointResponse() throw();
 
