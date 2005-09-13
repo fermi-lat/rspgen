@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Tue Sep 13 06:53:05 PDT 2005
+rspgen/pfiles
+
+Modified Files:
+	gtrspgen.par 
+Log Message:
+Add sctable parameter for finding extension in spacecraft file.
+
+    *
+------------------------------------------------------------
 User: peachey  Mon Sep 12 07:44:49 PDT 2005
 rspgen/pfiles
 
