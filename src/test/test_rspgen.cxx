@@ -713,7 +713,8 @@ void RspGenTestApp::test4() {
 
     // Use the second constructor, and test that its results are the same.
     // RA, DEC, t, radius, response type, pha file, FT2 file, energy bin def file
-    GrbResponse resp2(114., -30., 2.167440000000000E+06 + 105., 1.4, "testIrfs::Front", findFile("PHA1.pha"), findFile("ft2tiny.fits"), &true_en_binner);
+    GrbResponse resp2(114., -30., 2.167440000000000E+06 + 105., 1.4, "testIrfs::Front", findFile("PHA1.pha"),
+      findFile("ft2tiny.fits"), "Ext1", &true_en_binner);
 
     // Sanity check: just compute one response at 137. MeV.
     std::vector<double> resp_slice2(detchans, 0.);
@@ -784,6 +785,7 @@ void RspGenTestApp::test6() {
     pars["respalg"] = "GRB";
     pars["specfile"] = "PHA1.pha";
     pars["scfile"] = findFile("ft2tiny.fits");
+    pars["sctable"] = "Ext1";
     pars["outfile"] = "test_response6.rsp";
     pars["ra"] = 114.;
     pars["dec"] = -30.;
@@ -833,7 +835,7 @@ void RspGenTestApp::test7() {
     double ra_ps = 8.3633225E+01; // RA of point source
     double dec_ps = 2.2014458E+01; // DEC of point source
     PointResponse resp(ra_ps, dec_ps, 60., 5., 3., "testIrfs::Back", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
-      true_en_binner.get());
+      "Ext1", true_en_binner.get());
 
     // Sanity check: just compute one response at 137. MeV.
     std::vector<double> resp_slice;
@@ -877,6 +879,7 @@ void RspGenTestApp::test8() {
     pars["respalg"] = "PS";
     pars["specfile"] = "PHA1.pha";
     pars["scfile"] = findFile("ft2tiny.fits");
+    pars["sctable"] = "Ext1";
     pars["outfile"] = "test_response8.rsp";
     pars["ra"] = 8.3633225E+01;
     pars["dec"] = 2.2014458E+01;
