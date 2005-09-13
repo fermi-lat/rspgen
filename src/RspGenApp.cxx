@@ -49,6 +49,7 @@ namespace rspgen {
     
     pars.Prompt("specfile");
     pars.Prompt("scfile");
+    pars.Prompt("sctable");
     pars.Prompt("outfile");
     pars.Prompt("ra");
     pars.Prompt("dec");
@@ -103,10 +104,10 @@ namespace rspgen {
     // Create response object.
     if (alg == "GRB") {
       m_response = new GrbResponse(pars["ra"], pars["dec"], pars["time"], pars["psfradius"],
-        pars["resptype"], pars["specfile"], pars["scfile"], true_en_binner.get());
+        pars["resptype"], pars["specfile"], pars["scfile"], pars["sctable"], true_en_binner.get());
     } else if (alg == "PS") {
       m_response = new PointResponse(pars["ra"], pars["dec"], pars["thetacut"], pars["thetabinsize"], pars["psfradius"],
-        pars["resptype"], pars["specfile"], pars["scfile"], true_en_binner.get());
+        pars["resptype"], pars["specfile"], pars["scfile"], pars["sctable"], true_en_binner.get());
     } else {
       throw std::runtime_error("RspGenApp::writeResponse: invalid response algorithm " + alg);
     }
