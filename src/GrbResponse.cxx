@@ -30,13 +30,13 @@ namespace rspgen {
   }
 
   GrbResponse::GrbResponse(double grb_ra, double grb_dec, double grb_time, double psf_radius, const std::string resp_type,
-    const std::string & spec_file, const std::string & sc_file, const evtbin::Binner * true_en_binner):
-    IResponse(resp_type, spec_file, true_en_binner), m_theta(0.), m_window(0) {
+    const std::string & spec_file, const std::string & sc_file, const std::string & sc_table,
+    const evtbin::Binner * true_en_binner): IResponse(resp_type, spec_file, true_en_binner), m_theta(0.), m_window(0) {
     // Process spacecraft data.
-    std::auto_ptr<const tip::Table> sc_table(tip::IFileSvc::instance().readTable(sc_file, "Ext1"));
+    std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
 
     // Get object for interpolating values from the table.
-    tip::LinearInterp sc_record(sc_table->begin(), sc_table->end());
+    tip::LinearInterp sc_record(table->begin(), table->end());
 
     // Interpolate values of spacecraft parameters for the burst time.
     sc_record.interpolate("START", grb_time);

@@ -22,12 +22,13 @@
 namespace rspgen {
 
   PointResponse::PointResponse(double ps_ra, double ps_dec, double theta_cut, double theta_bin_size, double psf_radius,
-    const std::string resp_type, const std::string & spec_file, const std::string & sc_file, const evtbin::Binner * true_en_binner):
-    IResponse(resp_type, spec_file, true_en_binner), m_window(0), m_diff_exp(0), m_total_exposure(0.) {
+    const std::string resp_type, const std::string & spec_file, const std::string & sc_file, const std::string & sc_table,
+    const evtbin::Binner * true_en_binner): IResponse(resp_type, spec_file, true_en_binner), m_window(0),
+    m_diff_exp(0), m_total_exposure(0.) {
     using evtbin::Gti;
 
     // Process spacecraft data.
-    std::auto_ptr<const tip::Table> sc_table(tip::IFileSvc::instance().readTable(sc_file, "Ext1"));
+    std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
 
     // Put point source direction into standard form.
     astro::SkyDir ps_pos(ps_ra, ps_dec);
@@ -42,7 +43,7 @@ namespace rspgen {
     Gti::ConstIterator gti_pos = gti.begin();
 
     // Read SC Z positions, bin them into a histogram:
-    for (tip::Table::ConstIterator itor = sc_table->begin(); itor != sc_table->end(); ++itor) {
+    for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
       double start = (*itor)["START"].get();
       double stop = (*itor)["STOP"].get();
 
@@ -57,7 +58,7 @@ namespace rspgen {
       double delta_t = fract * (*itor)["LIVETIME"].get();
     
       // Get object for interpolating values from the table.
-      tip::LinearInterp sc_record(itor, sc_table->end());
+      tip::LinearInterp sc_record(itor, table->end());
 
       // Get interpolated SC coordinates.
       sc_record.interpolate("START", (start + stop) / 2.);
