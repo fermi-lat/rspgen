@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: peachey  Tue Sep 13 07:03:30 PDT 2005
+rspgen/src
+
+Modified Files:
+	RspGenApp.cxx 
+Log Message:
+Use parameter to get the name of the extension in spacecraft file,
+instead of hardwired Ext1.
+
+    *
+------------------------------------------------------------
 User: peachey  Tue Sep 13 06:58:39 PDT 2005
 rspgen/src/test
 
