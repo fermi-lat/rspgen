@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: peachey  Tue Sep 13 06:55:27 PDT 2005
+rspgen/src
+
+Modified Files:
+	PointResponse.cxx GrbResponse.cxx 
+Log Message:
+Use parameter to get the name of the extension in spacecraft file,
+instead of hardwired Ext1.
+
+    *
+------------------------------------------------------------
+User: peachey  Tue Sep 13 06:55:27 PDT 2005
 rspgen/rspgen
 
 Modified Files:
