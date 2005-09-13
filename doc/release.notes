@@ -20,6 +20,8 @@
                           for testIrfs::Front/Back.
 23-aug-2005      v0r7 JP  Write RESPFILE keyword in PHA1/PHA2 files. Use Gti class
                           from evtbin, remove local copy.
+13-sep-2005      v0r8 JP  Add hidden parameter sctable which controls the name
+                          of the spacecraft history data table.
 \endverbatim
 
 */
