@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Tue Sep 13 06:58:39 PDT 2005
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Give name of spacecraft data extension explicitly to response object.
+
+    *
+------------------------------------------------------------
 User: peachey  Tue Sep 13 06:55:27 PDT 2005
 rspgen/src
 
