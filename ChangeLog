@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Mon Dec 12 13:57:29 PST 2005
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Add test code for extracting circular region of interest.
+
+    *
+------------------------------------------------------------
 User: peachey  Mon Dec 12 12:09:08 PST 2005
 rspgen/data
 
