@@ -4,10 +4,11 @@ version v0
 
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
-# $Id: requirements,v 1.5 2004/10/08 21:25:51 peachey Exp $
+# $Id: requirements,v 1.6 2005/01/25 15:32:45 peachey Exp $
 
 use STpolicy *
 use astro *
+use dataSubselector *
 use evtbin *
 use irfs *
 use st_app *
