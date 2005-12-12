@@ -27,6 +27,10 @@
 // Include irfs.
 #include "irfLoader/Loader.h"
 
+// Handle cuts.
+#include "dataSubselector/Cuts.h"
+#include "dataSubselector/SkyConeCut.h"
+
 // From evtbin, generic histograms and associated binners are used.
 #include "evtbin/Hist1D.h"
 #include "evtbin/Binner.h"
@@ -128,6 +132,10 @@ class RspGenTestApp : public st_app::StApp {
     */
     void test8();
 
+    /** \brief Test extracting information from cuts which are contained in DSS keywords.
+    */
+    void test9();
+
   private:
     /** \brief Return a standard energy binner used throughout the tests.
     */
@@ -217,6 +225,13 @@ void RspGenTestApp::run() {
   } catch (const std::exception & x) {
     m_failed = true;
     std::cerr << "While running test8, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+
+  try {
+    test9();
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running test9, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
   }
 
   if (m_failed) throw std::runtime_error("test_rspgen failed");
@@ -909,6 +924,62 @@ void RspGenTestApp::test8() {
     std::cerr << "Unexpected: test8 caught " << typeid(x).name() << ": " << x.what() << std::endl;
   }
 
+}
+
+// Test extracting information from cuts which are contained in DSS keywords.
+void RspGenTestApp::test9() {
+  using namespace dataSubselector;
+  using namespace rspgen;
+
+  std::string orig_spec = findFile("PHA1.pha");
+
+  // Read cuts from spectrum.
+  Cuts cuts(orig_spec, "SPECTRUM", false, true);
+
+  // Confirm cuts contain a single sky cone centered on the Crab.
+  std::vector<Cuts *>::size_type num_cone = 0;
+  double ra = 0.;
+  double dec = 0.;
+  double radius = 0.;
+  bool cuts_failed = false;
+
+  // Iterate over all cuts.
+  for (std::vector<Cuts *>::size_type ii = 0; ii != cuts.size(); ++ii) {
+    const SkyConeCut * sky_cut = 0;
+    if (0 != (sky_cut = dynamic_cast<const SkyConeCut *>(&cuts[ii]))) {
+      ++num_cone;
+      ra = sky_cut->ra();
+      dec = sky_cut->dec();
+      radius = sky_cut->radius();
+    }
+  }
+
+  // Confirm single sky cone.
+  if (1 != num_cone) {
+    cuts_failed = true;
+    std::cerr << "Unexpected: DSS keywords contained " << num_cone << " sky cones, not 1 as expected." << std::endl;
+  }
+
+  double ra_expected = 83.6332;
+  double dec_expected = 22.0145;
+  double radius_expected = 12.;
+  // Confirm sky cone parameters.
+  if (ra != ra_expected) {
+    cuts_failed = true;
+    std::cerr << "Unexpected: DSS keywords contained ra of " << ra << " not " << ra_expected << ", as expected." << std::endl;
+  }
+  if (dec != dec_expected) {
+    cuts_failed = true;
+    std::cerr << "Unexpected: DSS keywords contained dec of " << dec << " not " << dec_expected << ", as expected." << std::endl;
+  }
+  if (radius != radius_expected) {
+    cuts_failed = true;
+    std::cerr << "Unexpected: DSS keywords contained radius of " << radius << " not " << radius_expected << ", as expected." <<
+      std::endl;
+  }
+
+  // Flag global error.
+  if (cuts_failed) m_failed = true;
 }
 
 evtbin::Binner * RspGenTestApp::createStdBinner() {
