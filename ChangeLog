@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: peachey  Fri Dec 23 13:02:10 PST 2005
+rspgen/src
+
+Modified Files:
+	RspGenApp.cxx 
+Log Message:
+Get ra, dec, psf integration radius from file cuts (DSS keywords via
+dataSubselector classes.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: ScienceToolsv6r2, operation: add
 Package: rspgen
