@@ -802,10 +802,7 @@ void RspGenTestApp::test6() {
     pars["scfile"] = findFile("ft2tiny.fits");
     pars["sctable"] = "Ext1";
     pars["outfile"] = "test_response6.rsp";
-    pars["ra"] = 114.;
-    pars["dec"] = -30.;
     pars["time"] = 2.167440000000000E+06 + 105.;
-    pars["psfradius"] = 1.4;
     pars["resptype"] = "testIrfs::Front";
     pars["resptpl"] = "DEFAULT";
     pars["energybinalg"] = "FILE";
@@ -896,11 +893,8 @@ void RspGenTestApp::test8() {
     pars["scfile"] = findFile("ft2tiny.fits");
     pars["sctable"] = "Ext1";
     pars["outfile"] = "test_response8.rsp";
-    pars["ra"] = 8.3633225E+01;
-    pars["dec"] = 2.2014458E+01;
     pars["thetacut"] = 60.;
     pars["thetabinsize"] = 5.;
-    pars["psfradius"] = .1;
     pars["resptype"] = "testIrfs::Front";
     pars["resptpl"] = "DEFAULT";
     pars["energybinalg"] = "FILE";
