@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Fri Dec 23 14:13:43 PST 2005
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Remove assignments to outmoded parameters.
+
+    *
+------------------------------------------------------------
 User: peachey  Fri Dec 23 14:13:21 PST 2005
 rspgen/pfiles
 
