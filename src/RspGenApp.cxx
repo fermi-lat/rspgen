@@ -5,7 +5,11 @@
 #include <cstdlib>
 #include <memory>
 #include <stdexcept>
+#include <sstream>
 #include <string>
+
+#include "dataSubselector/Cuts.h"
+#include "dataSubselector/SkyConeCut.h"
 
 #include "irfLoader/Loader.h"
 
@@ -46,13 +50,13 @@ namespace rspgen {
     if (alg == "GRB");
     else if (alg == "PS");
     else throw std::runtime_error("RspGenApp::prompt(): unknown/invalid response algorithm " + alg);
-    
+
     pars.Prompt("specfile");
     pars.Prompt("scfile");
     pars.Prompt("sctable");
     pars.Prompt("outfile");
-    pars.Prompt("ra");
-    pars.Prompt("dec");
+//    pars.Prompt("ra");
+//    pars.Prompt("dec");
 
     // In the burst case, the time of the burst is used to find a single RA/DEC.
     if (alg == "GRB") pars.Prompt("time");
@@ -63,7 +67,7 @@ namespace rspgen {
     }
 
     // Prompt for remaining parameters, which are common to all.
-    pars.Prompt("psfradius");
+//    pars.Prompt("psfradius");
     pars.Prompt("resptype");
     pars.Prompt("resptpl");
 
@@ -89,25 +93,55 @@ namespace rspgen {
     // Clean up any previous response.
     delete m_response; m_response = 0;
 
+    // Extract name of input spectrum file.
+    std::string spec_file = pars["specfile"];
+
     // Extract name of output file.
     std::string out_file = pars["outfile"];
 
     // Adjust keywords in spectrum.
     try {
-      std::auto_ptr<tip::Table> spectrum(tip::IFileSvc::instance().editTable(pars["specfile"], "SPECTRUM"));
+      std::auto_ptr<tip::Table> spectrum(tip::IFileSvc::instance().editTable(spec_file, "SPECTRUM"));
       spectrum->getHeader()["RESPFILE"].set(out_file);
     } catch (const tip::TipException &) {
       // If it can't be written, e.g. because the spectrum is write protected, just issue a warning.
       // TODO: add warning using st_stream.
     }
 
+    // Read cuts from spectrum.
+    dataSubselector::Cuts cuts(spec_file, "SPECTRUM", false, true);
+
+    // Confirm cuts contain a single sky cone centered on the Crab.
+    std::vector<dataSubselector::Cuts *>::size_type num_cone = 0;
+    double ra = 0.;
+    double dec = 0.;
+    double psf_radius = 0.;
+
+    // Iterate over all cuts.
+    for (std::vector<dataSubselector::Cuts *>::size_type ii = 0; ii != cuts.size(); ++ii) {
+      const dataSubselector::SkyConeCut * sky_cut = 0;
+      if (0 != (sky_cut = dynamic_cast<const dataSubselector::SkyConeCut *>(&cuts[ii]))) {
+        ++num_cone;
+        ra = sky_cut->ra();
+        dec = sky_cut->dec();
+        psf_radius = sky_cut->radius();
+      }
+    }
+
+    // Confirm single sky cone.
+    if (0 == num_cone) {
+      throw std::runtime_error("Spectrum in " + spec_file + " contained no circular regions");
+    } else if (1 < num_cone) {
+      throw std::runtime_error("Spectrum in " + spec_file + " contained more than one circular region. This is not yet supported.");
+    }
+
     // Create response object.
     if (alg == "GRB") {
-      m_response = new GrbResponse(pars["ra"], pars["dec"], pars["time"], pars["psfradius"],
-        pars["resptype"], pars["specfile"], pars["scfile"], pars["sctable"], true_en_binner.get());
+      m_response = new GrbResponse(ra, dec, pars["time"], psf_radius, pars["resptype"], spec_file, pars["scfile"],
+        pars["sctable"], true_en_binner.get());
     } else if (alg == "PS") {
-      m_response = new PointResponse(pars["ra"], pars["dec"], pars["thetacut"], pars["thetabinsize"], pars["psfradius"],
-        pars["resptype"], pars["specfile"], pars["scfile"], pars["sctable"], true_en_binner.get());
+      m_response = new PointResponse(ra, dec, pars["thetacut"], pars["thetabinsize"], psf_radius,
+        pars["resptype"], spec_file, pars["scfile"], pars["sctable"], true_en_binner.get());
     } else {
       throw std::runtime_error("RspGenApp::writeResponse: invalid response algorithm " + alg);
     }
