@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Fri Dec 23 14:12:56 PST 2005
+rspgen/src
+
+Modified Files:
+	RspGenApp.cxx 
+Log Message:
+Cosmetic changes to error messages and remove some commented out code.
+
+    *
+------------------------------------------------------------
 User: peachey  Fri Dec 23 13:02:10 PST 2005
 rspgen/src
 
