@@ -55,8 +55,6 @@ namespace rspgen {
     pars.Prompt("scfile");
     pars.Prompt("sctable");
     pars.Prompt("outfile");
-//    pars.Prompt("ra");
-//    pars.Prompt("dec");
 
     // In the burst case, the time of the burst is used to find a single RA/DEC.
     if (alg == "GRB") pars.Prompt("time");
@@ -67,7 +65,6 @@ namespace rspgen {
     }
 
     // Prompt for remaining parameters, which are common to all.
-//    pars.Prompt("psfradius");
     pars.Prompt("resptype");
     pars.Prompt("resptpl");
 
@@ -130,9 +127,9 @@ namespace rspgen {
 
     // Confirm single sky cone.
     if (0 == num_cone) {
-      throw std::runtime_error("Spectrum in " + spec_file + " contained no circular regions");
+      throw std::runtime_error("No circular region specified in spectrum in " + spec_file);
     } else if (1 < num_cone) {
-      throw std::runtime_error("Spectrum in " + spec_file + " contained more than one circular region. This is not yet supported.");
+      throw std::runtime_error("Not supported: multiple regions specified in spectrum in " + spec_file);
     }
 
     // Create response object.
