@@ -22,6 +22,8 @@
                           from evtbin, remove local copy.
 13-sep-2005      v0r8 JP  Add hidden parameter sctable which controls the name
                           of the spacecraft history data table.
+23-dec-2005        v1 JP  Get RA, DEC and radius of integration from cuts stored as DSS keywords in
+                          input event file, not from parameters.
 \endverbatim
 
 */
