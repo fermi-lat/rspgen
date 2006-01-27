@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: peachey  Fri Jan 27 11:11:28 PST 2006
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Add SpaceCraftCalculator class which holds binned exposure over the selected
+region. This class is a utility which will allow more flexible use of
+calculations needed for response/exposure/psf type quantities. Most of
+the guts of PointResponse can be absorbed into this new class.
+
+    *
+------------------------------------------------------------
+User: peachey  Fri Jan 27 11:11:28 PST 2006
 rspgen/src
 
 Modified Files:
