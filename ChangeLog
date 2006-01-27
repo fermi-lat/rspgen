@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Fri Jan 27 08:08:22 PST 2006
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Test creating PointReponse with null energy binner, and calling new psf method.
+
+    *
+------------------------------------------------------------
 User: peachey  Fri Jan 27 08:07:59 PST 2006
 rspgen/src
 
