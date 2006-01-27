@@ -56,8 +56,12 @@ namespace rspgen {
 
     // To prevent memory leaks, first allocate memory into temporary auto_ptrs, then copy (release)
     // the pointers into the *real* member pointers.
-    // Create true energy binner.
-    std::auto_ptr<evtbin::Binner> true_en_auto_ptr(true_en_binner->clone());
+    std::auto_ptr<evtbin::Binner> true_en_auto_ptr(0);
+
+    // Clone true energy binner, if one was supplied.
+    if (0 != true_en_binner) {
+      true_en_auto_ptr.reset(true_en_binner->clone());
+    }
 
     // Create apparent energy binner.
     std::auto_ptr<evtbin::Binner> app_en_binner(new evtbin::OrderedBinner(app_intervals));
@@ -78,6 +82,9 @@ namespace rspgen {
   }
 
   void IResponse::writeOutput(const std::string & creator, const std::string & file_name, const std::string & fits_template) {
+    if (0 == m_true_en_binner)
+      throw std::logic_error("Cannot write response matrix without true energy bins defined");
+
     // Create output file.
     tip::IFileSvc::instance().createFile(file_name, fits_template);
 
