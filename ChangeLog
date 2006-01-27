@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: peachey  Fri Jan 27 08:00:06 PST 2006
+rspgen/rspgen
+
+Modified Files:
+	PointResponse.h 
+Log Message:
+Add method psf for computing the psf as a function of spacecraft angle
+and true energy.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v1r0p1, operation: add
 Package: rspgen
