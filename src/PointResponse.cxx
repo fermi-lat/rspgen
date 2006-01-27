@@ -25,6 +25,8 @@ namespace rspgen {
     const std::string resp_type, const std::string & spec_file, const std::string & sc_file, const std::string & sc_table,
     const evtbin::Binner * true_en_binner): IResponse(resp_type, spec_file, true_en_binner), m_window(0),
     m_diff_exp(0), m_total_exposure(0.) {
+    // TODO: This constructor is now duplicated in class SpaceCraftCalculator. PointResponse should have a member
+    // of SpaceCraftCalculator and not duplicate this code here.
     using evtbin::Gti;
 
     // Process spacecraft data.
@@ -93,6 +95,8 @@ namespace rspgen {
   }
 
   void PointResponse::compute(double true_energy, std::vector<double> & response) {
+    // TODO: This method uses functionality which ought to be in class SpaceCraftCalculator. PointResponse should use
+    // a member of SpaceCraftCalculator and thus simplify the code here.
     double phi = 0.; // Dummy for now.
 
     // Iterate over the bins of the histogram.
@@ -125,6 +129,9 @@ namespace rspgen {
   }
 
   double PointResponse::psf(double true_energy, double theta, double phi) const {
+    // TODO: This method is now duplicated in class SpaceCraftCalculator. PointResponse should use a member
+    // of SpaceCraftCalculator and not duplicate this code here.
+
     // Get the psf for this theta bin.
     double psf_val = m_window->integrate(m_irfs->psf(), true_energy, theta, phi);
 

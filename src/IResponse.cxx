@@ -11,6 +11,7 @@
 #include "irfInterface/IrfsFactory.h"
 
 #include "rspgen/IResponse.h"
+#include "rspgen/SpaceCraftCalculator.h"
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
@@ -161,25 +162,7 @@ namespace rspgen {
   }
 
   std::string IResponse::lookUpResponse(const std::string & resp) {
-    typedef std::map<std::string, std::string> Dict_t;
-    static Dict_t s_resp_dict;
-
-    /* For dictionary lookup, use all caps. */
-    std::string uc_resp = resp;
-    for (std::string::iterator itor = uc_resp.begin(); itor != uc_resp.end(); ++itor) *itor = toupper(*itor);
-
-    if (s_resp_dict.empty()) {
-      /* Use all caps for dictionary entries. */
-      s_resp_dict["DC1F"] = "DC1::Front";
-      s_resp_dict["DC1B"] = "DC1::Back";
-      s_resp_dict["G25F"] = "Glast25::Front";
-      s_resp_dict["G25B"] = "Glast25::Back";
-      s_resp_dict["TESTF"] = "testIrfs::Front";
-      s_resp_dict["TESTB"] = "testIrfs::Back";
-    }
-    Dict_t::const_iterator match = s_resp_dict.find(uc_resp);
-    if (s_resp_dict.end() == match) return resp;
-    return match->second;
+    return SpaceCraftCalculator::lookUpResponse(resp);
   }
 
   IResponse::IResponse(): m_true_en_binner(0), m_app_en_binner(0), m_irfs(0) {}

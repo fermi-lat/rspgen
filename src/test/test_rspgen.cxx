@@ -44,12 +44,14 @@
 // Tests include circular region (window) abstractions.
 #include "rspgen/CircularWindow.h"
 
-
 // Response abstraction for burst case.
 #include "rspgen/GrbResponse.h"
 
 // Response abstraction for burst case.
 #include "rspgen/PointResponse.h"
+
+// Spacecraft position calculator.
+#include "rspgen/SpaceCraftCalculator.h"
 
 // Standard application-related code.
 #include "st_app/StApp.h"
@@ -135,6 +137,10 @@ class RspGenTestApp : public st_app::StApp {
     /** \brief Test extracting information from cuts which are contained in DSS keywords.
     */
     void test9();
+
+    /** \brief Test SpaceCraftCalculator class.
+    */
+    void test10();
 
   private:
     /** \brief Return a standard energy binner used throughout the tests.
@@ -232,6 +238,13 @@ void RspGenTestApp::run() {
   } catch (const std::exception & x) {
     m_failed = true;
     std::cerr << "While running test9, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+
+  try {
+    test10();
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running test10, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
   }
 
   if (m_failed) throw std::runtime_error("test_rspgen failed");
@@ -1000,6 +1013,30 @@ void RspGenTestApp::test9() {
 
   // Flag global error.
   if (cuts_failed) m_failed = true;
+}
+
+void RspGenTestApp::test10() {
+  using namespace rspgen;
+  double src_ra = 83.6332;
+  double src_dec = 22.0145;
+  double theta_cut = 20.;
+  double theta_bin_size = 0.5;
+  double psf_radius = 30.;
+  std::string resp_type = "TESTF";
+  std::string gti_file = findFile("PHA1.pha");
+  std::string sc_file = findFile("ft2tiny.fits");
+
+  try {
+    SpaceCraftCalculator calc(astro::SkyDir(src_ra, src_dec), theta_cut, theta_bin_size, psf_radius,
+      resp_type, gti_file, sc_file, "Ext1");
+
+    double true_energy = 100.;
+    double theta = 15.;
+    calc.psf(true_energy, theta);
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "Unexpected: test10 failed: " << x.what() << std::endl;
+  }
 }
 
 evtbin::Binner * RspGenTestApp::createStdBinner() {
