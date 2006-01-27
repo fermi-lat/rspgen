@@ -838,6 +838,32 @@ void RspGenTestApp::test6() {
 void RspGenTestApp::test7() {
   using namespace rspgen;
 
+  std::auto_ptr<PointResponse> response_no_binner(0);
+  try {
+    // Construct a steady point source response, but do not supply a binner. This should succeed.
+    double ra_ps = 8.3633225E+01; // RA of point source
+    double dec_ps = 2.2014458E+01; // DEC of point source
+    response_no_binner.reset(new PointResponse(ra_ps, dec_ps, 60., 5., 3., "testIrfs::Back", findFile("PHA1.pha"),
+      findFile("ft2tiny.fits"), "Ext1", 0));
+
+    // Confirm that psf method works even without the binner.
+    response_no_binner->psf(300., 15., 0.);
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "Unexpected: test7 failed to create or use PointResponse object with null binner:" << x.what() << std::endl;
+  }
+
+  if (0 != response_no_binner.get()) {
+    try {
+      // Write output, which should fail because there is no true energy binner.
+      response_no_binner->writeOutput("test_rspgen", "test_response7.rsp", findFile("LatResponseTemplate"));
+      m_failed = true;
+      std::cerr << "Unexpected: test7 did not catch exception when writeOutput called but no true energy binner exists." <<
+        std::endl;
+    } catch (const std::exception &) {
+    }
+  }
+
   try {
     // Create a binner for true energy.
     std::auto_ptr<evtbin::Binner> true_en_binner(createStdBinner());
