@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: peachey  Fri Jan 27 08:00:08 PST 2006
+rspgen/src
+
+Modified Files:
+	PointResponse.cxx 
+Log Message:
+Add method psf for computing the psf as a function of spacecraft angle
+and true energy.
+
+    *
+------------------------------------------------------------
 User: peachey  Fri Jan 27 08:00:06 PST 2006
 rspgen/rspgen
 
