@@ -48,6 +48,15 @@ namespace rspgen {
       */
       virtual void compute(double true_energy, std::vector<double> & response);
 
+      /** \brief Compute the psf for the given energy and inclination angle,
+          weighted by the fraction of the livetime during which the spacecraft axis was
+          oriented at this angle.
+          \param true_energy The energy for which to compute the psf.
+          \param theta Spacecraft inclination angle in degrees.
+          \param phi Spacecraft azimuthal angle in degrees.
+      */
+      virtual double psf(double true_energy, double theta, double phi) const;
+
     private:
       IWindow * m_window;
       evtbin::Hist1D * m_diff_exp;
