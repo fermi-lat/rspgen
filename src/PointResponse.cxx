@@ -115,7 +115,7 @@ namespace rspgen {
   
       // For each apparent energy bin, compute integral of the redistribution coefficient.
       for (long index = 0; index < m_app_en_binner->getNumBins(); ++index) {
-        // Get limits of integration over apparent energy bins
+        // Get limits of integration over apparent energy bins.
         evtbin::Binner::Interval limits = m_app_en_binner->getInterval(index);
     
         response[index] += (*m_diff_exp)[bin_index] / m_total_exposure * aeff_val *
@@ -124,4 +124,15 @@ namespace rspgen {
     }
   }
 
+  double PointResponse::psf(double true_energy, double theta, double phi) const {
+    // Get the psf for this theta bin.
+    double psf_val = m_window->integrate(m_irfs->psf(), true_energy, theta, phi);
+
+    // Find the theta bin index corresponding to this theta.
+    const evtbin::Binner * theta_bins = m_diff_exp->getBinners()[0];
+    long bin_index = theta_bins->computeIndex(theta);
+
+    // Return the psf for this theta bin, weighted by the fractional differential exposure.
+    return psf_val * (*m_diff_exp)[bin_index] / m_total_exposure;
+  }
 }
