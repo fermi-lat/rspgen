@@ -25,6 +25,8 @@
 23-dec-2005        v1 JP  Get RA, DEC and radius of integration from cuts stored as DSS keywords in
                           input event file, not from parameters.
 27-dec-2005    v1r0p1 JP  Change default value for sctable parameter from Ext1 to SC_DATA.
+27-jan-2006      v1r1 JP  Add method to PointResponse for computing psf as a function of spacecraft pointing
+                          and true energy.
 \endverbatim
 
 */
