@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Fri Jan 27 08:07:59 PST 2006
+rspgen/src
+
+Modified Files:
+	IResponse.cxx 
+Log Message:
+Allow IResponse objects to be created with a null energy binner.
+
+    *
+------------------------------------------------------------
 User: peachey  Fri Jan 27 08:00:08 PST 2006
 rspgen/src
 
