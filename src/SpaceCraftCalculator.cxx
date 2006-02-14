@@ -9,42 +9,111 @@
 #include "evtbin/LinearBinner.h"
 
 #include "irfInterface/IrfsFactory.h"
+#include "irfLoader/Loader.h"
 
 #include "rspgen/CircularWindow.h"
 #include "rspgen/IWindow.h"
 #include "rspgen/SpaceCraftCalculator.h"
+
+#include "st_stream/Stream.h"
 
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
 #include "tip/LinearInterp.h"
 #include "tip/Table.h"
 
+#include <algorithm>
+#include <cctype>
 #include <map>
 #include <memory>
 #include <stdexcept>
 
+namespace {
+  class MatchCaseInsensitive {
+    public:
+      MatchCaseInsensitive(const std::string & match_string): m_string_to_match(match_string) {
+        for (std::string::iterator itor = m_string_to_match.begin(); itor != m_string_to_match.end(); ++itor)
+          *itor = toupper(*itor);
+      }
+
+      bool operator ()(const std::string & input) const {
+        std::string::const_iterator itor1 = input.begin();
+        std::string::const_iterator itor2 = m_string_to_match.begin();
+        for (; itor1 != input.end() && itor2 != m_string_to_match.end() && toupper(*itor1) == *itor2; ++itor1, ++itor2);
+        return itor1 == input.end() && itor2 == m_string_to_match.end();
+      }
+    private:
+      std::string m_string_to_match;
+  };
+
+  template <typename T>
+  class MatchKey{
+    public:
+      MatchKey(const MatchCaseInsensitive & matcher): m_matcher(matcher) {}
+      bool operator ()(const T & input) const {
+        return m_matcher(input.first);
+      }
+    private:
+      const MatchCaseInsensitive & m_matcher;
+  };
+}
+
 namespace rspgen {
 
-  std::string SpaceCraftCalculator::lookUpResponse(const std::string & resp) {
-    typedef std::map<std::string, std::string> Dict_t;
-    static Dict_t s_resp_dict;
+  void SpaceCraftCalculator::lookUpResponse(const std::string & resp, std::vector<std::string> & match) {
+    // Start off with no matching responses.
+    match.clear();
 
-    /* For dictionary lookup, use all caps. */
-    std::string uc_resp = resp;
-    for (std::string::iterator itor = uc_resp.begin(); itor != uc_resp.end(); ++itor) *itor = toupper(*itor);
+    // Get look-up container of irf containers.
+    typedef std::map<std::string, std::vector<std::string> > irf_lookup_type;
+    const irf_lookup_type & resp_id(irfLoader::Loader::respIds());
 
-    if (s_resp_dict.empty()) {
-      /* Use all caps for dictionary entries. */
-      s_resp_dict["DC1F"] = "DC1::Front";
-      s_resp_dict["DC1B"] = "DC1::Back";
-      s_resp_dict["G25F"] = "Glast25::Front";
-      s_resp_dict["G25B"] = "Glast25::Back";
-      s_resp_dict["TESTF"] = "testIrfs::Front";
-      s_resp_dict["TESTB"] = "testIrfs::Back";
+    // Create object for matching to the input name.
+    MatchCaseInsensitive matcher(resp);
+
+    MatchKey<irf_lookup_type::value_type> match_key(matcher);
+
+    irf_lookup_type::const_iterator found_cont = std::find_if(resp_id.begin(), resp_id.end(), match_key);
+
+    // Look for upper-cased response descriptor.
+    if (resp_id.end() != found_cont) {
+      // Found a container of responses matching the descriptor, so assign them to the output.
+      match = found_cont->second;
+    } else {
+      // Didn't find container, so see if the given name matches one of the irf names directly.
+      irf_name_cont_type irf_names;
+      irfInterface::IrfsFactory::instance()->getIrfsNames(irf_names);
+      irf_name_cont_type::iterator found_string = std::find_if(irf_names.begin(), irf_names.end(), matcher);
+      if (irf_names.end() != found_string) {
+        match.push_back(*found_string);
+      }
     }
-    Dict_t::const_iterator match = s_resp_dict.find(uc_resp);
-    if (s_resp_dict.end() == match) return resp;
-    return match->second;
+  }
+
+  void SpaceCraftCalculator::displayIrfNames(st_stream::OStream & os) {
+    // Get look-up container of irf containers.
+    typedef std::map<std::string, std::vector<std::string> > irf_lookup_type;
+    const irf_lookup_type & resp_id(irfLoader::Loader::respIds());
+
+    os.prefix() << "Valid instrument response function names are:" << std::endl;
+
+    for (irf_lookup_type::const_iterator cont_itor = resp_id.begin(); cont_itor != resp_id.end(); ++cont_itor) {
+      os.prefix() << "\t" << cont_itor->first;
+      std::string connector = " = ";
+      for (irf_name_cont_type::const_iterator itor = cont_itor->second.begin(); itor != cont_itor->second.end(); ++itor) {
+        os << connector << *itor;
+        connector = " + ";
+      }
+      os << std::endl;
+    }
+
+    // Get container of irf atomic names.
+    irf_name_cont_type irf_simple_name;
+    irfInterface::IrfsFactory::instance()->getIrfsNames(irf_simple_name);
+
+    for (irf_name_cont_type::const_iterator itor = irf_simple_name.begin(); itor != irf_simple_name.end(); ++itor) {
+      os.prefix() << "\t" << *itor << std::endl;
+    }
   }
 
   SpaceCraftCalculator::SpaceCraftCalculator(const astro::SkyDir & src_dir, double theta_cut, double theta_bin_size,
@@ -104,15 +173,22 @@ namespace rspgen {
     if (0. == m_total_exposure)
       throw std::runtime_error("SpaceCraftCalculator cannot continue with 0. total exposure.");
 
-    // Get irfs object.
-    std::auto_ptr<irfInterface::Irfs> irfs(irfInterface::IrfsFactory::instance()->create(lookUpResponse(resp_type)));
+    // Get container of irf names matching the given response name.
+    irf_name_cont_type irf_name;
+    lookUpResponse(resp_type, irf_name);
+    if (irf_name.empty()) throw std::runtime_error("SpaceCraftCalculator cannot find response matching " + resp_type);
+
+    // Populate the irfs container with matching irfs.
+    m_irfs.resize(irf_name.size(), 0);
+    for (irf_name_cont_type::size_type index = 0; index != irf_name.size(); ++index) {
+      m_irfs[index] = irfInterface::IrfsFactory::instance()->create(irf_name[index]);
+    }
 
     // Create window object for circular psf integration with the given inclination angle and psf radius.
     m_window = new CircularWindow(psf_radius);
 
     // Everything succeeded, so release the pointers from their auto_ptrs.
     m_diff_exp = diff_exp.release();
-    m_irfs.push_back(irfs.release());
   }
 
   SpaceCraftCalculator::~SpaceCraftCalculator() {
