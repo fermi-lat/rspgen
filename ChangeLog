@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: peachey  Tue Feb 14 10:28:52 PST 2006
+rspgen/src
+
+Modified Files:
+	SpaceCraftCalculator.cxx IResponse.cxx 
+Log Message:
+Refactor IResponse/SpaceCraftCalculator::lookUpResponse so that it returns
+a container of response functions whether the true names or nicknames
+are used. Add displayIrfNames for writing complete info about
+available responses.
+
+    *
+------------------------------------------------------------
+User: peachey  Tue Feb 14 10:28:52 PST 2006
 rspgen/rspgen
 
 Modified Files:
