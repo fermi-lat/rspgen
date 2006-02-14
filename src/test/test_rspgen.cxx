@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -142,6 +143,10 @@ class RspGenTestApp : public st_app::StApp {
     */
     void test10();
 
+    /** \brief Test addition of several responses.
+    */
+    void test11();
+
   private:
     /** \brief Return a standard energy binner used throughout the tests.
     */
@@ -245,6 +250,13 @@ void RspGenTestApp::run() {
   } catch (const std::exception & x) {
     m_failed = true;
     std::cerr << "While running test10, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+
+  try {
+    test11();
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running test11, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
   }
 
   if (m_failed) throw std::runtime_error("test_rspgen failed");
@@ -1036,6 +1048,50 @@ void RspGenTestApp::test10() {
   } catch (const std::exception & x) {
     m_failed = true;
     std::cerr << "Unexpected: test10 failed: " << x.what() << std::endl;
+  }
+}
+
+void RspGenTestApp::test11() {
+  using namespace rspgen;
+
+  // Create a binner for true energy.
+  std::auto_ptr<evtbin::Binner> true_en_binner(createStdBinner());
+
+  // Construct a steady point source response for the given RA, DEC, thetabins.
+  // RA, DEC, theta_cut, theta_bin_size, radius, response type, pha file, FT2 file, energy bin def file.
+  double ra_ps = 8.3633225E+01; // RA of point source
+  double dec_ps = 2.2014458E+01; // DEC of point source
+  PointResponse back(ra_ps, dec_ps, 60., 5., 3., "TESTB", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
+    "Ext1", true_en_binner.get());
+  PointResponse front(ra_ps, dec_ps, 60., 5., 3., "TESTF", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
+    "Ext1", true_en_binner.get());
+  PointResponse total(ra_ps, dec_ps, 60., 5., 3., "TEST", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
+    "Ext1", true_en_binner.get());
+
+  std::vector<double> back_resp;
+  std::vector<double> front_resp;
+  std::vector<double> total_resp;
+  double energy = 800.;
+  back.compute(energy, back_resp);
+  front.compute(energy, front_resp);
+  total.compute(energy, total_resp);
+
+  if (back_resp.size() != front_resp.size() || back_resp.size() != total_resp.size()) {
+    m_failed = true;
+    std::cerr << "Unexpected: in test11, the three responses did not have same size." << std::endl;
+  } else {
+    for (std::vector<double>::size_type index = 0; index != total_resp.size(); ++index) {
+      double expected_total = front_resp[index] + back_resp[index];
+      if (expected_total == total_resp[index]) continue;
+      else if (0. == expected_total && std::fabs(total_resp[index]) < std::numeric_limits<double>::epsilon()) continue;
+      else if (0. == total_resp[index] && std::fabs(expected_total) < std::numeric_limits<double>::epsilon()) continue;
+      else if (std::fabs((total_resp[index] - expected_total)/ expected_total) < 10. * std::numeric_limits<double>::epsilon())
+        continue;
+      m_failed = true;
+      std::cerr.precision(std::numeric_limits<double>::digits10);
+      std::cerr << "Unexpected: in test11, total_resp[" << index << "] was " << total_resp[index] << ", not " <<
+        expected_total << ", as expected." << std::endl;
+    }
   }
 }
 
