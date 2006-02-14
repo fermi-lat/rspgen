@@ -46,7 +46,7 @@ namespace rspgen {
           \param sc_table The name of the table containing spacecraft data.
           \param true_en_binner Binner object used for true energy bin definitions.
       */
-      GrbResponse(double grb_ra, double grb_dec, double grb_time, double psf_radius, const std::string resp_type,
+      GrbResponse(double grb_ra, double grb_dec, double grb_time, double psf_radius, const std::string & resp_type,
         const std::string & spec_file, const std::string & sc_file, const std::string & sc_table,
         const evtbin::Binner * true_en_binner);
 

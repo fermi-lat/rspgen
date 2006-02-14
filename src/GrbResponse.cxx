@@ -29,7 +29,7 @@ namespace rspgen {
     m_window = window->clone();
   }
 
-  GrbResponse::GrbResponse(double grb_ra, double grb_dec, double grb_time, double psf_radius, const std::string resp_type,
+  GrbResponse::GrbResponse(double grb_ra, double grb_dec, double grb_time, double psf_radius, const std::string & resp_type,
     const std::string & spec_file, const std::string & sc_file, const std::string & sc_table,
     const evtbin::Binner * true_en_binner): IResponse(resp_type, spec_file, true_en_binner), m_theta(0.), m_window(0) {
     // Process spacecraft data.
