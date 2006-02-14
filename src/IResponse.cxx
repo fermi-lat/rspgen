@@ -9,6 +9,7 @@
 #include "evtbin/OrderedBinner.h"
 
 #include "irfInterface/IrfsFactory.h"
+#include "irfLoader/Loader.h"
 
 #include "rspgen/IResponse.h"
 #include "rspgen/SpaceCraftCalculator.h"
@@ -67,13 +68,21 @@ namespace rspgen {
     // Create apparent energy binner.
     std::auto_ptr<evtbin::Binner> app_en_binner(new evtbin::OrderedBinner(app_intervals));
 
-    // Get irfs object.
-    std::auto_ptr<irfInterface::Irfs> irfs(irfInterface::IrfsFactory::instance()->create(IResponse::lookUpResponse(resp_type)));
+    // Get named irfs object(s).
+    const std::map<std::string, std::vector<std::string> > &resp_id(irfLoader::Loader::respIds());
+    std::map<std::string, std::vector<std::string> >::const_iterator match = resp_id.find(resp_type);
+    if (resp_id.end() == match) {
+      m_irfs.push_back(irfInterface::IrfsFactory::instance()->create(resp_type));
+    } else {
+      m_irfs.resize(match->second.size(), 0);
+      for (std::vector<std::string>::size_type index = 0; index != match->second.size(); ++index) {
+        m_irfs[index] = irfInterface::IrfsFactory::instance()->create(match->second[index]);
+      }
+    }
 
     // Everything succeeded, so release the pointers from their auto_ptrs.
     m_true_en_binner = true_en_auto_ptr.release();
     m_app_en_binner = app_en_binner.release();
-    m_irfs.push_back(irfs.release());
   }
 
   IResponse::~IResponse() throw() {
