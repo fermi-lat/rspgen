@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: peachey  Tue Feb 14 10:25:41 PST 2006
+rspgen/src
+
+Modified Files:
+	GrbResponse.cxx PointResponse.cxx 
+Log Message:
+Correct typo in constructor
+
+    *
+------------------------------------------------------------
+User: peachey  Tue Feb 14 10:25:41 PST 2006
 rspgen/rspgen
 
 Modified Files:
