@@ -27,6 +27,8 @@
 27-dec-2005    v1r0p1 JP  Change default value for sctable parameter from Ext1 to SC_DATA.
 27-jan-2006      v1r1 JP  Add method to PointResponse for computing psf as a function of spacecraft pointing
                           and true energy.
+14-feb-2006      v1r2 JP  Use standard way of referring to irf names, and handle combining irfs to produce
+                          a summed response.
 \endverbatim
 
 */
