@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: peachey  Mon Feb 13 19:13:58 PST 2006
+rspgen/src
+
+Modified Files:
+	GrbResponse.cxx IResponse.cxx PointResponse.cxx 
+	SpaceCraftCalculator.cxx 
+Log Message:
+Use a container of irfs instead of a single irf, to allow irfs to be combined easily.
+
+    *
+------------------------------------------------------------
 User: peachey  Fri Jan 27 11:11:28 PST 2006
 rspgen/src/test
 
