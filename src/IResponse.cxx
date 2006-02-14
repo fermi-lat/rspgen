@@ -22,8 +22,8 @@ namespace rspgen {
   const double IResponse::s_keV_per_MeV = 1000.;
   const double IResponse::s_MeV_per_keV = .001;
 
-  IResponse::IResponse(const std::string resp_type, const std::string & spec_file, const evtbin::Binner * true_en_binner):
-    m_kwds(), m_true_en_binner(0), m_app_en_binner(0), m_irfs() {
+  IResponse::IResponse(const std::string & resp_type, const std::string & spec_file, const evtbin::Binner * true_en_binner):
+    m_os("IResponse", "IResponse(const std::string &...)", 2), m_kwds(), m_true_en_binner(0), m_app_en_binner(0), m_irfs() {
     // Process input ebounds extension to get apparent energy bin definitions..
     std::auto_ptr<const tip::Table> in_ebounds(tip::IFileSvc::instance().readTable(spec_file, "EBOUNDS"));
 
@@ -68,16 +68,18 @@ namespace rspgen {
     // Create apparent energy binner.
     std::auto_ptr<evtbin::Binner> app_en_binner(new evtbin::OrderedBinner(app_intervals));
 
-    // Get named irfs object(s).
-    const std::map<std::string, std::vector<std::string> > &resp_id(irfLoader::Loader::respIds());
-    std::map<std::string, std::vector<std::string> >::const_iterator match = resp_id.find(resp_type);
-    if (resp_id.end() == match) {
-      m_irfs.push_back(irfInterface::IrfsFactory::instance()->create(resp_type));
-    } else {
-      m_irfs.resize(match->second.size(), 0);
-      for (std::vector<std::string>::size_type index = 0; index != match->second.size(); ++index) {
-        m_irfs[index] = irfInterface::IrfsFactory::instance()->create(match->second[index]);
-      }
+    // Get container of irf names matching the given response name.
+    irf_name_cont_type irf_name;
+    lookUpResponse(resp_type, irf_name);
+    if (irf_name.empty()) {
+      SpaceCraftCalculator::displayIrfNames(m_os.info());
+      throw std::runtime_error("IResponse cannot find response function(s) matching " + resp_type);
+    }
+
+    // Populate the irfs container with matching irfs.
+    m_irfs.resize(irf_name.size(), 0);
+    for (irf_name_cont_type::size_type index = 0; index != irf_name.size(); ++index) {
+      m_irfs[index] = irfInterface::IrfsFactory::instance()->create(irf_name[index]);
     }
 
     // Everything succeeded, so release the pointers from their auto_ptrs.
@@ -170,10 +172,10 @@ namespace rspgen {
 
   }
 
-  std::string IResponse::lookUpResponse(const std::string & resp) {
-    return SpaceCraftCalculator::lookUpResponse(resp);
+  void IResponse::lookUpResponse(const std::string & resp, irf_name_cont_type & match) {
+    SpaceCraftCalculator::lookUpResponse(resp, match);
   }
 
-  IResponse::IResponse(): m_true_en_binner(0), m_app_en_binner(0), m_irfs() {}
+  IResponse::IResponse(): m_os("IResponse", "IResponse()", 2), m_true_en_binner(0), m_app_en_binner(0), m_irfs() {}
 
 }

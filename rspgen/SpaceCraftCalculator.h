@@ -17,7 +17,12 @@ namespace irfInterface {
   class Irfs;
 }
 
+namespace st_stream {
+  class OStream;
+}
+
 #include <string>
+#include <vector>
 
 namespace rspgen {
 
@@ -29,8 +34,11 @@ namespace rspgen {
   class SpaceCraftCalculator {
     public:
       typedef std::vector<irfInterface::Irfs *> irf_cont_type;
+      typedef std::vector<std::string> irf_name_cont_type;
 
-      static std::string lookUpResponse(const std::string & resp);
+      static void lookUpResponse(const std::string & resp, irf_name_cont_type & match);
+
+      static void displayIrfNames(st_stream::OStream & os);
 
       SpaceCraftCalculator(const astro::SkyDir & src_dir, double theta_cut, double theta_bin_size, double psf_radius,
         const std::string & resp_type, const std::string & gti_file, const std::string & sc_file, const std::string & sc_table);

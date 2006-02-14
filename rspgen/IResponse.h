@@ -14,6 +14,9 @@
 
 #include "rspgen/IResponse.h"
 
+#include "st_stream/StreamFormatter.h"
+#include "st_stream/st_stream.h"
+
 #include "tip/Header.h"
 
 namespace rspgen {
@@ -24,13 +27,14 @@ namespace rspgen {
   class IResponse {
     public:
       typedef std::vector<irfInterface::Irfs *> irf_cont_type;
+      typedef std::vector<std::string> irf_name_cont_type;
 
       /** \brief Create GrbResponse object for a given burst and spacecraft coordinates
           \param resp_type Identifies response function type.
           \param spec_file The name of the spectrum file.
           \param true_en_binner Binner object used for true energy bin definitions.
       */
-      IResponse(const std::string resp_type, const std::string & spec_file, const evtbin::Binner * true_en_binner);
+      IResponse(const std::string & resp_type, const std::string & spec_file, const evtbin::Binner * true_en_binner);
 
       virtual ~IResponse() throw();
 
@@ -51,13 +55,15 @@ namespace rspgen {
       static const double s_keV_per_MeV;
       static const double s_MeV_per_keV;
 
-      /** \brief Look up response nicknames in dictionary. If not found, just return original string.
+      /** \brief Look up irfs nicknames in dictionary. If not found, just return original string.
           \param resp The response nickname.
+          \param match The matching irfs names.
       */
-      static std::string lookUpResponse(const std::string & resp);
+      static void lookUpResponse(const std::string & resp, irf_name_cont_type & match);
 
       IResponse();
 
+      st_stream::StreamFormatter m_os;
       tip::Header::KeyValCont_t m_kwds;
       evtbin::Binner * m_true_en_binner;
       evtbin::Binner * m_app_en_binner;
