@@ -61,6 +61,10 @@
 // Use st_facilities to find data files.
 #include "st_facilities/Env.h"
 
+#include "st_stream/StreamFormatter.h"
+#include "st_stream/Stream.h"
+#include "st_stream/st_stream.h"
+
 // Table access through tip.
 #include "tip/Header.h"
 #include "tip/IFileSvc.h"
@@ -148,6 +152,15 @@ class RspGenTestApp : public st_app::StApp {
     void test11();
 
   private:
+    /** \brief Compare three arrays to ensure the third is the sum of the first two.
+        \param descriptor A string describing the arrays being compared, for diagnostic purposes.
+        \param vec1 First array.
+        \param vec2 Second array.
+        \param total Array which is supposed to be the sum of vec1 and vec2.
+    */
+    void compare(const std::string & descriptor, const std::vector<double> & vec1, const std::vector<double> & vec2,
+      const std::vector<double> & total);
+
     /** \brief Return a standard energy binner used throughout the tests.
     */
     evtbin::Binner * createStdBinner();
@@ -162,11 +175,12 @@ class RspGenTestApp : public st_app::StApp {
 
     void copyFile(const std::string & in_file, const std::string & out_file) const;
 
+    st_stream::StreamFormatter m_os;
     std::string m_data_dir;
     bool m_failed;
 };
 
-RspGenTestApp::RspGenTestApp(): m_data_dir(), m_failed(false) {
+RspGenTestApp::RspGenTestApp(): m_os("RspGenTestApp", "RspGenTestApp", 2), m_data_dir(), m_failed(false) {
   // Get the directory in which to find the input data files.
   m_data_dir = st_facilities::Env::getDataDir("rspgen");
   setName("test_rspgen");
@@ -1053,6 +1067,9 @@ void RspGenTestApp::test10() {
 
 void RspGenTestApp::test11() {
   using namespace rspgen;
+  m_os.setMethod("test11");
+
+  SpaceCraftCalculator::displayIrfNames(m_os.info());
 
   // Create a binner for true energy.
   std::auto_ptr<evtbin::Binner> true_en_binner(createStdBinner());
@@ -1071,25 +1088,45 @@ void RspGenTestApp::test11() {
   std::vector<double> back_resp;
   std::vector<double> front_resp;
   std::vector<double> total_resp;
+
   double energy = 800.;
+
   back.compute(energy, back_resp);
   front.compute(energy, front_resp);
   total.compute(energy, total_resp);
 
-  if (back_resp.size() != front_resp.size() || back_resp.size() != total_resp.size()) {
+  compare("PointResponse", back_resp, front_resp, total_resp);
+
+  GrbResponse grb_back(114., -30., 2.167440000000000E+06 + 105., 1.4, "TESTB", findFile("PHA1.pha"),
+    findFile("ft2tiny.fits"), "Ext1", true_en_binner.get());
+  GrbResponse grb_front(114., -30., 2.167440000000000E+06 + 105., 1.4, "testIrfs::Front", findFile("PHA1.pha"),
+    findFile("ft2tiny.fits"), "Ext1", true_en_binner.get());
+  GrbResponse grb_total(114., -30., 2.167440000000000E+06 + 105., 1.4, "TEST", findFile("PHA1.pha"),
+    findFile("ft2tiny.fits"), "Ext1", true_en_binner.get());
+
+  grb_back.compute(energy, back_resp);
+  grb_front.compute(energy, front_resp);
+  grb_total.compute(energy, total_resp);
+
+  compare("GrbResponse", back_resp, front_resp, total_resp);
+}
+
+void RspGenTestApp::compare(const std::string & descriptor, const std::vector<double> & vec1, const std::vector<double> & vec2,
+  const std::vector<double> & total) {
+  if (vec1.size() != vec2.size() || vec1.size() != total.size()) {
     m_failed = true;
-    std::cerr << "Unexpected: in test11, the three responses did not have same size." << std::endl;
+    std::cerr << "Unexpected: in test11, the three " << descriptor << " responses did not have same size." << std::endl;
   } else {
-    for (std::vector<double>::size_type index = 0; index != total_resp.size(); ++index) {
-      double expected_total = front_resp[index] + back_resp[index];
-      if (expected_total == total_resp[index]) continue;
-      else if (0. == expected_total && std::fabs(total_resp[index]) < std::numeric_limits<double>::epsilon()) continue;
-      else if (0. == total_resp[index] && std::fabs(expected_total) < std::numeric_limits<double>::epsilon()) continue;
-      else if (std::fabs((total_resp[index] - expected_total)/ expected_total) < 10. * std::numeric_limits<double>::epsilon())
+    for (std::vector<double>::size_type index = 0; index != total.size(); ++index) {
+      double expected_total = vec2[index] + vec1[index];
+      if (expected_total == total[index]) continue;
+      else if (0. == expected_total && std::fabs(total[index]) < std::numeric_limits<double>::epsilon()) continue;
+      else if (0. == total[index] && std::fabs(expected_total) < std::numeric_limits<double>::epsilon()) continue;
+      else if (std::fabs((total[index] - expected_total)/ expected_total) < 10. * std::numeric_limits<double>::epsilon())
         continue;
       m_failed = true;
       std::cerr.precision(std::numeric_limits<double>::digits10);
-      std::cerr << "Unexpected: in test11, total_resp[" << index << "] was " << total_resp[index] << ", not " <<
+      std::cerr << "Unexpected: in test11, " << descriptor << " gave total[" << index << "] = " << total[index] << ", not " <<
         expected_total << ", as expected." << std::endl;
     }
   }
