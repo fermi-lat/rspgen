@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: peachey  Tue Feb 14 06:30:37 PST 2006
+rspgen/src
+
+Modified Files:
+	IResponse.cxx 
+Log Message:
+Attempt to interpret the resp_type first as a locator for a container of
+responses, using irfLoader::Loader::respIds method. Fall back on original behavior
+(single response function.)
+
+    *
+------------------------------------------------------------
 User: peachey  Mon Feb 13 19:13:59 PST 2006
 rspgen/rspgen
 
