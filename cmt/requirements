@@ -4,7 +4,7 @@ version v0
 
 author James Peachey <peachey@lheamail.gsfc.nasa.gov>
 
-# $Id: requirements,v 1.6 2005/01/25 15:32:45 peachey Exp $
+# $Id: requirements,v 1.7 2005/12/12 21:57:53 peachey Exp $
 
 use STpolicy *
 use astro *
@@ -13,6 +13,7 @@ use evtbin *
 use irfs *
 use st_app *
 use st_facilities *
+use st_stream *
 use tip *
 
 apply_pattern ST_library option=-no_share
