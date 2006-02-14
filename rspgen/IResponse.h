@@ -23,6 +23,8 @@ namespace rspgen {
   */
   class IResponse {
     public:
+      typedef std::vector<irfInterface::Irfs *> irf_cont_type;
+
       /** \brief Create GrbResponse object for a given burst and spacecraft coordinates
           \param resp_type Identifies response function type.
           \param spec_file The name of the spectrum file.
@@ -59,7 +61,7 @@ namespace rspgen {
       tip::Header::KeyValCont_t m_kwds;
       evtbin::Binner * m_true_en_binner;
       evtbin::Binner * m_app_en_binner;
-      irfInterface::Irfs * m_irfs;
+      irf_cont_type m_irfs;
   };
 
 }

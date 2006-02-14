@@ -58,7 +58,7 @@ namespace rspgen {
 
       // Get size of interval, multiply by the fraction of the time which overlapped the GTI.
       double delta_t = fract * (*itor)["LIVETIME"].get();
-    
+
       // Get object for interpolating values from the table.
       tip::LinearInterp sc_record(itor, table->end());
 
@@ -111,19 +111,22 @@ namespace rspgen {
       // Get the angle from the center of the bin.
       double theta = theta_bins->getInterval(bin_index).midpoint();
 
-      // Compute effective area, which is a function of true_energy and sc pointing direction only.
-      double aeff_val = m_irfs->aeff()->value(true_energy, theta, phi);
+      for (irf_cont_type::iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
+        irfInterface::Irfs * irfs = *itor;
 
-      // Use the window object to integrate psf over the region.
-      double int_psf_val = m_window->integrate(m_irfs->psf(), true_energy, theta, phi);
-  
-      // For each apparent energy bin, compute integral of the redistribution coefficient.
-      for (long index = 0; index < m_app_en_binner->getNumBins(); ++index) {
-        // Get limits of integration over apparent energy bins.
-        evtbin::Binner::Interval limits = m_app_en_binner->getInterval(index);
-    
-        response[index] += (*m_diff_exp)[bin_index] / m_total_exposure * aeff_val *
-          m_irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, theta, phi) * int_psf_val;
+        // Compute effective area, which is a function of true_energy and sc pointing direction only.
+        double aeff_val = irfs->aeff()->value(true_energy, theta, phi);
+        // Use the window object to integrate psf over the region.
+        double int_psf_val = m_window->integrate(irfs->psf(), true_energy, theta, phi);
+
+        // For each apparent energy bin, compute integral of the redistribution coefficient.
+        for (long index = 0; index < m_app_en_binner->getNumBins(); ++index) {
+          // Get limits of integration over apparent energy bins.
+          evtbin::Binner::Interval limits = m_app_en_binner->getInterval(index);
+
+          response[index] += (*m_diff_exp)[bin_index] / m_total_exposure * aeff_val *
+            irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, theta, phi) * int_psf_val;
+        }
       }
     }
   }
@@ -132,8 +135,14 @@ namespace rspgen {
     // TODO: This method is now duplicated in class SpaceCraftCalculator. PointResponse should use a member
     // of SpaceCraftCalculator and not duplicate this code here.
 
-    // Get the psf for this theta bin.
-    double psf_val = m_window->integrate(m_irfs->psf(), true_energy, theta, phi);
+    double psf_val = 0.;
+
+    for (irf_cont_type::const_iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
+      irfInterface::Irfs * irfs = *itor;
+
+      // Get the psf for this theta bin.
+      psf_val += m_window->integrate(irfs->psf(), true_energy, theta, phi);
+    }
 
     // Find the theta bin index corresponding to this theta.
     const evtbin::Binner * theta_bins = m_diff_exp->getBinners()[0];

@@ -49,7 +49,7 @@ namespace rspgen {
 
   SpaceCraftCalculator::SpaceCraftCalculator(const astro::SkyDir & src_dir, double theta_cut, double theta_bin_size,
     double psf_radius, const std::string & resp_type, const std::string & gti_file, const std::string & sc_file,
-    const std::string & sc_table): m_diff_exp(0), m_irfs(0), m_window(0), m_total_exposure(0.) {
+    const std::string & sc_table): m_diff_exp(0), m_irfs(), m_window(0), m_total_exposure(0.) {
     using evtbin::Gti;
 
     // Get spacecraft data.
@@ -112,12 +112,12 @@ namespace rspgen {
 
     // Everything succeeded, so release the pointers from their auto_ptrs.
     m_diff_exp = diff_exp.release();
-    m_irfs = irfs.release();
+    m_irfs.push_back(irfs.release());
   }
 
   SpaceCraftCalculator::~SpaceCraftCalculator() {
     delete m_window;
-    delete m_irfs;
+    for (irf_cont_type::reverse_iterator itor = m_irfs.rbegin(); itor != m_irfs.rend(); ++itor) delete *itor;
     delete m_diff_exp;
   }
 
@@ -125,8 +125,14 @@ namespace rspgen {
     // TODO: Integrate over phi.
     double phi = 0.;
 
-    // Get the psf for this theta bin.
-    double psf_val = m_window->integrate(m_irfs->psf(), true_energy, theta, phi);
+    double psf_val = 0.;
+
+    for (irf_cont_type::const_iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
+      irfInterface::Irfs * irfs = *itor;
+
+      // Get the psf for this theta bin.
+      psf_val += m_window->integrate(irfs->psf(), true_energy, theta, phi);
+    }
 
     // Find the theta bin index corresponding to this theta.
     const evtbin::Binner * theta_bins = m_diff_exp->getBinners()[0];

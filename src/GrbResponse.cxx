@@ -25,7 +25,7 @@ namespace rspgen {
     // Clone inputs to become members.
     m_true_en_binner = true_en_binner->clone();
     m_app_en_binner = app_en_binner->clone();
-    m_irfs= irfs->clone();
+    m_irfs.push_back(irfs->clone());
     m_window = window->clone();
   }
 
@@ -56,24 +56,29 @@ namespace rspgen {
   void GrbResponse::compute(double true_energy, std::vector<double> & response) {
     double phi = 0.; // Dummy for now.
 
-    // Compute effective area, which is a function of true_energy and sc pointing direction only.
-    double aeff_val = m_irfs->aeff()->value(true_energy, m_theta, phi);
+    // Make sure the response vector has enough room, but all 0s.
+    response.clear();
+    response.resize(m_app_en_binner->getNumBins(), 0.);
 
-    // Use the window object to integrate psf over the region.
-    double int_psf_val = m_window->integrate(m_irfs->psf(), true_energy, m_theta, phi);
-  
-    // Make sure the response vector has enough room.
-    response.resize(m_app_en_binner->getNumBins());
+    for (irf_cont_type::iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
+      irfInterface::Irfs * irfs = *itor;
 
-    // For each apparent energy bin, compute integral of the redistribution coefficient.
-    for (long index = 0; index < m_app_en_binner->getNumBins(); ++index) {
-      // Get limits of integration over apparent energy bins
-      evtbin::Binner::Interval limits = m_app_en_binner->getInterval(index);
+      // Compute effective area, which is a function of true_energy and sc pointing direction only.
+      double aeff_val = irfs->aeff()->value(true_energy, m_theta, phi);
 
-      // Compute the response for the current app. energy bin.
-      response[index] = aeff_val * m_irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, m_theta, phi) * int_psf_val;
+      // Use the window object to integrate psf over the region.
+      double int_psf_val = m_window->integrate(irfs->psf(), true_energy, m_theta, phi);
+
+      // For each apparent energy bin, compute integral of the redistribution coefficient.
+      for (long index = 0; index < m_app_en_binner->getNumBins(); ++index) {
+        // Get limits of integration over apparent energy bins
+        evtbin::Binner::Interval limits = m_app_en_binner->getInterval(index);
+
+        // Compute the response for the current app. energy bin.
+        response[index] += aeff_val * irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, m_theta, phi) * int_psf_val;
+      }
     }
-  
+
   }
 
 }
