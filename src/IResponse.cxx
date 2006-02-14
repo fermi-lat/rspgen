@@ -22,7 +22,7 @@ namespace rspgen {
   const double IResponse::s_MeV_per_keV = .001;
 
   IResponse::IResponse(const std::string resp_type, const std::string & spec_file, const evtbin::Binner * true_en_binner):
-    m_kwds(), m_true_en_binner(0), m_app_en_binner(0), m_irfs(0) {
+    m_kwds(), m_true_en_binner(0), m_app_en_binner(0), m_irfs() {
     // Process input ebounds extension to get apparent energy bin definitions..
     std::auto_ptr<const tip::Table> in_ebounds(tip::IFileSvc::instance().readTable(spec_file, "EBOUNDS"));
 
@@ -73,11 +73,11 @@ namespace rspgen {
     // Everything succeeded, so release the pointers from their auto_ptrs.
     m_true_en_binner = true_en_auto_ptr.release();
     m_app_en_binner = app_en_binner.release();
-    m_irfs = irfs.release();
+    m_irfs.push_back(irfs.release());
   }
 
   IResponse::~IResponse() throw() {
-    delete m_irfs;
+    for (irf_cont_type::reverse_iterator itor = m_irfs.rbegin(); itor != m_irfs.rend(); ++itor) delete *itor;
     delete m_app_en_binner;
     delete m_true_en_binner;
   }
@@ -165,6 +165,6 @@ namespace rspgen {
     return SpaceCraftCalculator::lookUpResponse(resp);
   }
 
-  IResponse::IResponse(): m_true_en_binner(0), m_app_en_binner(0), m_irfs(0) {}
+  IResponse::IResponse(): m_true_en_binner(0), m_app_en_binner(0), m_irfs() {}
 
 }

@@ -28,6 +28,8 @@ namespace rspgen {
   */
   class SpaceCraftCalculator {
     public:
+      typedef std::vector<irfInterface::Irfs *> irf_cont_type;
+
       static std::string lookUpResponse(const std::string & resp);
 
       SpaceCraftCalculator(const astro::SkyDir & src_dir, double theta_cut, double theta_bin_size, double psf_radius,
@@ -39,7 +41,7 @@ namespace rspgen {
 
     private:
       evtbin::Hist1D * m_diff_exp;
-      irfInterface::Irfs * m_irfs;
+      irf_cont_type m_irfs;
       IWindow * m_window;
       double m_total_exposure;
   };
