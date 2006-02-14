@@ -37,7 +37,7 @@ namespace rspgen {
           \param true_en_binner Binner object used for true energy bin definitions.
       */
       PointResponse(double ps_ra, double ps_dec, double theta_cut, double theta_bin_size, double psf_radius,
-        const std::string resp_type, const std::string & spec_file, const std::string & sc_file,
+        const std::string & resp_type, const std::string & spec_file, const std::string & sc_file,
         const std::string & sc_table, const evtbin::Binner * true_en_binner);
 
       virtual ~PointResponse() throw();
