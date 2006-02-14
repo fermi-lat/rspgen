@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Tue Feb 14 10:24:53 PST 2006
+rspgen/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Start to use st_stream for output.
+
+    *
+------------------------------------------------------------
 User: peachey  Tue Feb 14 06:30:39 PST 2006
 rspgen/src/test
 
