@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Mon Feb 27 10:56:43 PST 2006
+rspgen/pfiles
+
+Modified Files:
+	gtrspgen.par 
+Log Message:
+Change response function default value and prompt for DC2.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v1r2, operation: add
 Package: rspgen
