@@ -29,6 +29,7 @@
                           and true energy.
 14-feb-2006      v1r2 JP  Use standard way of referring to irf names, and handle combining irfs to produce
                           a summed response.
+27-feb-2006    v1r2p1 JP  Update parameter file for DC2 response functions per JIRA GRB-17.
 \endverbatim
 
 */
