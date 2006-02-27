@@ -1,4 +1,36 @@
 ------------------------------------------------------------
+TAG
+Tag name: v1r2p1, operation: add
+Package: rspgen
+User: peachey  Mon Feb 27 11:01:15 2006
+Files:
+  rspgen/ChangeLog  1.140
+  rspgen/cmt/requirements  1.8
+  rspgen/data/ft2tiny.fits  1.1
+  rspgen/data/PHA1.pha  1.4
+  rspgen/data/rspgen_energy_bins.fits  1.1
+  rspgen/data/LatResponseTemplate  1.1
+  rspgen/doc/release.notes  1.19
+  rspgen/pfiles/gtrspgen.par  1.8
+  rspgen/rspgen/SpaceCraftCalculator.h  1.3
+  rspgen/rspgen/IWindow.h  1.2
+  rspgen/rspgen/IResponse.h  1.6
+  rspgen/rspgen/CircularWindow.h  1.3
+  rspgen/rspgen/PointResponse.h  1.4
+  rspgen/rspgen/GrbResponse.h  1.6
+  rspgen/src/RspGenApp.h  1.4
+  rspgen/src/SpaceCraftCalculator.cxx  1.3
+  rspgen/src/IResponse.cxx  1.10
+  rspgen/src/mainpage.h  1.3
+  rspgen/src/CircularWindow.cxx  1.2
+  rspgen/src/PointResponse.cxx  1.10
+  rspgen/src/RspGenApp.cxx  1.12
+  rspgen/src/GrbResponse.cxx  1.8
+  rspgen/src/gtrspgen/gtrspgen.cxx  1.1
+  rspgen/src/test/test_rspgen.cxx  1.26
+
+    *
+------------------------------------------------------------
 User: peachey  Mon Feb 27 11:00:51 PST 2006
 rspgen/doc
 
