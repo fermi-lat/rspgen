@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Tue Oct  3 13:01:19 PDT 2006
+rspgen/src
+
+Modified Files:
+	PointResponse.cxx 
+Log Message:
+Use cosine binner instead of linear binner to compute inclination angle histogram.
+
+    *
+------------------------------------------------------------
 User: peachey  Tue Oct  3 13:00:53 PDT 2006
 rspgen/src
 
