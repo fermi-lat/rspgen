@@ -106,12 +106,22 @@ namespace rspgen {
     long num_theta_bins = theta_bins->getNumBins();
 
     // Reset the response vector to be all zeroes, and enough of them.
+    response.clear();
     response.assign(m_app_en_binner->getNumBins(), 0.);
 
     // Integrate over binned angle-dependent differential exposure.
+    double e_min = m_app_en_binner->getInterval(0).begin();
+    double e_max = m_app_en_binner->getInterval(m_app_en_binner->getNumBins() - 1).end();
     for (long bin_index = 0; bin_index < num_theta_bins; ++bin_index) {
       // Get the angle from the center of the bin.
       double theta = theta_bins->getInterval(bin_index).midpoint();
+
+      double disp_norm = 0.;
+      for (irf_cont_type::iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
+        irfInterface::Irfs * irfs = *itor;
+        // Compute normalization by integrating over the full apparent energy range. This assumes continuous energy bins.
+        disp_norm += irfs->edisp()->integral(e_min, e_max, true_energy, theta, phi);
+      }
 
       for (irf_cont_type::iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
         irfInterface::Irfs * irfs = *itor;
@@ -127,7 +137,7 @@ namespace rspgen {
           evtbin::Binner::Interval limits = m_app_en_binner->getInterval(index);
 
           response[index] += (*m_diff_exp)[bin_index] / m_total_exposure * aeff_val *
-            irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, theta, phi) * int_psf_val;
+            irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, theta, phi) * int_psf_val / disp_norm;
         }
       }
     }
