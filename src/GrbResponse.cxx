@@ -60,6 +60,15 @@ namespace rspgen {
     response.clear();
     response.resize(m_app_en_binner->getNumBins(), 0.);
 
+    double disp_norm = 0.;
+    double e_min = m_app_en_binner->getInterval(0).begin();
+    double e_max = m_app_en_binner->getInterval(m_app_en_binner->getNumBins() - 1).end();
+    for (irf_cont_type::iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
+      irfInterface::Irfs * irfs = *itor;
+      // Compute normalization by integrating over the full apparent energy range. This assumes continuous energy bins.
+      disp_norm += irfs->edisp()->integral(e_min, e_max, true_energy, m_theta, phi);
+    }
+
     for (irf_cont_type::iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
       irfInterface::Irfs * irfs = *itor;
 
@@ -67,7 +76,7 @@ namespace rspgen {
       double aeff_val = irfs->aeff()->value(true_energy, m_theta, phi);
 
       // Use the window object to integrate psf over the region.
-      double int_psf_val = m_window->integrate(irfs->psf(), true_energy, m_theta, phi);
+//      double int_psf_val = m_window->integrate(irfs->psf(), true_energy, m_theta, phi);
 
       // For each apparent energy bin, compute integral of the redistribution coefficient.
       for (long index = 0; index < m_app_en_binner->getNumBins(); ++index) {
@@ -75,7 +84,8 @@ namespace rspgen {
         evtbin::Binner::Interval limits = m_app_en_binner->getInterval(index);
 
         // Compute the response for the current app. energy bin.
-        response[index] += aeff_val * irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, m_theta, phi) * int_psf_val;
+        //response[index] += aeff_val * irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, m_theta, phi) * int_psf_val;
+        response[index] += aeff_val * irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, m_theta, phi) / disp_norm;
       }
     }
 
