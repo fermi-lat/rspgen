@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Tue Oct  3 13:31:14 PDT 2006
+rspgen/src
+
+Modified Files:
+	GrbResponse.cxx 
+Log Message:
+Bug fix: re-introduce psf into response calculation.
+
+    *
+------------------------------------------------------------
 User: peachey  Tue Oct  3 13:01:58 PDT 2006
 rspgen/pfiles
 
