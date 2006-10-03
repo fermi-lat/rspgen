@@ -12,6 +12,7 @@
 #include "evtbin/LinearBinner.h"
 
 #include "rspgen/CircularWindow.h"
+#include "rspgen/CosineBinner.h"
 #include "rspgen/PointResponse.h"
 
 #include "tip/IFileSvc.h"
@@ -36,7 +37,8 @@ namespace rspgen {
     astro::SkyDir ps_pos(ps_ra, ps_dec);
 
     // Set up a histogram to hold the binned differential exposure (theta vs. DeltaT).
-    std::auto_ptr<evtbin::Hist1D> diff_exp(new evtbin::Hist1D(evtbin::LinearBinner(0., theta_cut, theta_bin_size)));
+    //std::auto_ptr<evtbin::Hist1D> diff_exp(new evtbin::Hist1D(evtbin::LinearBinner(0., theta_cut, theta_bin_size)));
+    std::auto_ptr<evtbin::Hist1D> diff_exp(new evtbin::Hist1D(CosineBinner(0., theta_cut, theta_bin_size)));
 
     // Get GTI information.
     Gti gti(spec_file);
