@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Tue Oct  3 13:01:58 PDT 2006
+rspgen/pfiles
+
+Modified Files:
+	gtrspgen.par 
+Log Message:
+Change interpretation of thetabinsize to be the step in cos(theta) space.
+
+    *
+------------------------------------------------------------
 User: peachey  Tue Oct  3 13:01:19 PDT 2006
 rspgen/src/test
 
