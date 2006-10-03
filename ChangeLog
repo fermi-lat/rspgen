@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Tue Oct  3 11:26:00 PDT 2006
+rspgen/src
+
+Modified Files:
+	GrbResponse.cxx 
+Log Message:
+Normalize individual response functions.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v1r2p1, operation: add
 Package: rspgen
