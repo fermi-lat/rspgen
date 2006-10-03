@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Tue Oct  3 13:00:53 PDT 2006
+rspgen/rspgen
+
+Added Files:
+	CosineBinner.h 
+Log Message:
+New binner which bins in cos(theta) space.
+
+    *
+------------------------------------------------------------
 User: peachey  Tue Oct  3 11:26:00 PDT 2006
 rspgen/src
 
