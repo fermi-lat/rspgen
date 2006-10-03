@@ -882,7 +882,7 @@ void RspGenTestApp::test7() {
     // Construct a steady point source response, but do not supply a binner. This should succeed.
     double ra_ps = 8.3633225E+01; // RA of point source
     double dec_ps = 2.2014458E+01; // DEC of point source
-    response_no_binner.reset(new PointResponse(ra_ps, dec_ps, 60., 5., 3., "testIrfs::Back", findFile("PHA1.pha"),
+    response_no_binner.reset(new PointResponse(ra_ps, dec_ps, 60., .05, 3., "testIrfs::Back", findFile("PHA1.pha"),
       findFile("ft2tiny.fits"), "Ext1", 0));
 
     // Confirm that psf method works even without the binner.
@@ -911,7 +911,7 @@ void RspGenTestApp::test7() {
     // RA, DEC, theta_cut, theta_bin_size, radius, response type, pha file, FT2 file, energy bin def file.
     double ra_ps = 8.3633225E+01; // RA of point source
     double dec_ps = 2.2014458E+01; // DEC of point source
-    PointResponse resp(ra_ps, dec_ps, 60., 5., 3., "testIrfs::Back", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
+    PointResponse resp(ra_ps, dec_ps, 60., .05, 3., "testIrfs::Back", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
       "Ext1", true_en_binner.get());
 
     // Sanity check: just compute one response at 137. MeV.
@@ -959,7 +959,7 @@ void RspGenTestApp::test8() {
     pars["sctable"] = "Ext1";
     pars["outfile"] = "test_response8.rsp";
     pars["thetacut"] = 60.;
-    pars["thetabinsize"] = 5.;
+    pars["thetabinsize"] = .05;
     pars["resptype"] = "testIrfs::Front";
     pars["resptpl"] = "DEFAULT";
     pars["energybinalg"] = "FILE";
@@ -1078,11 +1078,11 @@ void RspGenTestApp::test11() {
   // RA, DEC, theta_cut, theta_bin_size, radius, response type, pha file, FT2 file, energy bin def file.
   double ra_ps = 8.3633225E+01; // RA of point source
   double dec_ps = 2.2014458E+01; // DEC of point source
-  PointResponse back(ra_ps, dec_ps, 60., 5., 3., "TESTB", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
+  PointResponse back(ra_ps, dec_ps, 60., .05, 3., "TESTB", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
     "Ext1", true_en_binner.get());
-  PointResponse front(ra_ps, dec_ps, 60., 5., 3., "TESTF", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
+  PointResponse front(ra_ps, dec_ps, 60., .05, 3., "TESTF", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
     "Ext1", true_en_binner.get());
-  PointResponse total(ra_ps, dec_ps, 60., 5., 3., "TEST", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
+  PointResponse total(ra_ps, dec_ps, 60., .05, 3., "TEST", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
     "Ext1", true_en_binner.get());
 
   std::vector<double> back_resp;
