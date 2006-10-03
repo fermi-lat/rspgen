@@ -76,7 +76,7 @@ namespace rspgen {
       double aeff_val = irfs->aeff()->value(true_energy, m_theta, phi);
 
       // Use the window object to integrate psf over the region.
-//      double int_psf_val = m_window->integrate(irfs->psf(), true_energy, m_theta, phi);
+      double int_psf_val = m_window->integrate(irfs->psf(), true_energy, m_theta, phi);
 
       // For each apparent energy bin, compute integral of the redistribution coefficient.
       for (long index = 0; index < m_app_en_binner->getNumBins(); ++index) {
@@ -85,7 +85,8 @@ namespace rspgen {
 
         // Compute the response for the current app. energy bin.
         //response[index] += aeff_val * irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, m_theta, phi) * int_psf_val;
-        response[index] += aeff_val * irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, m_theta, phi) / disp_norm;
+        response[index] += aeff_val * irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, m_theta, phi) *
+          int_psf_val / disp_norm;
       }
     }
 
