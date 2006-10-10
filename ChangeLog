@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: peachey  Tue Oct 10 08:34:18 PDT 2006
+rspgen/src
+
+Modified Files:
+	PointResponse.cxx GrbResponse.cxx 
+Log Message:
+Temporarily normalize by the number of response functions, pending further
+investigation of issues related to how Irfs are normalized.
+
+    *
+------------------------------------------------------------
 User: peachey  Tue Oct  3 13:34:12 PDT 2006
 rspgen/src
 
