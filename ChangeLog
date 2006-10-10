@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Tue Oct 10 08:42:53 PDT 2006
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Tweak unit test to run successfully with current normalization scheme.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v1r2p2, operation: add
 Package: rspgen
