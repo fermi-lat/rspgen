@@ -61,13 +61,25 @@ namespace rspgen {
     response.resize(m_app_en_binner->getNumBins(), 0.);
 
     double disp_norm = 0.;
-    double e_min = m_app_en_binner->getInterval(0).begin();
-    double e_max = m_app_en_binner->getInterval(m_app_en_binner->getNumBins() - 1).end();
+    // Original version:
+    // double e_min = m_app_en_binner->getInterval(0).begin();
+    // double e_max = m_app_en_binner->getInterval(m_app_en_binner->getNumBins() - 1).end();
+    // Newer version which takes bounds from known irf properties (still not optimal):
+    // double e_min = 18.;
+    // double e_max = 1.8e5;
+    // Temporary version: normalize by the number of individual Irfs objects used; assume each individual Irfs
+    // object is normalized to 1.
+    long irf_count = 0;
     for (irf_cont_type::iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
-      irfInterface::Irfs * irfs = *itor;
+      ++irf_count;
+      // irfInterface::Irfs * irfs = *itor;
       // Compute normalization by integrating over the full apparent energy range. This assumes continuous energy bins.
-      disp_norm += irfs->edisp()->integral(e_min, e_max, true_energy, m_theta, phi);
+      // disp_norm += irfs->edisp()->integral(e_min, e_max, true_energy, m_theta, phi);
     }
+
+    // Temporary version: normalize by the number of individual Irfs objects used; assume each individual Irfs
+    // object is normalized to 1.
+    disp_norm = irf_count;
 
     for (irf_cont_type::iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
       irfInterface::Irfs * irfs = *itor;
