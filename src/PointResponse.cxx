@@ -110,12 +110,6 @@ namespace rspgen {
     response.assign(m_app_en_binner->getNumBins(), 0.);
 
     // Integrate over binned angle-dependent differential exposure.
-    // Original version:
-    // double e_min = m_app_en_binner->getInterval(0).begin();
-    // double e_max = m_app_en_binner->getInterval(m_app_en_binner->getNumBins() - 1).end();
-    // Newer version which takes bounds from known irf properties (still not optimal):
-    // double e_min = 18.;
-    // double e_max = 1.8e5;
     for (long bin_index = 0; bin_index < num_theta_bins; ++bin_index) {
       // Get the angle from the center of the bin.
       double theta = theta_bins->getInterval(bin_index).midpoint();
