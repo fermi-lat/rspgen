@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Tue Mar 13 12:32:22 PDT 2007
+rspgen/src
+
+Modified Files:
+	PointResponse.cxx 
+Log Message:
+Remove renormalization of response functions.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v1r2p3, operation: add
 Package: rspgen
