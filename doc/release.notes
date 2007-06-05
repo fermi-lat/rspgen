@@ -34,6 +34,7 @@
                           pending further investigation of normalization issues.)
 10-oct-2006    v1r2p3 JP  Tweak unit test to run correctly with latest change.
 13-mar-2007    v1r2p4 JP  Remove broken renormalization of response functions.
+05-jun-2007    v1r2p5 JP  Fix unit test to work correctly following last change.
 \endverbatim
 
 */
