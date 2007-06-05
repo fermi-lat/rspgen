@@ -1118,8 +1118,7 @@ void RspGenTestApp::compare(const std::string & descriptor, const std::vector<do
     std::cerr << "Unexpected: in test11, the three " << descriptor << " responses did not have same size." << std::endl;
   } else {
     for (std::vector<double>::size_type index = 0; index != total.size(); ++index) {
-      // Multiply by .5 because the expected total should be normalized by the number of responses used.
-      double expected_total = .5 * (vec2[index] + vec1[index]);
+      double expected_total = vec1[index] + vec2[index];
       if (expected_total == total[index]) continue;
       else if (0. == expected_total && std::fabs(total[index]) < std::numeric_limits<double>::epsilon()) continue;
       else if (0. == total[index] && std::fabs(expected_total) < std::numeric_limits<double>::epsilon()) continue;
