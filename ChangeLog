@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: peachey  Tue Jun  5 08:39:37 PDT 2007
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Correct unit test to work properly now that the irfs are not being renormalized.
+Change GrbResponse to be consistent with PointResponse in this way as well.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v1r2p4, operation: add
 Package: rspgen
