@@ -35,6 +35,7 @@
 10-oct-2006    v1r2p3 JP  Tweak unit test to run correctly with latest change.
 13-mar-2007    v1r2p4 JP  Remove broken renormalization of response functions.
 05-jun-2007    v1r2p5 JP  Fix unit test to work correctly following last change.
+19-jul-2007        v2 JP  Rationalized parameter names to match current standards.
 \endverbatim
 
 */
