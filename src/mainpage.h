@@ -74,7 +74,7 @@ psfradius [double]
     presently is required to be a circle centered on the true point source
     location.
 
-(resptype = DC1::Front [string])
+(irfs = DC1::Front [string])
     The specific set of functions used to compute the response. For
     details of what functions are available see the irfs package
     documentation. Note that the DC1 functions are pretty choppy, so
@@ -102,46 +102,46 @@ thetacut [double]
     histogram as a function of inclination angle covering the
     range [0, thetacut].
 
-thetabinsize [double]
-    The size of bins for the differential exposure
+dcostheta [double]
+    The size of bins in cos(theta) space for the differential exposure
     computation.
 \endverbatim
 
-    \subsection energybins Energy Binning Parameters
+    \subsection ebins Energy Binning Parameters
 \verbatim
-energybinalg = LOG [string]
+ebinalg = LOG [string]
     Indicates how the energy bins will be specified. Legal values
     are FILE (bins will be read from a bin definition file), LIN
     (linearly uniform bins), and LOG (logarithmically uniform bins).
     This is only used if energy binning is required by the output
     type selected by the algorithm parameter.
 
-(energyfield = ENERGY) [string]
+(efield = ENERGY) [string]
     This is the name of the field containing the energy values for
     energy binning. The default value is consistent with the FT1
     format.
 
 emin [double]
     The lowest energy of the first interval for linearly or
-    logarithmically uniform bins. Only used if energybinalg
+    logarithmically uniform bins. Only used if ebinalg
     is LIN or LOG.
 
 emax [double]
     The highest energy of the last interval for linearly or
-    logarithmically uniform bins. Only used if energybinalg
+    logarithmically uniform bins. Only used if ebinalg
     is LIN or LOG.
 
 enumbins [integer]
     The number of bins for logarithmically uniform bins. Only
-    used if energybinalg is LOG.
+    used if ebinalg is LOG.
 
-deltaenergy [double]
-    The width of linearly uniform bins. Only used if energybinalg
+denergy [double]
+    The width of linearly uniform bins. Only used if ebinalg
     is LIN.
 
-energybinfile [file]
+ebinfile [file]
     The name of the energy bin definition file. Only used if
-    energybinalg is FILE.
+    ebinalg is FILE.
 \endverbatim
 
 */
