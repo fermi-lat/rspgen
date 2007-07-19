@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: peachey  Thu Jul 19 11:44:49 PDT 2007
+rspgen/pfiles
+
+Modified Files:
+	gtrspgen.par 
+Log Message:
+Rationalize parameter names along the lines of:
+https://confluence.slac.stanford.edu/display/ST/Proposed+Parameter+Name+Changes
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v1r2p5, operation: add
 Package: rspgen
