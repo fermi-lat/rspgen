@@ -61,11 +61,11 @@ namespace rspgen {
     else {
       // Non-burst case: SC data will be binned in theta space.
       pars.Prompt("thetacut");
-      pars.Prompt("thetabinsize");
+      pars.Prompt("dcostheta");
     }
 
     // Prompt for remaining parameters, which are common to all.
-    pars.Prompt("resptype");
+    pars.Prompt("irfs");
     pars.Prompt("resptpl");
 
     // Prompt for (true) energy binning parameters.
@@ -134,11 +134,11 @@ namespace rspgen {
 
     // Create response object.
     if (alg == "GRB") {
-      m_response = new GrbResponse(ra, dec, pars["time"], psf_radius, pars["resptype"], spec_file, pars["scfile"],
+      m_response = new GrbResponse(ra, dec, pars["time"], psf_radius, pars["irfs"], spec_file, pars["scfile"],
         pars["sctable"], true_en_binner.get());
     } else if (alg == "PS") {
-      m_response = new PointResponse(ra, dec, pars["thetacut"], pars["thetabinsize"], psf_radius,
-        pars["resptype"], spec_file, pars["scfile"], pars["sctable"], true_en_binner.get());
+      m_response = new PointResponse(ra, dec, pars["thetacut"], pars["dcostheta"], psf_radius,
+        pars["irfs"], spec_file, pars["scfile"], pars["sctable"], true_en_binner.get());
     } else {
       throw std::runtime_error("RspGenApp::writeResponse: invalid response algorithm " + alg);
     }

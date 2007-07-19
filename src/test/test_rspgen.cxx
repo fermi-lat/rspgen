@@ -842,10 +842,10 @@ void RspGenTestApp::test6() {
     pars["sctable"] = "Ext1";
     pars["outfile"] = "test_response6.rsp";
     pars["time"] = 2.167440000000000E+06 + 105.;
-    pars["resptype"] = "testIrfs::Front";
+    pars["irfs"] = "testIrfs::Front";
     pars["resptpl"] = "DEFAULT";
-    pars["energybinalg"] = "FILE";
-    pars["energybinfile"] = findFile("rspgen_energy_bins.fits");
+    pars["ebinalg"] = "FILE";
+    pars["ebinfile"] = findFile("rspgen_energy_bins.fits");
 
     // And writing the output.
     app.writeResponse(pars);
@@ -959,11 +959,11 @@ void RspGenTestApp::test8() {
     pars["sctable"] = "Ext1";
     pars["outfile"] = "test_response8.rsp";
     pars["thetacut"] = 60.;
-    pars["thetabinsize"] = .05;
-    pars["resptype"] = "testIrfs::Front";
+    pars["dcostheta"] = .05;
+    pars["irfs"] = "testIrfs::Front";
     pars["resptpl"] = "DEFAULT";
-    pars["energybinalg"] = "FILE";
-    pars["energybinfile"] = findFile("rspgen_energy_bins.fits");
+    pars["ebinalg"] = "FILE";
+    pars["ebinfile"] = findFile("rspgen_energy_bins.fits");
 
     // And writing the output.
     app.writeResponse(pars);
