@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: golpa  Mon Oct  1 10:27:56 PDT 2007
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+use commonUtilities
+    *
+------------------------------------------------------------
+User: golpa  Mon Oct  1 10:27:56 PDT 2007
 rspgen/src
 
 Modified Files:
