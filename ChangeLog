@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: golpa  Mon Oct  1 10:27:56 PDT 2007
+rspgen/src
+
+Modified Files:
+	RspGenApp.cxx 
+Log Message:
+use commonUtilities
+    *
+------------------------------------------------------------
 TAG
 Tag name: v2, operation: add
 Package: rspgen
