@@ -60,6 +60,7 @@
 
 // Use st_facilities to find data files.
 #include "st_facilities/Env.h"
+#include "facilities/commonUtilities.h"
 
 #include "st_stream/StreamFormatter.h"
 #include "st_stream/Stream.h"
@@ -182,7 +183,7 @@ class RspGenTestApp : public st_app::StApp {
 
 RspGenTestApp::RspGenTestApp(): m_os("RspGenTestApp", "RspGenTestApp", 2), m_data_dir(), m_failed(false) {
   // Get the directory in which to find the input data files.
-  m_data_dir = st_facilities::Env::getDataDir("rspgen");
+  m_data_dir = facilities::commonUtilities::getDataPath("rspgen");
   setName("test_rspgen");
   setVersion(s_cvs_id);
 }
@@ -1153,7 +1154,7 @@ irfInterface::Irfs * RspGenTestApp::createIrfs() const {
 }
 
 std::string RspGenTestApp::findFile(const std::string & file_root) const {
-  return st_facilities::Env::appendFileName(m_data_dir, file_root);
+  return facilities::commonUtilities::joinPath(m_data_dir, file_root);
 }
 
 void RspGenTestApp::copyFile(const std::string & in_file, const std::string & out_file) const {

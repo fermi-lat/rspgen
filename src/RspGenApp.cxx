@@ -24,6 +24,8 @@
 
 #include "st_facilities/Env.h"
 
+#include "facilities/commonUtilities.h"
+
 static std::string s_cvs_id = "$Name:  $";
 
 namespace rspgen {
@@ -82,7 +84,7 @@ namespace rspgen {
     std::string resp_tpl = pars["resptpl"];
 
     // If it was not defined, get default template file name.
-    if (0 == resp_tpl.compare("DEFAULT")) resp_tpl = st_facilities::Env::appendFileName(getDataDir(), "LatResponseTemplate");
+    if (0 == resp_tpl.compare("DEFAULT")) resp_tpl = facilities::commonUtilities::joinPath(getDataDir(), "LatResponseTemplate");
 
     // Determine which algorithm to use.
     std::string alg = pars["respalg"];
@@ -152,7 +154,7 @@ namespace rspgen {
   }
 
   std::string RspGenApp::getDataDir() const {
-    static std::string retval = st_facilities::Env::getDataDir("rspgen");
+    static std::string retval = facilities::commonUtilities::getDataPath("rspgen");
     return retval;
   }
 
