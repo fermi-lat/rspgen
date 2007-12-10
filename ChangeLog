@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: golpa  Mon Dec 10 13:37:25 PST 2007
+rspgen
+
+Added Files:
+	SConscript rspgenLib.py 
+Log Message:
+Initial import of SCons files
+    *
+------------------------------------------------------------
 User: golpa  Mon Oct  1 10:27:56 PDT 2007
 rspgen/src/test
 
