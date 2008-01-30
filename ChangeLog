@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Wed Jan 30 07:59:59 PST 2008
+rspgen
+
+Modified Files:
+	SConscript 
+Log Message:
+Add unit test binary.
+
+    *
+------------------------------------------------------------
 User: golpa  Mon Dec 10 13:37:25 PST 2007
 rspgen
 
