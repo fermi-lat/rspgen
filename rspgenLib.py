@@ -1,5 +1,7 @@
+#$Id$
 def generate(env, **kw):
-    env.Tool('addLibrary', library = ['rspgen'], package = 'rspgen')
+    if not kw.get('depsOnly',0):
+        env.Tool('addLibrary', library = ['rspgen'])
     env.Tool('astroLib')
     env.Tool('dataSubselectorLib')
     env.Tool('evtbinLib')
