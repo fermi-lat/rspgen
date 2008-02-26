@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: glastrm  Mon Feb 25 21:36:32 PST 2008
+ScienceTools-scons/rspgen
+
+Modified Files:
+	rspgenLib.py SConscript 
+Log Message:
+Set lib dependencies up for when building libraries
+    *
+------------------------------------------------------------
 TAG
 Tag name: rspgen-02-00-01, operation: add
 Package: rspgen
