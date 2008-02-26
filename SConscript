@@ -1,10 +1,10 @@
-import glob,os,platform
-
+#$Id$
 Import('baseEnv')
 Import('listFiles')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
+libEnv.Tool('rspgenLib', depsOnly = 1)
 rspgenLib = libEnv.StaticLibrary('rspgen', listFiles(['src/*.cxx']))
 
 progEnv.Tool('rspgenLib')
