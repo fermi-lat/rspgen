@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: glastrm  Thu Jun 19 16:45:53 PDT 2008
+ScienceTools-scons/rspgen
+
+Modified Files:
+	SConscript 
+Log Message:
+Added Author and Version fields
+    *
+------------------------------------------------------------
 TAG
 Tag name: rspgen-02-00-01, operation: mov
 Package: rspgen
