@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: vernaleo  Wed Sep  3 12:24:11 PDT 2008
+rspgen/rspgen
+
+Modified Files:
+	IResponse.h 
+Log Message:
+Merge from GSSC with the following changes, STGEN-58 fix filename keyword, STGEN-59 write xspec style compressed response matrices, STGEN-60 correct a prompt
+    *
+------------------------------------------------------------
+User: vernaleo  Wed Sep  3 12:24:11 PDT 2008
 rspgen/pfiles
 
 Modified Files:
