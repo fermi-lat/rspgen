@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 # General parameters.
-respalg,       s, a, "GRB", GRB|PS, , "Response calculation method (GRB, PS)"
+respalg,       s, a, "GRB", GRB|PS, , "Response calculation method"
 specfile,      f, a, , , , "Spectrum file name"
 scfile,        f, a, , , , "Spacecraft data file name"
 outfile,       f, a, , , , "Output file name"
