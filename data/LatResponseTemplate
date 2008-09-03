@@ -10,7 +10,7 @@ DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 DRM_NUM  =                      / Number of DRMs stored in this file
 CREATOR  =                      / Software and version creating file
-HISTORY                     $Id: LatResponseTemplate,v 1.3 2003/12/10 15:51:22 sbansal Exp $
+HISTORY                     $Id: LatResponseTemplate,v 1.1 2004/07/19 11:10:01 peachey Exp $
 END
 
 
@@ -30,6 +30,7 @@ INSTRUME =                  LAT / Instrument name
 FILTER   =                      / Instrument filter in use
 CHANTYPE =                   PI / Whether channels used in the file have been corrected in any way
 DETCHANS =                    0 / Total number of detector channels available
+LO_THRES =                  0.0 / Lower threshold for stored matrix
 HDUCLASS =                 OGIP / Format confirms to OGIP standard
 HDUCLAS1 =             RESPONSE / Indicating this is a response
 HDUCLAS2 =           RSP_MATRIX / Indicating this is a response matrix
@@ -39,7 +40,7 @@ NDSKEYS  =                    0 / Number of data subspace keywords in header
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 CREATOR  =                      / Software and version creating file
-HISTORY                     $Id: LatResponseTemplate,v 1.3 2003/12/10 15:51:22 sbansal Exp $
+HISTORY                     $Id: LatResponseTemplate,v 1.1 2004/07/19 11:10:01 peachey Exp $
 
 
 TTYPE#  ENERG_LO                / Lower energy bound of the energy bin
@@ -86,7 +87,7 @@ HDUVERS  =                1.2.0 / Version number of the format
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 CREATOR  =                      / Software and version creating file
-HISTORY                     $Id: LatResponseTemplate,v 1.3 2003/12/10 15:51:22 sbansal Exp $
+HISTORY                     $Id: LatResponseTemplate,v 1.1 2004/07/19 11:10:01 peachey Exp $
 
 
 TTYPE#  CHANNEL        / Raw channel number

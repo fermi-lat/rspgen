@@ -54,6 +54,7 @@ namespace rspgen {
     protected:
       static const double s_keV_per_MeV;
       static const double s_MeV_per_keV;
+      static const double lower_threshold;
 
       /** \brief Look up irfs nicknames in dictionary. If not found, just return original string.
           \param resp The response nickname.

@@ -14,6 +14,8 @@
 #include "rspgen/IResponse.h"
 #include "rspgen/SpaceCraftCalculator.h"
 
+#include "facilities/Util.h"
+
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
 
@@ -21,6 +23,11 @@ namespace rspgen {
 
   const double IResponse::s_keV_per_MeV = 1000.;
   const double IResponse::s_MeV_per_keV = .001;
+
+  // Cutoff value for compress Response Matrix.
+  const double IResponse::lower_threshold = 0.0;
+  // Set this to false to disable writing of compressed files.
+  bool compressed = true;
 
   IResponse::IResponse(const std::string & resp_type, const std::string & spec_file, const evtbin::Binner * true_en_binner):
     m_os("IResponse", "IResponse(const std::string &...)", 2), m_kwds(), m_true_en_binner(0), m_app_en_binner(0), m_irfs() {
@@ -103,6 +110,9 @@ namespace rspgen {
     // Update keywords in the output file, using tip's file service keyword update mechanism.
     m_kwds.push_back(tip::Header::KeyValPair_t("CREATOR", creator));
 
+    // Update FILENAME keyword in output file
+    m_kwds.push_back(tip::Header::KeyValPair_t("FILENAME", facilities::Util::basename(file_name)));
+
     // Update output header with these keywords.
     tip::IFileSvc::instance().updateKeywords(file_name, m_kwds);
 
@@ -119,16 +129,27 @@ namespace rspgen {
     // Explicitly set DETCHANS.
     header["DETCHANS"].set(app_num_elem);
 
+    // Set LO_THRES keyword based on value we are using
+    header["LO_THRES"].set(lower_threshold);
+
     // Resize the table to hold number of records == the number of true energy bins.
     resp_table->setNumRecords(true_num_elem);
 
     // Create a vector to hold one row of the matrix (index on apparent energy).
 //    std::vector<double> response(app_num_elem);
     std::vector<double> response;
+    // And a scratch one for the values that will get written.
+    std::vector<double> scratch_response;
 
     // Compute values for other mandatory columns. (Must be vectors for vector valued columns in tip).
+    // These are set assuming non-compressed rsp files and then fixed for compress ones later.
+    int n_grp = 1;
     std::vector<int> f_chan(1, 1);
     std::vector<int> n_chan(1, app_num_elem);
+    
+    // Some counter variables for generating xspec compressed files.
+    long counter;
+    bool grpcnt = false;
 
     // Loop over true energy bins, computing response for each and writing it to the output response table.
     long true_idx = 0;
@@ -140,9 +161,43 @@ namespace rspgen {
       // Compute the response for this true energy.
       compute(true_en.midpoint(), response);
 
+      if (compressed) {
+	// Zero counters and clear vectors before each new row.
+	n_grp = 0;
+	grpcnt = false;
+	counter = 0;
+	f_chan.clear();
+	n_chan.clear();
+	scratch_response.clear();
+	// Populate vecotrs for compressed rsp file.
+	for(std::vector<double>::iterator r_itor = response.begin(); r_itor != response.end(); ++r_itor) {
+	  counter++;
+	  if (*r_itor <= lower_threshold) {
+	    if (grpcnt) {
+	      grpcnt = false;
+	    }
+	  } else {
+	    scratch_response.push_back(*r_itor);
+	    if (!grpcnt) {
+	      grpcnt = true;
+	      f_chan.push_back(counter);
+	      n_grp++;
+	      n_chan.resize(n_grp,0);
+	    }
+	    // Line above this ensures we are never writing past the end of n_chan.
+	    n_chan[n_grp-1]++;
+	  }
+	}
+	// Make sure that if f_chan and n_chan are smaller than three elements 
+	// they get resized and padded with 0.
+	if (f_chan.size() < 3) f_chan.resize(3,0);
+	if (n_chan.size() < 3) n_chan.resize(3,0);
+	response.swap(scratch_response);
+      }
+
       (*true_itor)["ENERG_LO"].set(s_keV_per_MeV * true_en.begin());
       (*true_itor)["ENERG_HI"].set(s_keV_per_MeV * true_en.end());
-      (*true_itor)["N_GRP"].set(1);
+      (*true_itor)["N_GRP"].set(n_grp);
       (*true_itor)["F_CHAN"].set(f_chan);
       (*true_itor)["N_CHAN"].set(n_chan);
       (*true_itor)["MATRIX"].set(response);
