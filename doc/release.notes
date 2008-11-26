@@ -37,7 +37,8 @@
 05-jun-2007    v1r2p5 JP  Fix unit test to work correctly following last change.
 19-jul-2007        v2 JP  Rationalized parameter names to match current standards.
 30-jan-2008    v2r0p1 JP  Add SCons files. Change to use facilities package for path operations.
-03-sep-2008      v2r1 JV Integrate all changes since beta test from GSSC.
+03-sep-2008      v2r1 JV  Integrate all changes since beta test from GSSC.
+26-nov-2008    v2r1p1 JP  Change type of index variable so it doesn't rely on a tip typedef.
 \endverbatim
 
 */
