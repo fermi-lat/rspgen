@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: peachey  Wed Nov 26 06:34:29 PST 2008
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Large file support in tip revealed inappropriate type:
+index variable for iterating over channels was declared to have type
+tip::Index_t. More sensible to use std::size_t.
+
+    *
+------------------------------------------------------------
 User: peachey  Wed Nov 26 06:32:21 PST 2008
 rspgen/src
 
