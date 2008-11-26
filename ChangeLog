@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: peachey  Wed Nov 26 06:32:21 PST 2008
+rspgen/src
+
+Modified Files:
+	IResponse.cxx 
+Log Message:
+Large file support in tip revealed inappropriate type:
+index variable for iterating over channels was declared to have type
+tip::Index_t. More sensible to use std::size_t. Also added check
+to prevent a negative detchans from being used.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: ScienceTools-09-06-00, operation: del
 Package: rspgen
