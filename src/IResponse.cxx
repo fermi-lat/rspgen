@@ -2,6 +2,7 @@
     \brief Implementation of generic response calculator.
     \author James Peachey, HEASARC
 */
+#include <cstddef>
 #include <map>
 #include <memory>
 #include <stdexcept>
@@ -49,16 +50,18 @@ namespace rspgen {
     // Get number of channels currently in use.
     int detchans = 0;
     header["DETCHANS"].get(detchans);
+    if (detchans <= 0)
+      throw std::runtime_error("Detchans keyword has a non-positive value in EBOUNDS extension of file " + spec_file);
 
     // Read apparent energy intervals from ebounds extension.
-    tip::Index_t index = 0;
+    std::size_t channel = 0;
     evtbin::OrderedBinner::IntervalCont_t app_intervals(detchans);
     for (tip::Table::ConstIterator itor = in_ebounds->begin(); itor != in_ebounds->end(); ++itor) {
-      (*itor)["CHANNEL"].get(index);
-      if (index > detchans) continue; // Skip any rows with channel numbers > the number of channels.
-      if (0 >= index) throw std::logic_error("Response constructor encountered a non-positive channel number");
-      --index; // Arrays start at 0, not 1. This may not always be true, hence the check above.
-      app_intervals[index] = evtbin::Binner::Interval(s_MeV_per_keV*(*itor)["E_MIN"].get(), s_MeV_per_keV*(*itor)["E_MAX"].get());
+      (*itor)["CHANNEL"].get(channel);
+      if (channel > std::size_t(detchans)) continue; // Skip any rows with channel numbers > the number of channels.
+      if (0 >= channel) throw std::logic_error("Response constructor encountered a non-positive channel number");
+      --channel; // Arrays start at 0, not 1. This may not always be true, hence the check above.
+      app_intervals[channel] = evtbin::Binner::Interval(s_MeV_per_keV*(*itor)["E_MIN"].get(), s_MeV_per_keV*(*itor)["E_MAX"].get());
     }
 
 
