@@ -1,5 +1,41 @@
 ------------------------------------------------------------
 TAG
+Tag name: rspgen-02-01-01, operation: add
+Package: rspgen
+User: glastrm  Wed Nov 26 07:30:50 2008
+Files:
+  rspgen/ChangeLog  1.206
+  rspgen/rspgenLib.py  1.2
+  rspgen/SConscript  1.7
+  rspgen/cmt/requirements  1.8
+  rspgen/data/ft2tiny.fits  1.1
+  rspgen/data/PHA1.pha  1.4
+  rspgen/data/rspgen_energy_bins.fits  1.1
+  rspgen/data/LatResponseTemplate  1.2
+  rspgen/doc/release.notes  1.27
+  rspgen/pfiles/gtrspgen.par  1.11
+  rspgen/rspgen/SpaceCraftCalculator.h  1.3
+  rspgen/rspgen/IWindow.h  1.2
+  rspgen/rspgen/IResponse.h  1.7
+  rspgen/rspgen/CircularWindow.h  1.3
+  rspgen/rspgen/PointResponse.h  1.4
+  rspgen/rspgen/GrbResponse.h  1.6
+  rspgen/rspgen/CosineBinner.h  1.1
+  rspgen/src/RspGenApp.h  1.4
+  rspgen/src/SpaceCraftCalculator.cxx  1.3
+  rspgen/src/CosineBinner.cxx  1.1
+  rspgen/src/IResponse.cxx  1.12
+  rspgen/src/mainpage.h  1.4
+  rspgen/src/CircularWindow.cxx  1.2
+  rspgen/src/PointResponse.cxx  1.15
+  rspgen/src/RspGenApp.cxx  1.14
+  rspgen/src/GrbResponse.cxx  1.12
+  rspgen/src/gtrspgen/gtrspgen.cxx  1.1
+  rspgen/src/test/test_rspgen.cxx  1.32
+
+    *
+------------------------------------------------------------
+TAG
 Tag name: v2r1p1, operation: mov
 Package: rspgen
 User: glastrm  Wed Nov 26 07:30:40 2008
