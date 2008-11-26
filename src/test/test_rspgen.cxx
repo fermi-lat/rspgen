@@ -4,6 +4,7 @@
 */
 // C++ standard inclusions.
 #include <cmath>
+#include <cstddef>
 #include <cstdio>
 #include <fstream>
 #include <iostream>
@@ -292,15 +293,15 @@ void RspGenTestApp::test1() {
   ebounds_ext->getHeader()["DETCHANS"].get(detchans);
 
   // Make sure there are at least detchans channels in the input ebounds. This is just a basic sanity check.
-  tip::Index_t num_rec = ebounds_ext->getNumRecords();
-  if (num_rec < detchans) throw std::runtime_error("test1: Channel number mismatch");
+  std::size_t num_rec = ebounds_ext->getNumRecords();
+  if (num_rec < std::size_t(detchans)) throw std::runtime_error("test1: Channel number mismatch");
   std::vector<double> min_app_en(detchans);
   std::vector<double> max_app_en(detchans);
 
-  tip::Index_t index = 0;
+  std::size_t index = 0;
   for (tip::Table::ConstIterator ebounds_itor = ebounds_ext->begin(); ebounds_itor != ebounds_ext->end(); ++ebounds_itor) {
     (*ebounds_itor)["CHANNEL"].get(index);
-    if (index > detchans) continue; // Skip any rows with channel numbers > the number of channels.
+    if (index > std::size_t(detchans)) continue; // Skip any rows with channel numbers > the number of channels.
     // Warning: This assumes first channel is 1, but that is not necessarily true. Check TLMIN/TLMAX keywords
     --index; // Arrays start with 0, channels with 1.
     (*ebounds_itor)["E_MIN"].get(min_app_en[index]);
@@ -359,7 +360,7 @@ void RspGenTestApp::test1() {
 
     // Populate response vector for each true energy value.
     std::vector<double> response;
-    for (index = 0; index < detchans; ++index) {
+    for (index = 0; index < std::size_t(detchans); ++index) {
       response.push_back(aeff_val * edisp->integral(min_app_en[index], max_app_en[index], true_en, theta, phi) * int_psf_val);
     }
 
@@ -425,15 +426,15 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   ebounds_ext->getHeader()["DETCHANS"].get(detchans);
 
   // Make sure there are at least detchans channels in the input ebounds. This is just a basic sanity check.
-  tip::Index_t num_rec = ebounds_ext->getNumRecords();
-  if (num_rec < detchans) throw std::runtime_error("test2: Channel number mismatch");
+  std::size_t num_rec = ebounds_ext->getNumRecords();
+  if (num_rec < std::size_t(detchans)) throw std::runtime_error("test2: Channel number mismatch");
   std::vector<double> min_app_en(detchans);
   std::vector<double> max_app_en(detchans);
 
-  tip::Index_t index = 0;
+  std::size_t index = 0;
   for (tip::Table::ConstIterator ebounds_itor = ebounds_ext->begin(); ebounds_itor != ebounds_ext->end(); ++ebounds_itor) {
     (*ebounds_itor)["CHANNEL"].get(index);
-    if (index > detchans) continue; // Skip any rows with channel numbers > the number of channels.
+    if (index > std::size_t(detchans)) continue; // Skip any rows with channel numbers > the number of channels.
     // Warning: This assumes first channel is 1, but that is not necessarily true. Check TLMIN/TLMAX keywords
     --index; // Arrays start with 0, channels with 1.
     (*ebounds_itor)["E_MIN"].get(min_app_en[index]);
@@ -486,7 +487,7 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
 
     // Populate response vector.
     std::vector<double> response;
-    for (index = 0; index < detchans; ++index) {
+    for (index = 0; index < std::size_t(detchans); ++index) {
       response.push_back(aeff_val * edisp->integral(min_app_en[index], max_app_en[index], true_en, theta, phi) * int_psf_val);
     }
 
@@ -590,15 +591,15 @@ void RspGenTestApp::test3() {
   ebounds_ext->getHeader()["DETCHANS"].get(detchans);
 
   // Make sure there are at least detchans channels in the input ebounds. This is just a basic sanity check.
-  tip::Index_t num_rec = ebounds_ext->getNumRecords();
-  if (num_rec < detchans) throw std::runtime_error("test3: Channel number mismatch");
+  std::size_t num_rec = ebounds_ext->getNumRecords();
+  if (num_rec < std::size_t(detchans)) throw std::runtime_error("test3: Channel number mismatch");
   std::vector<double> min_app_en(detchans);
   std::vector<double> max_app_en(detchans);
 
-  tip::Index_t index = 0;
+  std::size_t index = 0;
   for (tip::Table::ConstIterator ebounds_itor = ebounds_ext->begin(); ebounds_itor != ebounds_ext->end(); ++ebounds_itor) {
     (*ebounds_itor)["CHANNEL"].get(index);
-    if (index > detchans) continue; // Skip any rows with channel numbers > the number of channels.
+    if (index > std::size_t(detchans)) continue; // Skip any rows with channel numbers > the number of channels.
     // Warning: This assumes first channel is 1, but that is not necessarily true. Check TLMIN/TLMAX keywords
     --index; // Arrays start with 0, channels with 1.
     (*ebounds_itor)["E_MIN"].get(min_app_en[index]);
@@ -659,7 +660,7 @@ void RspGenTestApp::test3() {
       double aeff_val = aeff->value(true_en, theta, phi);
       double int_psf_val = psf->angularIntegral(true_en, theta, phi, radius);
 
-      for (index = 0; index < detchans; ++index) {
+      for (index = 0; index < std::size_t(detchans); ++index) {
         response[index] += diff_exp[theta_bin] / total_exposure * aeff_val * edisp->integral(min_app_en[index], max_app_en[index], true_en, theta, phi) * int_psf_val;
       }
 
