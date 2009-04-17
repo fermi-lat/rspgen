@@ -10,7 +10,7 @@ DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 DRM_NUM  =                      / Number of DRMs stored in this file
 CREATOR  =                      / Software and version creating file
-HISTORY                     $Id: LatResponseTemplate,v 1.1 2004/07/19 11:10:01 peachey Exp $
+HISTORY                     $Id: LatResponseTemplate,v 1.2 2008/09/03 19:24:10 vernaleo Exp $
 END
 
 
@@ -27,7 +27,7 @@ TFIELDS  =                    0 / Number of columns in table
 EXTNAME  =               MATRIX / Extension name
 TELESCOP =                GLAST / Telescope or mission name
 INSTRUME =                  LAT / Instrument name
-FILTER   =                      / Instrument filter in use
+FILTER   =                 NONE / Instrument filter in use
 CHANTYPE =                   PI / Whether channels used in the file have been corrected in any way
 DETCHANS =                    0 / Total number of detector channels available
 LO_THRES =                  0.0 / Lower threshold for stored matrix
@@ -40,7 +40,7 @@ NDSKEYS  =                    0 / Number of data subspace keywords in header
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 CREATOR  =                      / Software and version creating file
-HISTORY                     $Id: LatResponseTemplate,v 1.1 2004/07/19 11:10:01 peachey Exp $
+HISTORY                     $Id: LatResponseTemplate,v 1.2 2008/09/03 19:24:10 vernaleo Exp $
 
 
 TTYPE#  ENERG_LO                / Lower energy bound of the energy bin
@@ -77,7 +77,7 @@ TFIELDS  =                    0 / Number of columns in table
 EXTNAME  =              EBOUNDS / Extension name
 TELESCOP =                GLAST / Telescope or mission name
 INSTRUME =                  LAT / Instrument name
-FILTER   =                      / Instrument filter in use (if any)
+FILTER   =                 NONE / Instrument filter in use (if any)
 CHANTYPE =                   PI / Energy channel type
 DETCHANS =                      / Total number of detector channels available. 
 HDUCLASS =                 OGIP / Format confirms to OGIP standard
@@ -87,7 +87,7 @@ HDUVERS  =                1.2.0 / Version number of the format
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 CREATOR  =                      / Software and version creating file
-HISTORY                     $Id: LatResponseTemplate,v 1.1 2004/07/19 11:10:01 peachey Exp $
+HISTORY                     $Id: LatResponseTemplate,v 1.2 2008/09/03 19:24:10 vernaleo Exp $
 
 
 TTYPE#  CHANNEL        / Raw channel number
