@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: vernaleo  Fri Apr 17 08:01:08 PDT 2009
+rspgen/data
+
+Modified Files:
+	LatResponseTemplate PHA1.pha ft2tiny.fits 
+	rspgen_energy_bins.fits 
+Log Message:
+Matching with the FSSC version, up to date reference output for the rspgen unit test has been added and the test files have been made a little closer to following the fits standard properly.
+    *
+------------------------------------------------------------
 User: vernaleo  Fri Apr 17 07:57:18 PDT 2009
 rspgen/data/outref
 
