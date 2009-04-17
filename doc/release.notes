@@ -40,6 +40,7 @@
 03-sep-2008      v2r1 JV  Integrate all changes since beta test from GSSC.
 26-nov-2008    v2r1p1 JP  Change type of index variable so it doesn't rely on a tip typedef.
 23-jan-2009    v2r1p2 JV  Update default irf to P6_V1_DIFFUSE
+04-apr-2009    v2r1p3 JV  Added reference output for unit test.
 \endverbatim
 
 */
