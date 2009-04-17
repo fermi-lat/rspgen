@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: vernaleo  Fri Apr 17 08:01:08 PDT 2009
+rspgen/data/outref
+
+Added Files:
+	test_response1.rsp test_response2.rsp test_response3.rsp 
+	test_response4.rsp test_response5.rsp test_response6.rsp 
+	test_response7.rsp test_response8.rsp 
+Log Message:
+Matching with the FSSC version, up to date reference output for the rspgen unit test has been added and the test files have been made a little closer to following the fits standard properly.
+    *
+------------------------------------------------------------
+User: vernaleo  Fri Apr 17 08:01:08 PDT 2009
 rspgen/data
 
 Modified Files:
