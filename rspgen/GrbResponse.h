@@ -27,12 +27,13 @@ namespace rspgen {
     public:
       /** \brief Create GrbResponse object for a given burst and spacecraft coordinates
           \param theta The inclination angle of the spacecraft wrt the GRB direction.
+          \param phi The azimuthal angle of the spacecraft wrt the GRB direction.
           \param true_en_binner Binner object which is cloned and used for true energy binning.
           \param app_en_binner Binner object which is cloned and used for apparent energy binning.
           \param irfs The IRFs object, used to get the response functions from caldb.
           \param window The window object, used to define integration regions.
       */
-      GrbResponse(double theta, const evtbin::Binner * true_en_binner, const evtbin::Binner * app_en_binner,
+      GrbResponse(double theta, double phi, const evtbin::Binner * true_en_binner, const evtbin::Binner * app_en_binner,
         irfInterface::Irfs * irfs, const IWindow * window);
 
       /** \brief Create GrbResponse object for a given burst and spacecraft coordinates
@@ -60,6 +61,7 @@ namespace rspgen {
 
     private:
       double m_theta;
+      double m_phi;
       IWindow * m_window;
   };
 

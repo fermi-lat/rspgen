@@ -26,6 +26,9 @@
 // Sky directions use astro::SkyDir.
 #include "astro/SkyDir.h"
 
+// CLHEP for operations not supported directly by astro.
+#include "CLHEP/Vector/ThreeVector.h"
+
 // Include irfs.
 #include "irfLoader/Loader.h"
 
@@ -153,6 +156,9 @@ class RspGenTestApp : public st_app::StApp {
     */
     void test11();
 
+    /// \brief Test calculation of phi.
+    void testPhiCalc();
+
   private:
     /** \brief Compare three arrays to ensure the third is the sum of the first two.
         \param descriptor A string describing the arrays being compared, for diagnostic purposes.
@@ -162,6 +168,14 @@ class RspGenTestApp : public st_app::StApp {
     */
     void compare(const std::string & descriptor, const std::vector<double> & vec1, const std::vector<double> & vec2,
       const std::vector<double> & total);
+
+    /** \brief Compare two values to see if they are equal.
+        \param descriptor A string describing the comparison being performed.
+        \param value The (computed) value.
+        \param expected_value The expected value.
+        \param abs_tol Tolerance.
+    */
+    void compare(const std::string & descriptor, double value, double expected_value, double abs_tol);
 
     /** \brief Return a standard energy binner used throughout the tests.
     */
@@ -273,6 +287,12 @@ void RspGenTestApp::run() {
   } catch (const std::exception & x) {
     m_failed = true;
     std::cerr << "While running test11, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+  try {
+    testPhiCalc();
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running testPhiCalc, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
   }
 
   if (m_failed) throw std::runtime_error("test_rspgen failed");
@@ -711,6 +731,7 @@ void RspGenTestApp::test4() {
     // Compute inclination angle from burst RA and DEC and spacecraft pointing.
     double theta = astro::SkyDir(114., -30.).difference(astro::SkyDir(sc_record.get("RA_SCZ"), sc_record.get("DEC_SCZ")))*180./M_PI;
 
+    double phi = 0.;
 
     // Confirm that this value is correct.
     float correct_val = 1.18774705e02;
@@ -761,7 +782,7 @@ void RspGenTestApp::test4() {
     evtbin::OrderedBinner true_en_binner(true_intervals);
 
     // Create response object for burst, using the first constructor.
-    GrbResponse resp(theta, &true_en_binner, &app_en_binner, irfs.get(), &window);
+    GrbResponse resp(theta, phi, &true_en_binner, &app_en_binner, irfs.get(), &window);
 
     // Sanity check: just compute one response at 137. MeV.
     std::vector<double> resp_slice(detchans, 0.);
@@ -1060,7 +1081,8 @@ void RspGenTestApp::test10() {
 
     double true_energy = 100.;
     double theta = 15.;
-    calc.psf(true_energy, theta);
+    double phi = 0.;
+    calc.psf(true_energy, theta, phi);
   } catch (const std::exception & x) {
     m_failed = true;
     std::cerr << "Unexpected: test10 failed: " << x.what() << std::endl;
@@ -1113,6 +1135,64 @@ void RspGenTestApp::test11() {
   compare("GrbResponse", back_resp, front_resp, total_resp);
 }
 
+namespace {
+  double s_calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) {
+    typedef CLHEP::Hep3Vector vec_t;
+    static const double pi = std::acos(-1);
+    const vec_t & x_hat = x_ref.dir();
+    const vec_t y_hat = z_ref.dir().cross(x_hat);
+    double phi = std::atan2(dir.dir().dot(y_hat), dir.dir().dot(x_hat));
+    while (phi < 0.) phi += 2 * pi;
+    return phi * 180. / pi;
+  }
+}
+
+void RspGenTestApp::testPhiCalc() {
+  typedef CLHEP::Hep3Vector vec_t;
+  const double pi = std::acos(-1);
+
+  // Point spacecraft X along the X axis to make life easy.
+  astro::SkyDir sc_x(vec_t(1., 0., 0.));
+  astro::SkyDir sc_z(vec_t(0., 0., 1.));
+
+  // Set source angles.
+  double src_theta = pi / 4.;
+  double src_phi = pi / 3.;
+
+  // Unit vector components for source with the above angles.
+  double abs_x = std::cos(src_phi) * std::sin(src_theta);
+  double abs_y = std::sin(src_phi) * std::sin(src_theta);
+  double abs_z = std::cos(src_theta);
+
+  // Compute phi from product of vector: SpacecraftZ cross SourceX dot SpacecraftY.
+  // Test vectors in each octant.
+  double expected_phi = src_phi; // The right answer.
+
+  double phi = s_calcPhi(sc_x, sc_z, astro::SkyDir(vec_t(abs_x, abs_y, abs_z)));
+  compare("in testPhiCalc, phi in octant 1", phi * pi / 180., expected_phi, 1.e-12);
+
+  phi = s_calcPhi(sc_x, sc_z, astro::SkyDir(vec_t(-abs_x, abs_y, abs_z)));
+  compare("in testPhiCalc, phi in octant 2", phi * pi / 180., pi - expected_phi, 1.e-12);
+
+  phi = s_calcPhi(sc_x, sc_z, astro::SkyDir(vec_t(-abs_x, -abs_y, abs_z)));
+  compare("in testPhiCalc, phi in octant 3", phi * pi / 180., pi + expected_phi, 1.e-12);
+
+  phi = s_calcPhi(sc_x, sc_z, astro::SkyDir(vec_t(abs_x, -abs_y, abs_z)));
+  compare("in testPhiCalc, phi in octant 4", phi * pi / 180., 2 * pi - expected_phi, 1.e-12);
+
+  phi = s_calcPhi(sc_x, sc_z, astro::SkyDir(vec_t(abs_x, abs_y, -abs_z)));
+  compare("in testPhiCalc, phi in octant 5", phi * pi / 180., expected_phi, 1.e-12);
+
+  phi = s_calcPhi(sc_x, sc_z, astro::SkyDir(vec_t(-abs_x, abs_y, -abs_z)));
+  compare("in testPhiCalc, phi in octant 6", phi * pi / 180., pi - expected_phi, 1.e-12);
+
+  phi = s_calcPhi(sc_x, sc_z, astro::SkyDir(vec_t(-abs_x, -abs_y, -abs_z)));
+  compare("in testPhiCalc, phi in octant 7", phi * pi / 180., pi + expected_phi, 1.e-12);
+
+  phi = s_calcPhi(sc_x, sc_z, astro::SkyDir(vec_t(abs_x, -abs_y, -abs_z)));
+  compare("in testPhiCalc, phi in octant 8", phi * pi / 180., 2 * pi - expected_phi, 1.e-12);
+}
+
 void RspGenTestApp::compare(const std::string & descriptor, const std::vector<double> & vec1, const std::vector<double> & vec2,
   const std::vector<double> & total) {
   if (vec1.size() != vec2.size() || vec1.size() != total.size()) {
@@ -1131,6 +1211,17 @@ void RspGenTestApp::compare(const std::string & descriptor, const std::vector<do
       std::cerr << "Unexpected: in test11, " << descriptor << " gave total[" << index << "] = " << total[index] << ", not " <<
         expected_total << ", as expected." << std::endl;
     }
+  }
+}
+
+void RspGenTestApp::compare(const std::string & descriptor, double value, double expected_value, double abs_tol) {
+  int comparison = 0;
+  if ((expected_value - value) > abs_tol) comparison = 1;
+  else if ((value - expected_value) > abs_tol) comparison = -1;
+  if (0 != comparison) {
+    m_failed = true;
+    std::cerr.precision(15);
+    std::cerr << "Unexpected: " << descriptor << " is " << value << ", not " << expected_value << ", as expected" << std::endl;
   }
 }
 

@@ -2,6 +2,7 @@
     \brief Interface for Point-specific response calculations.
     \author James Peachey, HEASARC
 */
+#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -30,15 +31,21 @@ namespace rspgen {
     // of SpaceCraftCalculator and not duplicate this code here.
     using evtbin::Gti;
 
+    std::size_t num_phi_bins = 80;
+
     // Process spacecraft data.
     std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
 
     // Put point source direction into standard form.
     astro::SkyDir ps_pos(ps_ra, ps_dec);
 
+    double phi_cut = 360.;
+    double phi_bin_size = phi_cut / num_phi_bins;
+
     // Set up a histogram to hold the binned differential exposure (theta vs. DeltaT).
-    //std::auto_ptr<evtbin::Hist1D> diff_exp(new evtbin::Hist1D(evtbin::LinearBinner(0., theta_cut, theta_bin_size)));
-    std::auto_ptr<evtbin::Hist1D> diff_exp(new evtbin::Hist1D(CosineBinner(0., theta_cut, theta_bin_size)));
+    std::auto_ptr<evtbin::Hist2D> diff_exp(new evtbin::Hist2D(
+      CosineBinner(0., theta_cut, theta_bin_size), evtbin::LinearBinner(0., phi_cut, phi_bin_size)
+    ));
 
     // Get GTI information.
     Gti gti(spec_file);
@@ -72,11 +79,18 @@ namespace rspgen {
 
       astro::SkyDir scz_pos(ra_scz, dec_scz);
 
-      // Compute inclination angle from the source position to the sc.
+      // Compute inclination angle from the source position relative to the sc z.
       double theta = ps_pos.difference(scz_pos) * 180. / M_PI;
 
+      double ra_scx = sc_record.get("RA_SCX");
+      double dec_scx = sc_record.get("DEC_SCX");
+
+      // Compute azimuthal angle from the source position relative to the sc z and x.
+      astro::SkyDir scx_pos(ra_scx, dec_scx);
+      double phi = calcPhi(scx_pos, scz_pos, ps_pos);
+
       // Bin this angle into the histogram.
-      diff_exp->fillBin(theta, delta_t);
+      diff_exp->fillBin(theta, phi, delta_t);
 
       m_total_exposure += delta_t;
     }
@@ -99,36 +113,39 @@ namespace rspgen {
   void PointResponse::compute(double true_energy, std::vector<double> & response) {
     // TODO: This method uses functionality which ought to be in class SpaceCraftCalculator. PointResponse should use
     // a member of SpaceCraftCalculator and thus simplify the code here.
-    double phi = 0.; // Dummy for now.
-
     // Iterate over the bins of the histogram.
     const evtbin::Binner * theta_bins = m_diff_exp->getBinners()[0];
     long num_theta_bins = theta_bins->getNumBins();
+    const evtbin::Binner * phi_bins = m_diff_exp->getBinners()[1];
+    long num_phi_bins = phi_bins->getNumBins();
 
     // Reset the response vector to be all zeroes, and enough of them.
     response.clear();
     response.assign(m_app_en_binner->getNumBins(), 0.);
 
     // Integrate over binned angle-dependent differential exposure.
-    for (long bin_index = 0; bin_index < num_theta_bins; ++bin_index) {
+    for (long theta_index = 0; theta_index < num_theta_bins; ++theta_index) {
       // Get the angle from the center of the bin.
-      double theta = theta_bins->getInterval(bin_index).midpoint();
-
-      for (irf_cont_type::iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
-        irfInterface::Irfs * irfs = *itor;
-
-        // Compute effective area, which is a function of true_energy and sc pointing direction only.
-        double aeff_val = irfs->aeff()->value(true_energy, theta, phi);
-        // Use the window object to integrate psf over the region.
-        double int_psf_val = m_window->integrate(irfs->psf(), true_energy, theta, phi);
-
-        // For each apparent energy bin, compute integral of the redistribution coefficient.
-        for (long index = 0; index < m_app_en_binner->getNumBins(); ++index) {
-          // Get limits of integration over apparent energy bins.
-          evtbin::Binner::Interval limits = m_app_en_binner->getInterval(index);
-
-          response[index] += (*m_diff_exp)[bin_index] / m_total_exposure * aeff_val *
-            irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, theta, phi) * int_psf_val;
+      double theta = theta_bins->getInterval(theta_index).midpoint();
+      for (long phi_index = 0; phi_index < num_phi_bins; ++phi_index) {
+        double phi = phi_bins->getInterval(phi_index).midpoint();
+  
+        for (irf_cont_type::iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
+          irfInterface::Irfs * irfs = *itor;
+  
+          // Compute effective area, which is a function of true_energy and sc pointing direction only.
+          double aeff_val = irfs->aeff()->value(true_energy, theta, phi);
+          // Use the window object to integrate psf over the region.
+          double int_psf_val = m_window->integrate(irfs->psf(), true_energy, theta, phi);
+  
+          // For each apparent energy bin, compute integral of the redistribution coefficient.
+          for (long index = 0; index < m_app_en_binner->getNumBins(); ++index) {
+            // Get limits of integration over apparent energy bins.
+            evtbin::Binner::Interval limits = m_app_en_binner->getInterval(index);
+  
+            response[index] += (*m_diff_exp)[theta_index][phi_index] / m_total_exposure * aeff_val *
+              irfs->edisp()->integral(limits.begin(), limits.end(), true_energy, theta, phi) * int_psf_val;
+          }
         }
       }
     }
@@ -149,9 +166,14 @@ namespace rspgen {
 
     // Find the theta bin index corresponding to this theta.
     const evtbin::Binner * theta_bins = m_diff_exp->getBinners()[0];
-    long bin_index = theta_bins->computeIndex(theta);
+    long theta_index = theta_bins->computeIndex(theta);
+
+    // Find the phi bin index corresponding to this phi.
+    const evtbin::Binner * phi_bins = m_diff_exp->getBinners()[1];
+    long phi_index = phi_bins->computeIndex(phi);
 
     // Return the psf for this theta bin, weighted by the fractional differential exposure.
-    return psf_val * (*m_diff_exp)[bin_index] / m_total_exposure;
+    return psf_val * (*m_diff_exp)[theta_index][phi_index] / m_total_exposure;
   }
+
 }

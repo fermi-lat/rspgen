@@ -26,9 +26,9 @@ namespace rspgen {
           \param psf The psf object.
           \param true_energy The true energy for which to evaluate the integral.
           \param theta The true inclination angle of the incident photon.
-          \param phi The true asimuthal angle of the incident photon.
+          \param phi The true azimuthal angle of the incident photon.
       */
-      virtual double integrate(irfInterface::IPsf * psf, double true_energy, double theta, double phi = 0.) const;
+      virtual double integrate(irfInterface::IPsf * psf, double true_energy, double theta, double phi) const;
 
     private:
       double m_radius;
