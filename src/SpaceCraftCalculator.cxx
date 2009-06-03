@@ -22,6 +22,8 @@
 #include "tip/LinearInterp.h"
 #include "tip/Table.h"
 
+#include "CLHEP/Vector/ThreeVector.h"
+
 #include <algorithm>
 #include <cctype>
 #include <map>
@@ -154,14 +156,21 @@ namespace rspgen {
       // Get interpolated SC coordinates.
       sc_record.interpolate("START", (start + stop) / 2.);
 
-      // TODO: Read SCX, bin in phi as well as theta.
+      // Spacecraft Z.
       double ra_scz = sc_record.get("RA_SCZ");
       double dec_scz = sc_record.get("DEC_SCZ");
-
       astro::SkyDir scz_pos(ra_scz, dec_scz);
 
       // Compute inclination angle from the source position to the sc.
       double theta = src_dir.difference(scz_pos) * 180. / M_PI;
+
+      // Spacecraft X.
+      double ra_scx = sc_record.get("RA_SCX");
+      double dec_scx = sc_record.get("DEC_SCX");
+      astro::SkyDir scx_pos(ra_scx, dec_scx);
+
+      // Compute azimuthal angle for the source relative to the sc.
+      double phi = calcPhi(scx_pos, scz_pos, src_dir);
 
       // Bin this angle into the histogram.
       diff_exp->fillBin(theta, delta_t);
@@ -197,10 +206,7 @@ namespace rspgen {
     delete m_diff_exp;
   }
 
-  double SpaceCraftCalculator::psf(double true_energy, double theta) const {
-    // TODO: Integrate over phi.
-    double phi = 0.;
-
+  double SpaceCraftCalculator::psf(double true_energy, double theta, double phi) const {
     double psf_val = 0.;
 
     for (irf_cont_type::const_iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
@@ -216,6 +222,16 @@ namespace rspgen {
 
     // Return the psf for this theta bin, weighted by the fractional differential exposure.
     return psf_val * (*m_diff_exp)[bin_index] / m_total_exposure;
+  }
+
+  double SpaceCraftCalculator::calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) const {
+    typedef CLHEP::Hep3Vector vec_t;
+    static const double pi = std::acos(-1);
+    const vec_t & x_hat = x_ref.dir();
+    const vec_t y_hat = z_ref.dir().cross(x_hat);
+    double phi = std::atan2(dir.dir().dot(y_hat), dir.dir().dot(x_hat));
+    while (phi < 0.) phi += 2 * pi;
+    return phi * 180./pi;
   }
 
 }

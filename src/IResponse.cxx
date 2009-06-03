@@ -7,6 +7,8 @@
 #include <memory>
 #include <stdexcept>
 
+#include "astro/SkyDir.h"
+
 #include "evtbin/OrderedBinner.h"
 
 #include "irfInterface/IrfsFactory.h"
@@ -19,6 +21,8 @@
 
 #include "tip/IFileSvc.h"
 #include "tip/Table.h"
+
+#include "CLHEP/Vector/ThreeVector.h"
 
 namespace rspgen {
 
@@ -232,6 +236,16 @@ namespace rspgen {
 
   void IResponse::lookUpResponse(const std::string & resp, irf_name_cont_type & match) {
     SpaceCraftCalculator::lookUpResponse(resp, match);
+  }
+
+  double IResponse::calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) const {
+    typedef CLHEP::Hep3Vector vec_t;
+    static const double pi = std::acos(-1);
+    const vec_t & x_hat = x_ref.dir();
+    const vec_t y_hat = z_ref.dir().cross(x_hat);
+    double phi = std::atan2(dir.dir().dot(y_hat), dir.dir().dot(x_hat));
+    while (phi < 0.) phi += 2 * pi;
+    return phi * 180. / pi;
   }
 
   IResponse::IResponse(): m_os("IResponse", "IResponse()", 2), m_true_en_binner(0), m_app_en_binner(0), m_irfs() {}

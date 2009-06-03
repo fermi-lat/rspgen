@@ -45,7 +45,9 @@ namespace rspgen {
 
       virtual ~SpaceCraftCalculator();
 
-      virtual double psf(double true_energy, double theta) const;
+      virtual double psf(double true_energy, double theta, double phi) const;
+
+      double calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) const;
 
     private:
       evtbin::Hist1D * m_diff_exp;

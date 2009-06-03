@@ -19,6 +19,10 @@
 
 #include "tip/Header.h"
 
+namespace astro {
+  class SkyDir;
+}
+
 namespace rspgen {
 
   /** \class IResponse
@@ -61,6 +65,8 @@ namespace rspgen {
           \param match The matching irfs names.
       */
       static void lookUpResponse(const std::string & resp, irf_name_cont_type & match);
+
+      double calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) const;
 
       IResponse();
 

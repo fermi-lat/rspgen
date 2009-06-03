@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "evtbin/Binner.h"
-#include "evtbin/Hist1D.h"
+#include "evtbin/Hist2D.h"
 
 #include "rspgen/IResponse.h"
 #include "rspgen/IWindow.h"
@@ -59,7 +59,7 @@ namespace rspgen {
 
     private:
       IWindow * m_window;
-      evtbin::Hist1D * m_diff_exp;
+      evtbin::Hist2D * m_diff_exp;
       double m_total_exposure;
   };
 
