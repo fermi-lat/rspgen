@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: peachey  Wed Jun  3 14:27:57 PDT 2009
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Add phi-dependence to response calculation.
+
+    *
+------------------------------------------------------------
+User: peachey  Wed Jun  3 14:27:57 PDT 2009
 rspgen/src
 
 Modified Files:
