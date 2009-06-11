@@ -122,6 +122,8 @@ namespace rspgen {
     double psf_radius, const std::string & resp_type, const std::string & gti_file, const std::string & sc_file,
     const std::string & sc_table): m_diff_exp(0), m_irfs(), m_window(0), m_total_exposure(0.) {
     using evtbin::Gti;
+    // TODO If this class is ever actually used to merge common functions from GrbReponse and PointResponse,
+    // phi needs to be handled properly, including Hist2D etc. See PointResponse.
 
     // Get spacecraft data.
     std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
@@ -168,9 +170,6 @@ namespace rspgen {
       double ra_scx = sc_record.get("RA_SCX");
       double dec_scx = sc_record.get("DEC_SCX");
       astro::SkyDir scx_pos(ra_scx, dec_scx);
-
-      // Compute azimuthal angle for the source relative to the sc.
-      double phi = calcPhi(scx_pos, scz_pos, src_dir);
 
       // Bin this angle into the histogram.
       diff_exp->fillBin(theta, delta_t);
