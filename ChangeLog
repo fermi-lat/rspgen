@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: peachey  Thu Jun 11 07:57:03 PDT 2009
+rspgen/rspgen
+
+Modified Files:
+	PointResponse.h 
+Log Message:
+Use supplied number of bins instead of a hard-wired number.
+Add getSpatialNumBins method to allow test code to check
+correctness of binning.
+    *
+------------------------------------------------------------
 User: peachey  Thu Jun 11 07:55:18 PDT 2009
 rspgen/src
 
