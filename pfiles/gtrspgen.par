@@ -23,6 +23,7 @@ time,          r, a, 0., , , "Time of GRB (s)"
 # PS-specific parameters.
 thetacut,      r, a, 60., , , "Cutoff angle for binning SC pointings (degrees)"
 dcostheta,     r, a, .05, , , "Size of bins for binning SC pointings (cos(theta))"
+phinumbins,    i, h, 80, 1, , "Number of logarithmically uniform energy bins"
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
