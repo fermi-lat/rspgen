@@ -64,6 +64,7 @@ namespace rspgen {
       // Non-burst case: SC data will be binned in theta space.
       pars.Prompt("thetacut");
       pars.Prompt("dcostheta");
+      pars.Prompt("phinumbins");
     }
 
     // Prompt for remaining parameters, which are common to all.
@@ -139,7 +140,7 @@ namespace rspgen {
       m_response = new GrbResponse(ra, dec, pars["time"], psf_radius, pars["irfs"], spec_file, pars["scfile"],
         pars["sctable"], true_en_binner.get());
     } else if (alg == "PS") {
-      m_response = new PointResponse(ra, dec, pars["thetacut"], pars["dcostheta"], psf_radius,
+      m_response = new PointResponse(ra, dec, pars["thetacut"], pars["dcostheta"], psf_radius, pars["phinumbins"],
         pars["irfs"], spec_file, pars["scfile"], pars["sctable"], true_en_binner.get());
     } else {
       throw std::runtime_error("RspGenApp::writeResponse: invalid response algorithm " + alg);
