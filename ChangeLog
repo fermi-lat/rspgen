@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Thu Jun 11 07:51:53 PDT 2009
+rspgen/pfiles
+
+Modified Files:
+	gtrspgen.par 
+Log Message:
+Add phinumbins parameter for controlling phi binning.
+    *
+------------------------------------------------------------
 User: peachey  Thu Jun 11 07:41:15 PDT 2009
 rspgen/data/outref
 
