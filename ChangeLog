@@ -1,4 +1,20 @@
 ------------------------------------------------------------
+User: peachey  Thu Jun 11 07:55:18 PDT 2009
+rspgen/src
+
+Modified Files:
+	SpaceCraftCalculator.cxx 
+Log Message:
+Note this class is an "under construction" class, not actually used by
+the production code for rspgen. The idea was that this would provide
+much of the common functionality of GrbResponse and PointResponse and
+that it would be available to clients outside of rspgen.
+
+azimuthal angle dependence. Needs more work before it can be used
+as intended.
+
+    *
+------------------------------------------------------------
 User: peachey  Thu Jun 11 07:52:15 PDT 2009
 rspgen/src
 
