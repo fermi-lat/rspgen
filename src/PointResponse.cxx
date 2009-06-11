@@ -2,7 +2,6 @@
     \brief Interface for Point-specific response calculations.
     \author James Peachey, HEASARC
 */
-#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -24,14 +23,12 @@
 namespace rspgen {
 
   PointResponse::PointResponse(double ps_ra, double ps_dec, double theta_cut, double theta_bin_size, double psf_radius,
-    const std::string & resp_type, const std::string & spec_file, const std::string & sc_file, const std::string & sc_table,
-    const evtbin::Binner * true_en_binner): IResponse(resp_type, spec_file, true_en_binner), m_window(0),
-    m_diff_exp(0), m_total_exposure(0.) {
+    long phi_num_bins, const std::string & resp_type, const std::string & spec_file, const std::string & sc_file,
+    const std::string & sc_table, const evtbin::Binner * true_en_binner): IResponse(resp_type, spec_file, true_en_binner),
+    m_window(0), m_diff_exp(0), m_total_exposure(0.) {
     // TODO: This constructor is now duplicated in class SpaceCraftCalculator. PointResponse should have a member
     // of SpaceCraftCalculator and not duplicate this code here.
     using evtbin::Gti;
-
-    std::size_t num_phi_bins = 80;
 
     // Process spacecraft data.
     std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
@@ -40,7 +37,7 @@ namespace rspgen {
     astro::SkyDir ps_pos(ps_ra, ps_dec);
 
     double phi_cut = 360.;
-    double phi_bin_size = phi_cut / num_phi_bins;
+    double phi_bin_size = phi_cut / phi_num_bins;
 
     // Set up a histogram to hold the binned differential exposure (theta vs. DeltaT).
     std::auto_ptr<evtbin::Hist2D> diff_exp(new evtbin::Hist2D(
@@ -174,6 +171,14 @@ namespace rspgen {
 
     // Return the psf for this theta bin, weighted by the fractional differential exposure.
     return psf_val * (*m_diff_exp)[theta_index][phi_index] / m_total_exposure;
+  }
+
+  std::pair<long, long> PointResponse::getSpatialNumBins() const {
+    const evtbin::Binner * theta_bins = m_diff_exp->getBinners()[0];
+    long num_theta_bins = theta_bins->getNumBins();
+    const evtbin::Binner * phi_bins = m_diff_exp->getBinners()[1];
+    long num_phi_bins = phi_bins->getNumBins();
+    return std::make_pair(num_theta_bins, num_phi_bins);
   }
 
 }

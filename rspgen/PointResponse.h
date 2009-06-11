@@ -6,6 +6,7 @@
 #define rspgen_PointResponse_h
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "evtbin/Binner.h"
@@ -30,6 +31,7 @@ namespace rspgen {
           \param theta_cut The cutoff for spacecraft theta integration, in degrees.
           \param theta_bin_size The size of bins for spacecraft theta integration, in degrees.
           \param psf_radius The radius of the psf integration, in degrees.
+          \param phi_num_bins The number of bins used in binning the azimuthal angle phi.
           \param resp_type Identifies response function type.
           \param spec_file The name of the spectrum file.
           \param sc_file The name of the file containing spacecraft data.
@@ -37,7 +39,7 @@ namespace rspgen {
           \param true_en_binner Binner object used for true energy bin definitions.
       */
       PointResponse(double ps_ra, double ps_dec, double theta_cut, double theta_bin_size, double psf_radius,
-        const std::string & resp_type, const std::string & spec_file, const std::string & sc_file,
+        long phi_num_bins, const std::string & resp_type, const std::string & spec_file, const std::string & sc_file,
         const std::string & sc_table, const evtbin::Binner * true_en_binner);
 
       virtual ~PointResponse() throw();
@@ -56,6 +58,9 @@ namespace rspgen {
           \param phi Spacecraft azimuthal angle in degrees.
       */
       virtual double psf(double true_energy, double theta, double phi) const;
+
+      /// \brief Return the number of bins used in binning in theta, phi.
+      std::pair<long, long> getSpatialNumBins() const;
 
     private:
       IWindow * m_window;
