@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: peachey  Thu Jun 11 07:58:36 PDT 2009
+rspgen/data/outref
+
+Modified Files:
+	test_response1.rsp test_response2.rsp test_response3.rsp 
+	test_response4.rsp test_response5.rsp test_response6.rsp 
+	test_response7.rsp test_response8.rsp 
+Log Message:
+Regenerated reference output using latest version of code.
+Includes phi-dependent response calculation.
+    *
+------------------------------------------------------------
 User: peachey  Thu Jun 11 07:57:33 PDT 2009
 rspgen/src/test
 
