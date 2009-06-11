@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
+#include <utility>
 #include <vector>
 
 #ifndef WIN32
@@ -156,6 +157,10 @@ class RspGenTestApp : public st_app::StApp {
     */
     void test11();
 
+    /** \brief Test pass 7 irfs and phi binning.
+    */
+    void test12();
+
     /// \brief Test calculation of phi.
     void testPhiCalc();
 
@@ -288,6 +293,14 @@ void RspGenTestApp::run() {
     m_failed = true;
     std::cerr << "While running test11, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
   }
+
+  try {
+    test12();
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "While running test12, RspGenTestApp caught " << typeid(x).name() << ": what == " << x.what() << std::endl;
+  }
+
   try {
     testPhiCalc();
   } catch (const std::exception & x) {
@@ -905,7 +918,7 @@ void RspGenTestApp::test7() {
     // Construct a steady point source response, but do not supply a binner. This should succeed.
     double ra_ps = 8.3633225E+01; // RA of point source
     double dec_ps = 2.2014458E+01; // DEC of point source
-    response_no_binner.reset(new PointResponse(ra_ps, dec_ps, 60., .05, 3., "testIrfs::Back", findFile("PHA1.pha"),
+    response_no_binner.reset(new PointResponse(ra_ps, dec_ps, 60., .05, 3., 1, "testIrfs::Back", findFile("PHA1.pha"),
       findFile("ft2tiny.fits"), "Ext1", 0));
 
     // Confirm that psf method works even without the binner.
@@ -931,11 +944,24 @@ void RspGenTestApp::test7() {
     std::auto_ptr<evtbin::Binner> true_en_binner(createStdBinner());
 
     // Construct a steady point source response for the given RA, DEC, thetabins.
-    // RA, DEC, theta_cut, theta_bin_size, radius, response type, pha file, FT2 file, energy bin def file.
+    // RA, DEC, theta_cut, theta_bin_size, radius, number of phi bins, response type, pha file, FT2 file, energy bin def file.
     double ra_ps = 8.3633225E+01; // RA of point source
     double dec_ps = 2.2014458E+01; // DEC of point source
-    PointResponse resp(ra_ps, dec_ps, 60., .05, 3., "testIrfs::Back", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
+    PointResponse resp(ra_ps, dec_ps, 60., .05, 3., 80, "testIrfs::Back", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
       "Ext1", true_en_binner.get());
+
+    // Confirm binner has expected numbers of bins.
+    std::pair<long, long> dims(resp.getSpatialNumBins());
+    if (dims.first != 10) {
+      m_failed = true;
+      std::cerr << "Unexpected: PointResponse::getSpatialNumBins reports " << dims.first <<
+        " theta bins, not 10 as expected." << std::endl;
+    }
+    if (dims.second != 80) {
+      m_failed = true;
+      std::cerr << "Unexpected: PointResponse::getSpatialNumBins reports " << dims.second <<
+        " phi bins, not 80 as expected." << std::endl;
+    }
 
     // Sanity check: just compute one response at 137. MeV.
     std::vector<double> resp_slice;
@@ -983,6 +1009,7 @@ void RspGenTestApp::test8() {
     pars["outfile"] = "test_response8.rsp";
     pars["thetacut"] = 60.;
     pars["dcostheta"] = .05;
+    pars["phinumbins"] = 80;
     pars["irfs"] = "testIrfs::Front";
     pars["resptpl"] = "DEFAULT";
     pars["ebinalg"] = "FILE";
@@ -1102,11 +1129,11 @@ void RspGenTestApp::test11() {
   // RA, DEC, theta_cut, theta_bin_size, radius, response type, pha file, FT2 file, energy bin def file.
   double ra_ps = 8.3633225E+01; // RA of point source
   double dec_ps = 2.2014458E+01; // DEC of point source
-  PointResponse back(ra_ps, dec_ps, 60., .05, 3., "TESTB", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
+  PointResponse back(ra_ps, dec_ps, 60., .05, 3., 80, "TESTB", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
     "Ext1", true_en_binner.get());
-  PointResponse front(ra_ps, dec_ps, 60., .05, 3., "TESTF", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
+  PointResponse front(ra_ps, dec_ps, 60., .05, 3., 80, "TESTF", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
     "Ext1", true_en_binner.get());
-  PointResponse total(ra_ps, dec_ps, 60., .05, 3., "TEST", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
+  PointResponse total(ra_ps, dec_ps, 60., .05, 3., 80, "TEST", findFile("PHA1.pha"), findFile("ft2tiny.fits"),
     "Ext1", true_en_binner.get());
 
   std::vector<double> back_resp;
@@ -1134,6 +1161,55 @@ void RspGenTestApp::test11() {
 
   compare("GrbResponse", back_resp, front_resp, total_resp);
 }
+
+// Test application class for PointResponse case using Pass 7 irfs and phi binning.
+void RspGenTestApp::test12() {
+  using namespace rspgen;
+
+  try {
+    RspGenApp app;
+
+    st_app::AppParGroup & pars(getParGroup("gtrspgen"));
+
+    // Make copy of input spectrum file so that the original spectrum will not be changed by
+    // this test.
+    std::string orig_spec = findFile("PHA1.pha");
+    copyFile(orig_spec, "PHA1.pha");
+
+    // Set parameters "by hand"
+    pars["respalg"] = "PS";
+    pars["specfile"] = "PHA1.pha";
+    pars["scfile"] = findFile("ft2tiny.fits");
+    pars["sctable"] = "Ext1";
+    pars["outfile"] = "test_response_p7.rsp";
+    pars["thetacut"] = 60.;
+    pars["dcostheta"] = .05;
+    pars["phinumbins"] = 20;
+    pars["irfs"] = "P7_V1_DIFFUSE";
+    pars["resptpl"] = "DEFAULT";
+    pars["ebinalg"] = "FILE";
+    pars["ebinfile"] = findFile("rspgen_energy_bins.fits");
+
+    // And writing the output.
+    app.writeResponse(pars);
+
+    // Make sure RESPFILE keyword was written to spectrum file.
+    std::auto_ptr<const tip::Table> spec(tip::IFileSvc::instance().readTable("PHA1.pha", "SPECTRUM"));
+    std::string resp_file;
+    spec->getHeader()["RESPFILE"].get(resp_file);
+    if (resp_file != "test_response_p7.rsp") {
+      m_failed = true;
+      std::cerr << "Unexpected: after writing response, test12 found that RESPFILE keyword in PHA1.pha was " << resp_file <<
+        ", not \"test_response_p7.rsp\", as expected." << std::endl;
+    }
+
+  } catch (const std::exception & x) {
+    m_failed = true;
+    std::cerr << "Unexpected: test12 caught " << typeid(x).name() << ": " << x.what() << std::endl;
+  }
+
+}
+
 
 namespace {
   double s_calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) {
