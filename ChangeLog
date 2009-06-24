@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+TAG
+Tag name: v3r0p1, operation: mov
+Package: rspgen
+User: glastrm  Wed Jun 24 11:30:50 2009
+Files:
+  rspgen/SConscript  1.11
+
+    *
+------------------------------------------------------------
 User: glastrm  Wed Jun 24 11:30:44 PDT 2009
 rspgen
 
