@@ -2,6 +2,7 @@
     \brief Implementation of generic response calculator.
     \author James Peachey, HEASARC
 */
+#include <cmath>
 #include <cstddef>
 #include <map>
 #include <memory>
@@ -240,7 +241,7 @@ namespace rspgen {
 
   double IResponse::calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) const {
     typedef CLHEP::Hep3Vector vec_t;
-    static const double pi = std::acos(-1);
+    static const double pi = M_PI;
     const vec_t & x_hat = x_ref.dir();
     const vec_t y_hat = z_ref.dir().cross(x_hat);
     double phi = std::atan2(dir.dir().dot(y_hat), dir.dir().dot(x_hat));
