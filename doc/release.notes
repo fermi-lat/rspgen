@@ -43,6 +43,8 @@
 04-apr-2009    v2r1p3 JV  Added reference output for unit test.
 11-jun-2009        v3 JP  Handle azimuthal angle dependence in the response calculation. Use new
                           parameter phinumbins to control the binning.
+24-jun-2009    v3r0p1 JP  Make P6_R3_DIFFUSE the default irf value in parameter file. Fix some
+                          compiler errors for Windows and RH9.
 \endverbatim
 
 */
