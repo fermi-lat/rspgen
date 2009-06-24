@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Wed Jun 24 11:05:35 PDT 2009
+rspgen/src
+
+Modified Files:
+	IResponse.cxx SpaceCraftCalculator.cxx 
+Log Message:
+Use M_PI for pi.
+    *
+------------------------------------------------------------
 TAG
 Tag name: ScienceTools-09-15-02, operation: add
 Package: rspgen
