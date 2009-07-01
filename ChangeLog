@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: vernaleo  Wed Jul  1 10:42:20 PDT 2009
+rspgen/src/test
+
+Modified Files:
+	test_rspgen.cxx 
+Log Message:
+Completed a fix to test code started by J. Peachey.
+    *
+------------------------------------------------------------
 User: heather  Wed Jul  1 10:09:20 PDT 2009
 rspgen/doc
 
