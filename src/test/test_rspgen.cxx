@@ -1214,7 +1214,8 @@ void RspGenTestApp::test12() {
 namespace {
   double s_calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) {
     typedef CLHEP::Hep3Vector vec_t;
-    static const double pi = std::acos(-1);
+    //static const double pi = std::acos(-1);
+    static const double pi = M_PI;
     const vec_t & x_hat = x_ref.dir();
     const vec_t y_hat = z_ref.dir().cross(x_hat);
     double phi = std::atan2(dir.dir().dot(y_hat), dir.dir().dot(x_hat));
@@ -1225,7 +1226,8 @@ namespace {
 
 void RspGenTestApp::testPhiCalc() {
   typedef CLHEP::Hep3Vector vec_t;
-  const double pi = std::acos(-1);
+  //const double pi = std::acos(-1);
+  const double pi = M_PI;
 
   // Point spacecraft X along the X axis to make life easy.
   astro::SkyDir sc_x(vec_t(1., 0., 0.));
