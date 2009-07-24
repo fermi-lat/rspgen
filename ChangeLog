@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: peachey  Fri Jul 24 14:16:32 PDT 2009
+rspgen/data
+
+Modified Files:
+      Tag: ScienceToolsv9r15p2
+	PHA1.pha 
+Log Message:
+Tweak input to unit test in order not to have a
+spurious error following bug fix to prevent leaving out the last interval
+in the spacecraft file.
+
+    *
+------------------------------------------------------------
 User: peachey  Fri Jul 24 14:15:07 PDT 2009
 rspgen/src
 
