@@ -51,16 +51,13 @@ namespace rspgen {
     Gti::ConstIterator gti_pos = gti.begin();
 
     // Read SC Z positions, bin them into a histogram:
-    for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
+    for (tip::Table::ConstIterator itor = table->begin(); itor != table->end() && gti_pos != gti.end(); ++itor) {
       double start = (*itor)["START"].get();
       double stop = (*itor)["STOP"].get();
 
       double fract = gti.getFraction(start, stop, gti_pos);
       // Save some time by not computing further if fraction is 0.
       if (0. == fract) continue;
-
-      // If we fell off the edge of the last GTI, no point in continuing this loop.
-      if (gti.end() == gti_pos) break;
 
       // Get size of interval, multiply by the fraction of the time which overlapped the GTI.
       double delta_t = fract * (*itor)["LIVETIME"].get();
