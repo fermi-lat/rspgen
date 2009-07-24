@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Fri Jul 24 08:23:06 PDT 2009
+rspgen/src
+
+Modified Files:
+	PointResponse.cxx 
+Log Message:
+Correct bug that caused calculcation to leave off the last interval
+in the spacecraft file.
+    *
+------------------------------------------------------------
 TAG
 Tag name: rspgen-03-00-03, operation: add
 Package: rspgen
