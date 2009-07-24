@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: peachey  Fri Jul 24 14:20:22 PDT 2009
+rspgen/data/outref
+
+Modified Files:
+      Tag: ScienceToolsv9r15p2
+	test_response1.rsp test_response2.rsp test_response3.rsp 
+	test_response4.rsp test_response5.rsp test_response6.rsp 
+	test_response7.rsp test_response8.rsp 
+Log Message:
+Regenerated reference data, which was validated by hand using Xspec.
+    *
+------------------------------------------------------------
 User: peachey  Fri Jul 24 14:19:44 PDT 2009
 rspgen/data/outref
 
