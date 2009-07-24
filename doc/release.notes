@@ -5,6 +5,8 @@
 \verbatim
  * EOH *
 
+ rspgen-03-01-00 24-Jul-2009 peachey Correct bug that caused the last interval in the
+spacecraft file to be silently discarded.
 16-Jul-2009    v3r0p3 jrb   Update SConscript
 18-aug-2004    v0r3p0 Add rspgen application.
 18-aug-2004    v0r3p1 Change file type parameters to type f, add default value.
