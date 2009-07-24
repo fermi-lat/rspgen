@@ -1,5 +1,13 @@
 ------------------------------------------------------------
 TAG
+Tag name: rspgen-03-01-00, operation: add
+Package: rspgen
+User: glastrm  Fri Jul 24 08:31:13 2009
+Files:
+
+    *
+------------------------------------------------------------
+TAG
 Tag name: v3r1, operation: mov
 Package: rspgen
 User: glastrm  Fri Jul 24 08:31:08 2009
