@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Fri Jul 24 14:13:59 PDT 2009
+rspgen/pfiles
+
+Modified Files:
+      Tag: ScienceToolsv9r15p2
+	gtrspgen.par 
+Log Message:
+New default value for irfs is P6_V3_DIFFUSE.
+    *
+------------------------------------------------------------
 TAG
 Tag name: rspgen-03-01-00, operation: add
 Package: rspgen
