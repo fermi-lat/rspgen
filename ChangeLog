@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: peachey  Fri Jul 24 14:19:44 PDT 2009
+rspgen/data/outref
+
+Added Files:
+      Tag: ScienceToolsv9r15p2
+	PHA1.pha 
+Log Message:
+Regenerated reference data, which was validated by hand using Xspec.
+    *
+------------------------------------------------------------
 User: peachey  Fri Jul 24 14:16:32 PDT 2009
 rspgen/data
 
