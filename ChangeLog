@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: peachey  Fri Jul 24 14:15:07 PDT 2009
+rspgen/src
+
+Modified Files:
+      Tag: ScienceToolsv9r15p2
+	PointResponse.cxx 
+Log Message:
+Correct bug that caused calculcation to leave off the last interval
+in the spacecraft file.
+
+    *
+------------------------------------------------------------
 User: peachey  Fri Jul 24 14:13:59 PDT 2009
 rspgen/pfiles
 
