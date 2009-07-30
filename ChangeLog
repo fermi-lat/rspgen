@@ -2,6 +2,14 @@
 TAG
 Tag name: ScienceTools-09-15-04, operation: add
 Package: rspgen
+User: glastrm  Thu Jul 30 16:24:25 2009
+Files:
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: ScienceTools-09-15-04, operation: add
+Package: rspgen
 User: glastrm  Thu Jul 30 15:55:19 2009
 Files:
   rspgen/ChangeLog  1.281
