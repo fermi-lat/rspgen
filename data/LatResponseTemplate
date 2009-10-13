@@ -8,9 +8,9 @@ TELESCOP =                GLAST / Name of telescope generating data
 INSTRUME =                  LAT / Name of instrument generating data
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
-DRM_NUM  =                      / Number of DRMs stored in this file
+DRM_NUM  =                    1 / Number of DRMs stored in this file
 CREATOR  =                      / Software and version creating file
-HISTORY                     $Id: LatResponseTemplate,v 1.2 2008/09/03 19:24:10 vernaleo Exp $
+HISTORY                     $Id: LatResponseTemplate,v 1.3 2009/04/17 15:01:08 vernaleo Exp $
 END
 
 
@@ -35,12 +35,11 @@ HDUCLASS =                 OGIP / Format confirms to OGIP standard
 HDUCLAS1 =             RESPONSE / Indicating this is a response
 HDUCLAS2 =           RSP_MATRIX / Indicating this is a response matrix
 HDUVERS  =                1.2.0 / Version number of the format
-TLMIN4   =                      / First channel in the response
 NDSKEYS  =                    0 / Number of data subspace keywords in header
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 CREATOR  =                      / Software and version creating file
-HISTORY                     $Id: LatResponseTemplate,v 1.2 2008/09/03 19:24:10 vernaleo Exp $
+HISTORY                     $Id: LatResponseTemplate,v 1.3 2009/04/17 15:01:08 vernaleo Exp $
 
 
 TTYPE#  ENERG_LO                / Lower energy bound of the energy bin
@@ -87,7 +86,7 @@ HDUVERS  =                1.2.0 / Version number of the format
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 CREATOR  =                      / Software and version creating file
-HISTORY                     $Id: LatResponseTemplate,v 1.2 2008/09/03 19:24:10 vernaleo Exp $
+HISTORY                     $Id: LatResponseTemplate,v 1.3 2009/04/17 15:01:08 vernaleo Exp $
 
 
 TTYPE#  CHANNEL        / Raw channel number
