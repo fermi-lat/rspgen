@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: peachey  Tue Oct 13 10:39:59 PDT 2009
+rspgen/data
+
+Modified Files:
+	LatResponseTemplate 
+Log Message:
+Set DRM_NUM to 1. Delete spurious TLMIN4 keyword.
+    *
+------------------------------------------------------------
 TAG
 Tag name: ScienceTools-09-15-05, operation: add
 Package: rspgen
