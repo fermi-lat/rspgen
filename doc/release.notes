@@ -5,6 +5,7 @@
 \verbatim
  * EOH *
 
+ rspgen-03-02-00 13-Oct-2009 peachey Correct setting of DRM_NUM and clean up a spurious keyword warning.
  rspgen-03-01-00 24-Jul-2009 peachey Correct bug that caused the last interval in the
 spacecraft file to be silently discarded.
 16-Jul-2009    v3r0p3 jrb   Update SConscript
