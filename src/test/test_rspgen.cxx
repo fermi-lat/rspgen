@@ -1164,6 +1164,9 @@ void RspGenTestApp::test11() {
 
 // Test application class for PointResponse case using Pass 7 irfs and phi binning.
 void RspGenTestApp::test12() {
+#if 1
+    std::cerr << "Skipping test12 because Pass 7 irfs were removed." << std::endl;
+#else
   using namespace rspgen;
 
   try {
@@ -1207,7 +1210,7 @@ void RspGenTestApp::test12() {
     m_failed = true;
     std::cerr << "Unexpected: test12 caught " << typeid(x).name() << ": " << x.what() << std::endl;
   }
-
+#endif
 }
 
 
