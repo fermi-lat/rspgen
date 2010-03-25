@@ -1,7 +1,7 @@
 # -*- python -*-
-# $Id: SConscript,v 1.17 2010/02/18 01:01:34 jrb Exp $
+# $Id: SConscript,v 1.18 2010/02/22 23:09:48 jrb Exp $
 # Authors: James Peachey <peachey@lheamail.gsfc.nasa.gov>
-# Version: rspgen-03-02-01
+# Version: rspgen-03-02-02
 
 Import('baseEnv')
 Import('listFiles')
