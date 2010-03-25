@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: peachey  Thu Mar 25 13:48:42 PDT 2010
+rspgen/data/outref
+
+Modified Files:
+	PHA1.pha test_response1.rsp test_response2.rsp 
+	test_response3.rsp test_response4.rsp test_response5.rsp 
+	test_response6.rsp test_response7.rsp test_response8.rsp 
+Log Message:
+Regenerated from latest test code. Includes recent
+setting of DRM_NUM keyword and other small changes.
+    *
+------------------------------------------------------------
 User: peachey  Thu Mar 25 13:45:59 PDT 2010
 rspgen/src/test
 
