@@ -1,5 +1,52 @@
 ------------------------------------------------------------
 TAG
+Tag name: ScienceTools-09-18-04, operation: add
+Package: rspgen
+User: glastrm  Tue Sep 28 14:59:48 2010
+Files:
+  rspgen/.cvsignore  1.1
+  rspgen/ChangeLog  1.316
+  rspgen/rspgenLib.py  1.2
+  rspgen/SConscript  1.19
+  rspgen/cmt/requirements  1.12
+  rspgen/data/ft2tiny.fits  1.2
+  rspgen/data/PHA1.pha  1.6
+  rspgen/data/rspgen_energy_bins.fits  1.2
+  rspgen/data/LatResponseTemplate  1.4
+  rspgen/data/outref/test_response2.rsp  1.4
+  rspgen/data/outref/test_response5.rsp  1.4
+  rspgen/data/outref/PHA1.pha  1.3
+  rspgen/data/outref/test_response8.rsp  1.4
+  rspgen/data/outref/test_response6.rsp  1.4
+  rspgen/data/outref/test_response4.rsp  1.4
+  rspgen/data/outref/test_response1.rsp  1.4
+  rspgen/data/outref/test_response_p7.rsp  1.1
+  rspgen/data/outref/test_response3.rsp  1.4
+  rspgen/data/outref/test_response7.rsp  1.4
+  rspgen/doc/release.notes  1.39
+  rspgen/pfiles/gtrspgen.par  1.15
+  rspgen/rspgen/SpaceCraftCalculator.h  1.4
+  rspgen/rspgen/IWindow.h  1.3
+  rspgen/rspgen/IResponse.h  1.8
+  rspgen/rspgen/CircularWindow.h  1.4
+  rspgen/rspgen/PointResponse.h  1.6
+  rspgen/rspgen/GrbResponse.h  1.7
+  rspgen/rspgen/CosineBinner.h  1.1
+  rspgen/src/RspGenApp.h  1.4
+  rspgen/src/SpaceCraftCalculator.cxx  1.6
+  rspgen/src/CosineBinner.cxx  1.1
+  rspgen/src/IResponse.cxx  1.14
+  rspgen/src/mainpage.h  1.4
+  rspgen/src/CircularWindow.cxx  1.2
+  rspgen/src/PointResponse.cxx  1.18
+  rspgen/src/RspGenApp.cxx  1.15
+  rspgen/src/GrbResponse.cxx  1.13
+  rspgen/src/gtrspgen/gtrspgen.cxx  1.1
+  rspgen/src/test/test_rspgen.cxx  1.36
+
+    *
+------------------------------------------------------------
+TAG
 Tag name: ScienceTools-09-18-03, operation: add
 Package: rspgen
 User: glastrm  Mon Aug 30 10:26:28 2010
