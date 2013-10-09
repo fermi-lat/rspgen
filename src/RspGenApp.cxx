@@ -135,16 +135,23 @@ namespace rspgen {
       throw std::runtime_error("Not supported: multiple regions specified in spectrum in " + spec_file);
     }
 
+    //Begin CALDB update changes.
+    std::string irfs = pars["irfs"];
+    if (irfs == "CALDB") {
+    	irfs = cuts.CALDB_implied_irfs();
+    }
+
     // Create response object.
     if (alg == "GRB") {
-      m_response = new GrbResponse(ra, dec, pars["time"], psf_radius, pars["irfs"], spec_file, pars["scfile"],
+      m_response = new GrbResponse(ra, dec, pars["time"], psf_radius, irfs, spec_file, pars["scfile"],
         pars["sctable"], true_en_binner.get());
     } else if (alg == "PS") {
       m_response = new PointResponse(ra, dec, pars["thetacut"], pars["dcostheta"], psf_radius, pars["phinumbins"],
-        pars["irfs"], spec_file, pars["scfile"], pars["sctable"], true_en_binner.get());
+        irfs, spec_file, pars["scfile"], pars["sctable"], true_en_binner.get());
     } else {
       throw std::runtime_error("RspGenApp::writeResponse: invalid response algorithm " + alg);
     }
+    //End CALDB update changes.
 
     // Write the output response file.
     m_response->writeOutput("gtrspgen", out_file, resp_tpl);
