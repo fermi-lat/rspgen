@@ -31,7 +31,7 @@ namespace rspgen {
     using evtbin::Gti;
 
     // Process spacecraft data.
-    std::unique_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
+    std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
 
     // Put point source direction into standard form.
     astro::SkyDir ps_pos(ps_ra, ps_dec);
@@ -40,7 +40,7 @@ namespace rspgen {
     double phi_bin_size = phi_cut / phi_num_bins;
 
     // Set up a histogram to hold the binned differential exposure (theta vs. DeltaT).
-    std::unique_ptr<evtbin::Hist2D> diff_exp(new evtbin::Hist2D(
+    std::auto_ptr<evtbin::Hist2D> diff_exp(new evtbin::Hist2D(
       CosineBinner(0., theta_cut, theta_bin_size), evtbin::LinearBinner(0., phi_cut, phi_bin_size)
     ));
 
@@ -95,7 +95,7 @@ namespace rspgen {
     // Create window object for circular psf integration with the given inclination angle and psf radius.
     m_window = new CircularWindow(psf_radius);
 
-    // At this point, object was correctly constructed, so release the pointer from the unique_ptr.
+    // At this point, object was correctly constructed, so release the pointer from the auto_ptr.
     m_diff_exp = diff_exp.release();
   }
 
