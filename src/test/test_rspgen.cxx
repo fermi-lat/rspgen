@@ -319,7 +319,7 @@ void RspGenTestApp::test1() {
   double dec_scz = dec_ps; // DEC of spacecraft Z axis
 
   // Open input pha file.
-  std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(findFile("PHA1.pha"), "EBOUNDS"));
+  std::unique_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(findFile("PHA1.pha"), "EBOUNDS"));
 
   // Read the detchans keyword. This determines the number of channels used for apparent energy.
   int detchans = 0;
@@ -436,7 +436,7 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   OrderedBinner::IntervalCont_t intervals;
 
   // Open the file for true energy bin definition.
-  std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
+  std::unique_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
 
   // Iterate over the file, saving the relevant values into the interval array, converting to MeV on the fly.
   for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
@@ -452,7 +452,7 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   double dec_scz = dec_ps; // DEC of spacecraft Z axis
 
   // Open input ebounds extension, used for apparent energy bins.
-  std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(findFile("PHA1.pha"), "EBOUNDS"));
+  std::unique_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(findFile("PHA1.pha"), "EBOUNDS"));
 
   // Read the detchans keyword. This determines the number of channels used for apparent energy.
   int detchans = 0;
@@ -561,7 +561,7 @@ void RspGenTestApp::test3() {
   astro::SkyDir ps_pos(ra_ps, dec_ps);
 
   // Open the sc data file.
-  std::auto_ptr<const tip::Table> sc_data(tip::IFileSvc::instance().readTable(findFile("ft2tiny.fits"), "Ext1"));
+  std::unique_ptr<const tip::Table> sc_data(tip::IFileSvc::instance().readTable(findFile("ft2tiny.fits"), "Ext1"));
 
   // Set up a histogram to hold the binned differential exposure (theta vs. DeltaT).
   Hist1D diff_exp(LinearBinner(0., 60., 5.));
@@ -604,7 +604,7 @@ void RspGenTestApp::test3() {
   OrderedBinner::IntervalCont_t intervals;
 
   // Open the data file.
-  std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
+  std::unique_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
 
   // Iterate over the file, saving the relevant values into the interval array, converting to MeV on the fly.
   for (tip::Table::ConstIterator itor = table->begin(); itor != table->end(); ++itor) {
@@ -617,7 +617,7 @@ void RspGenTestApp::test3() {
   long num_bins = binner.getNumBins();
 
   // Open input pha file.
-  std::auto_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(findFile("PHA1.pha"), "EBOUNDS"));
+  std::unique_ptr<const tip::Table> ebounds_ext(tip::IFileSvc::instance().readTable(findFile("PHA1.pha"), "EBOUNDS"));
 
   // Read the detchans keyword. This determines the number of channels used for apparent energy.
   int detchans = 0;
@@ -733,7 +733,7 @@ void RspGenTestApp::test4() {
     // This test assumes there was a burst at (114., -30.), at t = 105. seconds past the first entry in the spacecraft file.
 
     // Get spacecraft data.
-    std::auto_ptr<const tip::Table> sc_table(tip::IFileSvc::instance().readTable(findFile("ft2tiny.fits"), "Ext1"));
+    std::unique_ptr<const tip::Table> sc_table(tip::IFileSvc::instance().readTable(findFile("ft2tiny.fits"), "Ext1"));
 
     // Get object for interpolating values from the table.
     tip::LinearInterp sc_record(sc_table->begin(), sc_table->end());
@@ -756,7 +756,7 @@ void RspGenTestApp::test4() {
 
 
     // Obtain test response functor.
-    std::auto_ptr<irfInterface::Irfs> irfs(createIrfs());
+    std::unique_ptr<irfInterface::Irfs> irfs(createIrfs());
 
 
     // Create window object for psf integration, a circle of radius 1.4 degrees.
@@ -764,7 +764,7 @@ void RspGenTestApp::test4() {
 
 
     // Get input ebounds extension.
-    std::auto_ptr<const tip::Table> in_ebounds(tip::IFileSvc::instance().readTable(findFile("PHA1.pha"), "EBOUNDS"));
+    std::unique_ptr<const tip::Table> in_ebounds(tip::IFileSvc::instance().readTable(findFile("PHA1.pha"), "EBOUNDS"));
 
     // Get number of channels currently in use.
     int detchans = 0;
@@ -781,7 +781,7 @@ void RspGenTestApp::test4() {
 
 
     // Process bin definition file to produce true energy bins.
-    std::auto_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
+    std::unique_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
 
     // Create object to hold the intervals in the bin definition file.
     evtbin::OrderedBinner::IntervalCont_t true_intervals(true_en->getNumRecords());
@@ -888,7 +888,7 @@ void RspGenTestApp::test6() {
 
 #ifndef WIN32
     // Make sure RESPFILE keyword was *not* written to spectrum file, which should be write protected.
-    std::auto_ptr<const tip::Table> spec(tip::IFileSvc::instance().readTable("PHA1.pha", "SPECTRUM"));
+    std::unique_ptr<const tip::Table> spec(tip::IFileSvc::instance().readTable("PHA1.pha", "SPECTRUM"));
     std::string resp_file;
     spec->getHeader()["RESPFILE"].get(resp_file);
     if (resp_file != "NONE") {
@@ -913,7 +913,7 @@ void RspGenTestApp::test6() {
 void RspGenTestApp::test7() {
   using namespace rspgen;
 
-  std::auto_ptr<PointResponse> response_no_binner(0);
+  std::unique_ptr<PointResponse> response_no_binner(0);
   try {
     // Construct a steady point source response, but do not supply a binner. This should succeed.
     double ra_ps = 8.3633225E+01; // RA of point source
@@ -941,7 +941,7 @@ void RspGenTestApp::test7() {
 
   try {
     // Create a binner for true energy.
-    std::auto_ptr<evtbin::Binner> true_en_binner(createStdBinner());
+    std::unique_ptr<evtbin::Binner> true_en_binner(createStdBinner());
 
     // Construct a steady point source response for the given RA, DEC, thetabins.
     // RA, DEC, theta_cut, theta_bin_size, radius, number of phi bins, response type, pha file, FT2 file, energy bin def file.
@@ -1019,7 +1019,7 @@ void RspGenTestApp::test8() {
     app.writeResponse(pars);
 
     // Make sure RESPFILE keyword was written to spectrum file.
-    std::auto_ptr<const tip::Table> spec(tip::IFileSvc::instance().readTable("PHA1.pha", "SPECTRUM"));
+    std::unique_ptr<const tip::Table> spec(tip::IFileSvc::instance().readTable("PHA1.pha", "SPECTRUM"));
     std::string resp_file;
     spec->getHeader()["RESPFILE"].get(resp_file);
     if (resp_file != "test_response8.rsp") {
@@ -1123,7 +1123,7 @@ void RspGenTestApp::test11() {
   SpaceCraftCalculator::displayIrfNames(m_os.info());
 
   // Create a binner for true energy.
-  std::auto_ptr<evtbin::Binner> true_en_binner(createStdBinner());
+  std::unique_ptr<evtbin::Binner> true_en_binner(createStdBinner());
 
   // Construct a steady point source response for the given RA, DEC, thetabins.
   // RA, DEC, theta_cut, theta_bin_size, radius, response type, pha file, FT2 file, energy bin def file.
@@ -1197,7 +1197,7 @@ void RspGenTestApp::test12() {
     app.writeResponse(pars);
 
     // Make sure RESPFILE keyword was written to spectrum file.
-    std::auto_ptr<const tip::Table> spec(tip::IFileSvc::instance().readTable("PHA1.pha", "SPECTRUM"));
+    std::unique_ptr<const tip::Table> spec(tip::IFileSvc::instance().readTable("PHA1.pha", "SPECTRUM"));
     std::string resp_file;
     spec->getHeader()["RESPFILE"].get(resp_file);
     if (resp_file != "test_response_p7.rsp") {
@@ -1308,7 +1308,7 @@ void RspGenTestApp::compare(const std::string & descriptor, double value, double
 
 evtbin::Binner * RspGenTestApp::createStdBinner() {
   // Process bin definition file to produce true energy bins.
-  std::auto_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
+  std::unique_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
 
   // Create object to hold the intervals in the bin definition file.
   evtbin::OrderedBinner::IntervalCont_t true_intervals(true_en->getNumRecords());

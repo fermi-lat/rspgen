@@ -33,7 +33,7 @@ namespace rspgen {
     const std::string & spec_file, const std::string & sc_file, const std::string & sc_table,
     const evtbin::Binner * true_en_binner): IResponse(resp_type, spec_file, true_en_binner), m_theta(0.), m_phi(0.), m_window(0) {
     // Process spacecraft data.
-    std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
+    std::unique_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
 
     // Get object for interpolating values from the table.
     tip::LinearInterp sc_record(table->begin(), table->end());
