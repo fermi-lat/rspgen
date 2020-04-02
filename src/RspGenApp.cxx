@@ -79,7 +79,7 @@ namespace rspgen {
 
   void RspGenApp::writeResponse(const st_app::AppParGroup & pars) {
     // Create energy binner from related parameters.
-    std::auto_ptr<evtbin::Binner> true_en_binner(getConfig(pars)->createEnergyBinner(pars));
+    std::unique_ptr<evtbin::Binner> true_en_binner(getConfig(pars)->createEnergyBinner(pars));
 
     // Get name of template for output file.
     std::string resp_tpl = pars["resptpl"];
@@ -101,7 +101,7 @@ namespace rspgen {
 
     // Adjust keywords in spectrum.
     try {
-      std::auto_ptr<tip::Table> spectrum(tip::IFileSvc::instance().editTable(spec_file, "SPECTRUM"));
+      std::unique_ptr<tip::Table> spectrum(tip::IFileSvc::instance().editTable(spec_file, "SPECTRUM"));
       spectrum->getHeader()["RESPFILE"].set(out_file);
     } catch (const tip::TipException &) {
       // If it can't be written, e.g. because the spectrum is write protected, just issue a warning.
