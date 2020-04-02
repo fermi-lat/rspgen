@@ -73,12 +73,12 @@ namespace rspgen {
 
     // To prevent memory leaks, first allocate memory into temporary unique_ptrs, then copy (release)
     // the pointers into the *real* member pointers.
-    std::unique_ptr<evtbin::Binner> true_en_unique_ptr(true_en_binner->clone());
+    std::unique_ptr<evtbin::Binner> true_en_unique_ptr(nullptr);
 
-    // // Clone true energy binner, if one was supplied.
-    // if (0 != true_en_binner) {
-    //   true_en_unique_ptr.reset(true_en_binner->clone());
-    // }
+    // Clone true energy binner, if one was supplied.
+    if (0 != true_en_binner) {
+      true_en_unique_ptr.reset(true_en_binner->clone());
+    }
 
     // Create apparent energy binner.
     std::unique_ptr<evtbin::Binner> app_en_binner(new evtbin::OrderedBinner(app_intervals));
