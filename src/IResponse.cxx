@@ -38,7 +38,7 @@ namespace rspgen {
   IResponse::IResponse(const std::string & resp_type, const std::string & spec_file, const evtbin::Binner * true_en_binner):
     m_os("IResponse", "IResponse(const std::string &...)", 2), m_kwds(), m_true_en_binner(0), m_app_en_binner(0), m_irfs() {
     // Process input ebounds extension to get apparent energy bin definitions..
-    std::auto_ptr<const tip::Table> in_ebounds(tip::IFileSvc::instance().readTable(spec_file, "EBOUNDS"));
+    std::unique_ptr<const tip::Table> in_ebounds(tip::IFileSvc::instance().readTable(spec_file, "EBOUNDS"));
 
     // Get ebounds header for keyword access.
     const tip::Header & header = in_ebounds->getHeader();
@@ -71,17 +71,17 @@ namespace rspgen {
 
 
 
-    // To prevent memory leaks, first allocate memory into temporary auto_ptrs, then copy (release)
+    // To prevent memory leaks, first allocate memory into temporary unique_ptrs, then copy (release)
     // the pointers into the *real* member pointers.
-    std::auto_ptr<evtbin::Binner> true_en_auto_ptr(0);
+    std::unique_ptr<evtbin::Binner> true_en_unique_ptr(nullptr);
 
     // Clone true energy binner, if one was supplied.
     if (0 != true_en_binner) {
-      true_en_auto_ptr.reset(true_en_binner->clone());
+      true_en_unique_ptr.reset(true_en_binner->clone());
     }
 
     // Create apparent energy binner.
-    std::auto_ptr<evtbin::Binner> app_en_binner(new evtbin::OrderedBinner(app_intervals));
+    std::unique_ptr<evtbin::Binner> app_en_binner(new evtbin::OrderedBinner(app_intervals));
 
     // Get container of irf names matching the given response name.
     irf_name_cont_type irf_name;
@@ -97,8 +97,8 @@ namespace rspgen {
       m_irfs[index] = irfInterface::IrfsFactory::instance()->create(irf_name[index]);
     }
 
-    // Everything succeeded, so release the pointers from their auto_ptrs.
-    m_true_en_binner = true_en_auto_ptr.release();
+    // Everything succeeded, so release the pointers from their unique_ptrs.
+    m_true_en_binner = true_en_unique_ptr.release();
     m_app_en_binner = app_en_binner.release();
   }
 
@@ -125,7 +125,7 @@ namespace rspgen {
     tip::IFileSvc::instance().updateKeywords(file_name, m_kwds);
 
     // Open response table for writing.
-    std::auto_ptr<tip::Table> resp_table(tip::IFileSvc::instance().editTable(file_name, "MATRIX"));
+    std::unique_ptr<tip::Table> resp_table(tip::IFileSvc::instance().editTable(file_name, "MATRIX"));
 
     // Get dimensions of matrix.
     long true_num_elem = m_true_en_binner->getNumBins();
@@ -212,7 +212,7 @@ namespace rspgen {
     }
 
     // Open ebounds table for writing.
-    std::auto_ptr<tip::Table> ebounds(tip::IFileSvc::instance().editTable(file_name, "EBOUNDS"));
+    std::unique_ptr<tip::Table> ebounds(tip::IFileSvc::instance().editTable(file_name, "EBOUNDS"));
 
     // Set detchans explicitly.
     ebounds->getHeader()["DETCHANS"].set(app_num_elem);

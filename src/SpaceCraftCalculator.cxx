@@ -127,13 +127,13 @@ namespace rspgen {
     // phi needs to be handled properly, including Hist2D etc. See PointResponse.
 
     // Get spacecraft data.
-    std::auto_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
+    std::unique_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
 
     // Get GTI information.
     Gti gti(gti_file);
 
     // Set up a histogram to hold the binned differential exposure (theta vs. DeltaT).
-    std::auto_ptr<evtbin::Hist1D> diff_exp(new evtbin::Hist1D(evtbin::LinearBinner(0., theta_cut, theta_bin_size)));
+    std::unique_ptr<evtbin::Hist1D> diff_exp(new evtbin::Hist1D(evtbin::LinearBinner(0., theta_cut, theta_bin_size)));
 
     // Start with first GTI in the GTI table.
     Gti::ConstIterator gti_pos = gti.begin();
@@ -196,7 +196,7 @@ namespace rspgen {
     // Create window object for circular psf integration with the given inclination angle and psf radius.
     m_window = new CircularWindow(psf_radius);
 
-    // Everything succeeded, so release the pointers from their auto_ptrs.
+    // Everything succeeded, so release the pointers from their unique_ptrs.
     m_diff_exp = diff_exp.release();
   }
 
