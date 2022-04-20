@@ -40,3 +40,19 @@ target_include_directories(
   test_rspgen
   PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src> $<INSTALL_INTERFACE:>
 )
+
+###############################################################
+# Installation
+###############################################################
+install(DIRECTORY rspgen DESTINATION ${FERMI_INSTALL_INCLUDEDIR})
+install(DIRECTORY data/ DESTINATION ${FERMI_INSTALL_DATADIR})
+install(DIRECTORY pfiles/ DESTINATION ${FERMI_INSTALL_PFILESDIR})
+
+install(
+  TARGETS rspgen gtrspgen
+  # EXPORT fermiTargets
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
