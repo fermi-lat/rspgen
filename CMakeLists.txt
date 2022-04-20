@@ -34,6 +34,7 @@ target_include_directories(
   PUBLIC $<INSTALL_INTERFACE:>
 )
 
+###### Tests ######
 add_executable(test_rspgen src/test/test_rspgen.cxx)
 target_link_libraries(test_rspgen PRIVATE rspgen)
 target_include_directories(
@@ -49,7 +50,7 @@ install(DIRECTORY data/ DESTINATION ${FERMI_INSTALL_DATADIR})
 install(DIRECTORY pfiles/ DESTINATION ${FERMI_INSTALL_PFILESDIR})
 
 install(
-  TARGETS rspgen gtrspgen
+  TARGETS rspgen gtrspgen test_rspgen
   # EXPORT fermiTargets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   LIBRARY DESTINATION lib
