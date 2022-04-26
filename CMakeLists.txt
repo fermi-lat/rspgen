@@ -16,18 +16,13 @@ target_include_directories(
 )
 
 target_link_libraries(
-  rspgen PUBLIC
-  astro
-  tip
-  st_facilities
-  dataSubselector
-  evtbin
-  st_app
-  st_stream
+  rspgen
+  PRIVATE evtbin irfInterface st_stream tip
+  PUBLIC astro st_facilities dataSubselector CLHEP::CLHEP irfLoader
 )
 
 add_executable(gtrspgen src/gtrspgen/gtrspgen.cxx)
-target_link_libraries(gtrspgen PRIVATE rspgen)
+target_link_libraries(gtrspgen PRIVATE rspgen st_app)
 target_include_directories(
   gtrspgen
   PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
@@ -36,7 +31,11 @@ target_include_directories(
 
 ###### Tests ######
 add_executable(test_rspgen src/test/test_rspgen.cxx)
-target_link_libraries(test_rspgen PRIVATE rspgen)
+target_link_libraries(
+  test_rspgen
+  PRIVATE rspgen astro CLHEP::CLHEP irfLoader dataSubselector evtbin irfInterface
+  st_app st_facilities st_stream tip
+)
 target_include_directories(
   test_rspgen
   PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src> $<INSTALL_INTERFACE:>
