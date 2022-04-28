@@ -45,8 +45,12 @@ target_include_directories(
 # Installation
 ###############################################################
 install(DIRECTORY rspgen DESTINATION ${FERMI_INSTALL_INCLUDEDIR})
-install(DIRECTORY data/ DESTINATION ${FERMI_INSTALL_DATADIR})
 install(DIRECTORY pfiles/ DESTINATION ${FERMI_INSTALL_PFILESDIR})
+install(DIRECTORY data/outref DESTINATION ${FERMI_INSTALL_DATADIR}/rspgen)
+install(
+  DIRECTORY data/ DESTINATION ${FERMI_INSTALL_REFDATADIR}/rspgen
+  PATTERN "outref" EXCLUDE
+)
 
 install(
   TARGETS rspgen gtrspgen test_rspgen
