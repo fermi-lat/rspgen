@@ -1,7 +1,7 @@
 include(UseSWIG)
 
 add_library(
-  rspgen STATIC
+  rspgen 
   src/CircularWindow.cxx
   src/CosineBinner.cxx
   src/GrbResponse.cxx
