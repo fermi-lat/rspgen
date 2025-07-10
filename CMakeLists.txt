@@ -21,6 +21,8 @@ target_link_libraries(
   PUBLIC astro st_facilities dataSubselector irfLoader 
 )
 
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 add_executable(gtrspgen src/gtrspgen/gtrspgen.cxx)
 target_link_libraries(gtrspgen PRIVATE rspgen st_app)
 target_include_directories(
