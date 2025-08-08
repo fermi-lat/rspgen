@@ -24,6 +24,7 @@
 #include "tip/Table.h"
 
 #include "CLHEP/Vector/ThreeVector.h"
+#include "general_util/generic_utils.h"
 
 namespace rspgen {
 
@@ -116,7 +117,9 @@ namespace rspgen {
     tip::IFileSvc::instance().createFile(file_name, fits_template);
 
     // Update keywords in the output file, using tip's file service keyword update mechanism.
-    m_kwds.push_back(tip::Header::KeyValPair_t("CREATOR", creator));
+    // Update CREATOR value with: Tool name/Group/Version
+    std::string creator_version =  GenericUtils::creator_banner(creator);
+    m_kwds.push_back(tip::Header::KeyValPair_t("CREATOR", creator_version));
 
     // Update FILENAME keyword in output file
     m_kwds.push_back(tip::Header::KeyValPair_t("FILENAME", facilities::Util::basename(file_name)));

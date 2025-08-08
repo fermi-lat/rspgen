@@ -18,7 +18,7 @@ target_include_directories(
 target_link_libraries(
   rspgen
   PRIVATE evtbin irfInterface st_stream tip
-  PUBLIC astro st_facilities dataSubselector CLHEP::CLHEP irfLoader
+  PUBLIC astro st_facilities dataSubselector CLHEP::CLHEP irfLoader general_util
 )
 
 add_executable(gtrspgen src/gtrspgen/gtrspgen.cxx)
