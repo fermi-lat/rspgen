@@ -9,7 +9,7 @@ INSTRUME =                  LAT / Name of instrument generating data
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
 DRM_NUM  =                    1 / Number of DRMs stored in this file
-CREATOR  =                      / Software and version creating file
+CREATOR  = 'APP_NAME Fermitools 2.4.1' / Software and version creating file
 HISTORY                     $Id: LatResponseTemplate,v 1.3 2009/04/17 15:01:08 vernaleo Exp $
 END
 
@@ -38,7 +38,7 @@ HDUVERS  =                1.2.0 / Version number of the format
 NDSKEYS  =                    0 / Number of data subspace keywords in header
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
-CREATOR  =                      / Software and version creating file
+CREATOR  = 'APP_NAME Fermitools 2.4.1' / Software and version creating file
 HISTORY                     $Id: LatResponseTemplate,v 1.3 2009/04/17 15:01:08 vernaleo Exp $
 
 
@@ -85,7 +85,7 @@ HDUCLAS2 =              EBOUNDS / Extension contains response matrix
 HDUVERS  =                1.2.0 / Version number of the format
 DATE-OBS                        / Start Date and Time of the observation (UTC)
 DATE-END                        / End Date and Time of the observation (UTC)
-CREATOR  =                      / Software and version creating file
+CREATOR  = 'APP_NAME Fermitools 2.4.1' / Software and version creating file
 HISTORY                     $Id: LatResponseTemplate,v 1.3 2009/04/17 15:01:08 vernaleo Exp $
 
 
