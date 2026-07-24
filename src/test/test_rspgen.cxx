@@ -421,7 +421,7 @@ void RspGenTestApp::test1() {
   }
 
   delete out_ebounds;
-  delete resp_table;
+  //delete resp_table;x
   delete irfs;
 }
 
@@ -547,7 +547,7 @@ void RspGenTestApp::test2(double ra_ps, double dec_ps, double radius, const std:
   }
 
   delete out_ebounds;
-  delete resp_table;
+  //delete resp_table;
   delete irfs;
 }
 
@@ -721,7 +721,7 @@ void RspGenTestApp::test3() {
   }
 
   delete out_ebounds;
-  delete resp_table;
+  //delete resp_table;
   delete irfs;
 }
 
