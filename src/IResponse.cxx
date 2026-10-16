@@ -239,7 +239,7 @@ namespace rspgen {
     SpaceCraftCalculator::lookUpResponse(resp, match);
   }
 
-  double IResponse::calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) const {
+  auto IResponse::calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) const -> double {
     typedef CLHEP::Hep3Vector vec_t;
     static const double pi = M_PI;
     const vec_t & x_hat = x_ref.dir();

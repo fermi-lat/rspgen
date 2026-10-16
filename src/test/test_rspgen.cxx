@@ -184,15 +184,15 @@ class RspGenTestApp : public st_app::StApp {
 
     /** \brief Return a standard energy binner used throughout the tests.
     */
-    evtbin::Binner * createStdBinner();
+    auto createStdBinner() -> evtbin::Binner *;
 
     /** \brief Return a standard test Irfs object.
     */
-    irfInterface::Irfs * createIrfs() const;
+    auto createIrfs() const -> irfInterface::Irfs *;
 
     /** \brief Return the full path to the given data file.
     */
-    std::string findFile(const std::string & file_root) const;
+    auto findFile(const std::string & file_root) const -> std::string;
 
     void copyFile(const std::string & in_file, const std::string & out_file) const;
 
@@ -1215,7 +1215,7 @@ void RspGenTestApp::test12() {
 
 
 namespace {
-  double s_calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) {
+  auto s_calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) -> double {
     typedef CLHEP::Hep3Vector vec_t;
     //static const double pi = std::acos(-1);
     static const double pi = M_PI;
@@ -1306,7 +1306,7 @@ void RspGenTestApp::compare(const std::string & descriptor, double value, double
   }
 }
 
-evtbin::Binner * RspGenTestApp::createStdBinner() {
+auto RspGenTestApp::createStdBinner() -> evtbin::Binner * {
   // Process bin definition file to produce true energy bins.
   std::unique_ptr<const tip::Table> true_en(tip::IFileSvc::instance().readTable(findFile("rspgen_energy_bins.fits"), "ENERGYBINS"));
 
@@ -1322,11 +1322,11 @@ evtbin::Binner * RspGenTestApp::createStdBinner() {
   return new evtbin::OrderedBinner(true_intervals);
 }
 
-irfInterface::Irfs * RspGenTestApp::createIrfs() const {
+auto RspGenTestApp::createIrfs() const -> irfInterface::Irfs * {
   return irfInterface::IrfsFactory::instance()->create("testIrfs::Front");
 }
 
-std::string RspGenTestApp::findFile(const std::string & file_root) const {
+auto RspGenTestApp::findFile(const std::string & file_root) const -> std::string {
   return facilities::commonUtilities::joinPath(m_data_dir, file_root);
 }
 

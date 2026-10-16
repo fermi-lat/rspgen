@@ -145,7 +145,7 @@ namespace rspgen {
     }
   }
 
-  double PointResponse::psf(double true_energy, double theta, double phi) const {
+  auto PointResponse::psf(double true_energy, double theta, double phi) const -> double {
     // TODO: This method is now duplicated in class SpaceCraftCalculator. PointResponse should use a member
     // of SpaceCraftCalculator and not duplicate this code here.
 
@@ -170,7 +170,7 @@ namespace rspgen {
     return psf_val * (*m_diff_exp)[theta_index][phi_index] / m_total_exposure;
   }
 
-  std::pair<long, long> PointResponse::getSpatialNumBins() const {
+  auto PointResponse::getSpatialNumBins() const -> std::pair<long, long> {
     const evtbin::Binner * theta_bins = m_diff_exp->getBinners()[0];
     long num_theta_bins = theta_bins->getNumBins();
     const evtbin::Binner * phi_bins = m_diff_exp->getBinners()[1];

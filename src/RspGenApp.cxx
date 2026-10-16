@@ -161,12 +161,12 @@ namespace rspgen {
     irfLoader::Loader::go();
   }
 
-  std::string RspGenApp::getDataDir() const {
+  auto RspGenApp::getDataDir() const -> std::string {
     static std::string retval = facilities::commonUtilities::getDataPath("rspgen");
     return retval;
   }
 
-  evtbin::BinConfig * RspGenApp::getConfig(const st_app::AppParGroup & pars) {
+  auto RspGenApp::getConfig(const st_app::AppParGroup & pars) -> evtbin::BinConfig * {
     if (0 == m_bin_config)
       m_bin_config = evtbin::BinConfig::create(pars["specfile"]);
     return m_bin_config;

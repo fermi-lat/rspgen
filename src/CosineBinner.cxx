@@ -20,15 +20,15 @@ namespace rspgen {
     m_bin_size(bin_size),
     m_num_bins(long(std::ceil((m_interval_end - m_interval_begin)/bin_size))) {}
 
-  long CosineBinner::computeIndex(double value) const {
+  auto CosineBinner::computeIndex(double value) const -> long {
     value = std::cos(value * s_rad_per_deg);
     if (value < m_interval_begin || value >= m_interval_end) return -1;
     return long((value - m_interval_begin) / m_bin_size);
   }
 
-  long CosineBinner::getNumBins() const { return m_num_bins; }
+  auto CosineBinner::getNumBins() const -> long { return m_num_bins; }
 
-  evtbin::Binner::Interval CosineBinner::getInterval(long index) const {
+  auto CosineBinner::getInterval(long index) const -> evtbin::Binner::Interval {
     // Check bounds, and handle endpoints explicitly to avoid any round-off:
     if (index < 0 || index >= m_num_bins)
       return Binner::Interval(0., 0.);
@@ -49,6 +49,6 @@ namespace rspgen {
     );
   }
 
-  evtbin::Binner * CosineBinner::clone() const { return new CosineBinner(*this); }
+  auto CosineBinner::clone() const -> evtbin::Binner * { return new CosineBinner(*this); }
 
 }

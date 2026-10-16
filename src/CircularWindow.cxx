@@ -12,9 +12,9 @@ namespace rspgen {
     if (radius <= 0) throw std::logic_error("CircularWindow() called for non-positive radius");
   }
 
-  IWindow * CircularWindow::clone() const { return new CircularWindow(*this); }
+  auto CircularWindow::clone() const -> IWindow * { return new CircularWindow(*this); }
 
-  double CircularWindow::integrate(irfInterface::IPsf * psf, double true_energy, double theta, double phi) const {
+  auto CircularWindow::integrate(irfInterface::IPsf * psf, double true_energy, double theta, double phi) const -> double {
     // This case is very simple. The region is a circle of the given radius. The psf
     // object is immediately capable of this integration.
     return psf->angularIntegral(true_energy, theta, phi, m_radius);

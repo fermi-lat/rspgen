@@ -39,7 +39,7 @@ namespace {
           *itor = toupper(*itor);
       }
 
-      bool operator ()(const std::string & input) const {
+      auto operator ()(const std::string & input) const -> bool {
         std::string::const_iterator itor1 = input.begin();
         std::string::const_iterator itor2 = m_string_to_match.begin();
         for (; itor1 != input.end() && itor2 != m_string_to_match.end() && toupper(*itor1) == *itor2; ++itor1, ++itor2);
@@ -53,7 +53,7 @@ namespace {
   class MatchKey{
     public:
       MatchKey(const MatchCaseInsensitive & matcher): m_matcher(matcher) {}
-      bool operator ()(const T & input) const {
+      auto operator ()(const T & input) const -> bool {
         return m_matcher(input.first);
       }
     private:
@@ -206,7 +206,7 @@ namespace rspgen {
     delete m_diff_exp;
   }
 
-  double SpaceCraftCalculator::psf(double true_energy, double theta, double phi) const {
+  auto SpaceCraftCalculator::psf(double true_energy, double theta, double phi) const -> double {
     double psf_val = 0.;
 
     for (irf_cont_type::const_iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
@@ -224,7 +224,7 @@ namespace rspgen {
     return psf_val * (*m_diff_exp)[bin_index] / m_total_exposure;
   }
 
-  double SpaceCraftCalculator::calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) const {
+  auto SpaceCraftCalculator::calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) const -> double {
     typedef CLHEP::Hep3Vector vec_t;
     static const double pi = M_PI;
     const vec_t & x_hat = x_ref.dir();
