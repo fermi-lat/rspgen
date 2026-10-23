@@ -230,12 +230,12 @@ None in this package. `sane`'s `gt_apps.rspgen` wraps the executable.
   version) and `FILENAME` are set. `DETCHANS` is the number of input
   channels. **DSS keywords are not copied** (`NDSKEYS = 0`).
 
-### Environment
+### Environment variables
 
 `FERMI_INST_DIR` is used, through `getDataPath`, for the default
 template. `CALDB` is used through `irfLoader` (see "Runtime environment"
-in `docs/architecture/README.md`). The package reads no environment
-variable itself.
+in ScienceTools' `docs/architecture/README.md`). The package reads no
+environment variable itself (no `getenv` calls).
 
 ## Build and test
 
@@ -274,13 +274,18 @@ variable itself.
   - Test 6 makes its `PHA1.pha` copy read-only and expects `RESPFILE` to
     stay `NONE`. **That check fails when the test runs as root**, because
     root ignores mode 0444 (inferred).
-- **outref consumers:** nothing in this repo reads `data/outref/`.
-  `recipe/tests/ST-unit-test` (`check_test_rspgen_output`) compares
+- **ST-unit-test / outref consumers:** nothing in this repo reads
+  `data/outref/`. The default run of ScienceTools'
+  `recipe/tests/ST-unit-test` (`unitTestsWithoutRoot`) runs `test_rspgen`,
+  then `check_test_rspgen_output`, which compares
   `PHA1.pha` against
   `$CONDA_PREFIX/share/fermitools/data/rspgen/outref/PHA1.pha` with
   `ftdiff`, but checks only that `test_response1..8.rsp` **exist**. The
   `.rsp` files in `outref/` are not compared, and `test_response_p7.rsp`
-  is left over from the skipped test12.
+  is left over from the skipped test12. This reference data is the
+  package's own installed `data/outref`; `fermitools-data` has no
+  `outrefFiles/rspgen`. See "Testing" in ScienceTools'
+  `docs/architecture/README.md`.
 - **`sane`:** `python/tests/rspgen_tests.py` runs `gtrspgen` with
   `irfs='DC1AF'` on `Crab.pha`. Both are long obsolete.
 - **Legacy:** `SConscript`, `rspgenLib.py` and `azure-pipelines.yml`.
