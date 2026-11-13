@@ -25,7 +25,7 @@ namespace rspgen {
   PointResponse::PointResponse(double ps_ra, double ps_dec, double theta_cut, double theta_bin_size, double psf_radius,
     long phi_num_bins, const std::string & resp_type, const std::string & spec_file, const std::string & sc_file,
     const std::string & sc_table, const evtbin::Binner * true_en_binner): IResponse(resp_type, spec_file, true_en_binner),
-    m_window(0), m_diff_exp(0), m_total_exposure(0.) {
+    m_window(nullptr), m_diff_exp(nullptr), m_total_exposure(0.) {
     // TODO: This constructor is now duplicated in class SpaceCraftCalculator. PointResponse should have a member
     // of SpaceCraftCalculator and not duplicate this code here.
     using evtbin::Gti;

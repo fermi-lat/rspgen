@@ -91,7 +91,7 @@ class RspGenTestApp : public st_app::StApp {
     /// \brief Construct a test application.
     RspGenTestApp();
 
-    virtual ~RspGenTestApp() throw() {}
+    virtual ~RspGenTestApp() throw() = default;
 
     /// \brief Run all tests, reporting failures.
     void run();
@@ -188,17 +188,17 @@ class RspGenTestApp : public st_app::StApp {
 
     /** \brief Return a standard test Irfs object.
     */
-    auto createIrfs() const -> irfInterface::Irfs *;
+    [[nodiscard]] auto createIrfs() const -> irfInterface::Irfs *;
 
     /** \brief Return the full path to the given data file.
     */
-    auto findFile(const std::string & file_root) const -> std::string;
+    [[nodiscard]] auto findFile(const std::string & file_root) const -> std::string;
 
     void copyFile(const std::string & in_file, const std::string & out_file) const;
 
     st_stream::StreamFormatter m_os;
     std::string m_data_dir;
-    bool m_failed;
+    bool m_failed{false};
 };
 
 RspGenTestApp::RspGenTestApp(): m_os("RspGenTestApp", "RspGenTestApp", 2), m_data_dir(), m_failed(false) {
@@ -919,7 +919,7 @@ void RspGenTestApp::test7() {
     double ra_ps = 8.3633225E+01; // RA of point source
     double dec_ps = 2.2014458E+01; // DEC of point source
     response_no_binner.reset(new PointResponse(ra_ps, dec_ps, 60., .05, 3., 1, "testIrfs::Back", findFile("PHA1.pha"),
-      findFile("ft2tiny.fits"), "Ext1", 0));
+      findFile("ft2tiny.fits"), "Ext1", nullptr));
 
     // Confirm that psf method works even without the binner.
     response_no_binner->psf(300., 15., 0.);
@@ -928,7 +928,7 @@ void RspGenTestApp::test7() {
     std::cerr << "Unexpected: test7 failed to create or use PointResponse object with null binner:" << x.what() << std::endl;
   }
 
-  if (0 != response_no_binner.get()) {
+  if (nullptr != response_no_binner.get()) {
     try {
       // Write output, which should fail because there is no true energy binner.
       response_no_binner->writeOutput("test_rspgen", "test_response7.rsp", findFile("LatResponseTemplate"));
@@ -1054,8 +1054,8 @@ void RspGenTestApp::test9() {
 
   // Iterate over all cuts.
   for (std::vector<Cuts *>::size_type ii = 0; ii != cuts.size(); ++ii) {
-    const SkyConeCut * sky_cut = 0;
-    if (0 != (sky_cut = dynamic_cast<const SkyConeCut *>(&cuts[ii]))) {
+    const SkyConeCut * sky_cut = nullptr;
+    if (nullptr != (sky_cut = dynamic_cast<const SkyConeCut *>(&cuts[ii]))) {
       ++num_cone;
       ra = sky_cut->ra();
       dec = sky_cut->dec();
@@ -1216,7 +1216,7 @@ void RspGenTestApp::test12() {
 
 namespace {
   auto s_calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) -> double {
-    typedef CLHEP::Hep3Vector vec_t;
+    using vec_t = CLHEP::Hep3Vector;
     //static const double pi = std::acos(-1);
     static const double pi = M_PI;
     const vec_t & x_hat = x_ref.dir();
@@ -1228,7 +1228,7 @@ namespace {
 }
 
 void RspGenTestApp::testPhiCalc() {
-  typedef CLHEP::Hep3Vector vec_t;
+  using vec_t = CLHEP::Hep3Vector;
   //const double pi = std::acos(-1);
   const double pi = M_PI;
 

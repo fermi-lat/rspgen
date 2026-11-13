@@ -30,7 +30,7 @@ static std::string s_cvs_id = "$Name:  $";
 
 namespace rspgen {
 
-  RspGenApp::RspGenApp(): m_bin_config(0), m_data_dir(), m_response(0) {
+  RspGenApp::RspGenApp(): m_bin_config(nullptr), m_data_dir(), m_response(nullptr) {
     setName("gtrspgen");
     setVersion(s_cvs_id);
   }
@@ -91,7 +91,7 @@ namespace rspgen {
     std::string alg = pars["respalg"];
 
     // Clean up any previous response.
-    delete m_response; m_response = 0;
+    delete m_response; m_response = nullptr;
 
     // Extract name of input spectrum file.
     std::string spec_file = pars["specfile"];
@@ -119,8 +119,8 @@ namespace rspgen {
 
     // Iterate over all cuts.
     for (std::vector<dataSubselector::Cuts *>::size_type ii = 0; ii != cuts.size(); ++ii) {
-      const dataSubselector::SkyConeCut * sky_cut = 0;
-      if (0 != (sky_cut = dynamic_cast<const dataSubselector::SkyConeCut *>(&cuts[ii]))) {
+      const dataSubselector::SkyConeCut * sky_cut = nullptr;
+      if (nullptr != (sky_cut = dynamic_cast<const dataSubselector::SkyConeCut *>(&cuts[ii]))) {
         ++num_cone;
         ra = sky_cut->ra();
         dec = sky_cut->dec();
@@ -167,7 +167,7 @@ namespace rspgen {
   }
 
   auto RspGenApp::getConfig(const st_app::AppParGroup & pars) -> evtbin::BinConfig * {
-    if (0 == m_bin_config)
+    if (nullptr == m_bin_config)
       m_bin_config = evtbin::BinConfig::create(pars["specfile"]);
     return m_bin_config;
   }

@@ -36,7 +36,7 @@ namespace rspgen {
   bool compressed = true;
 
   IResponse::IResponse(const std::string & resp_type, const std::string & spec_file, const evtbin::Binner * true_en_binner):
-    m_os("IResponse", "IResponse(const std::string &...)", 2), m_kwds(), m_true_en_binner(0), m_app_en_binner(0), m_irfs() {
+    m_os("IResponse", "IResponse(const std::string &...)", 2), m_kwds(), m_true_en_binner(nullptr), m_app_en_binner(nullptr), m_irfs() {
     // Process input ebounds extension to get apparent energy bin definitions..
     std::unique_ptr<const tip::Table> in_ebounds(tip::IFileSvc::instance().readTable(spec_file, "EBOUNDS"));
 
@@ -44,13 +44,13 @@ namespace rspgen {
     const tip::Header & header = in_ebounds->getHeader();
 
     // List of standard keywords to read from ebounds if they are present.
-    const char * keywords [] = { "TELESCOP", "INSTRUME", "DATE-OBS", "DATE-END", 0 };
+    const char * keywords [] = { "TELESCOP", "INSTRUME", "DATE-OBS", "DATE-END", nullptr };
 
     // Read them.
     header.get(keywords, m_kwds);
 
     // Add date keyword.
-    m_kwds.push_back(tip::Header::KeyValPair_t("DATE", header.formatTime(time(0))));
+    m_kwds.push_back(tip::Header::KeyValPair_t("DATE", header.formatTime(time(nullptr))));
 
     // Get number of channels currently in use.
     int detchans = 0;
@@ -76,7 +76,7 @@ namespace rspgen {
     std::unique_ptr<evtbin::Binner> true_en_unique_ptr(nullptr);
 
     // Clone true energy binner, if one was supplied.
-    if (0 != true_en_binner) {
+    if (nullptr != true_en_binner) {
       true_en_unique_ptr.reset(true_en_binner->clone());
     }
 
@@ -103,13 +103,13 @@ namespace rspgen {
   }
 
   IResponse::~IResponse() throw() {
-    for (irf_cont_type::reverse_iterator itor = m_irfs.rbegin(); itor != m_irfs.rend(); ++itor) delete *itor;
+    for (auto itor = m_irfs.rbegin(); itor != m_irfs.rend(); ++itor) delete *itor;
     delete m_app_en_binner;
     delete m_true_en_binner;
   }
 
   void IResponse::writeOutput(const std::string & creator, const std::string & file_name, const std::string & fits_template) {
-    if (0 == m_true_en_binner)
+    if (nullptr == m_true_en_binner)
       throw std::logic_error("Cannot write response matrix without true energy bins defined");
 
     // Create output file.
@@ -178,7 +178,7 @@ namespace rspgen {
 	n_chan.clear();
 	scratch_response.clear();
 	// Populate vecotrs for compressed rsp file.
-	for(std::vector<double>::iterator r_itor = response.begin(); r_itor != response.end(); ++r_itor) {
+	for(auto r_itor = response.begin(); r_itor != response.end(); ++r_itor) {
 	  counter++;
 	  if (*r_itor <= lower_threshold) {
 	    if (grpcnt) {
@@ -240,7 +240,7 @@ namespace rspgen {
   }
 
   auto IResponse::calcPhi(const astro::SkyDir & x_ref, const astro::SkyDir & z_ref, const astro::SkyDir & dir) const -> double {
-    typedef CLHEP::Hep3Vector vec_t;
+    using vec_t = CLHEP::Hep3Vector;
     static const double pi = M_PI;
     const vec_t & x_hat = x_ref.dir();
     const vec_t y_hat = z_ref.dir().cross(x_hat);
@@ -249,6 +249,6 @@ namespace rspgen {
     return phi * 180. / pi;
   }
 
-  IResponse::IResponse(): m_os("IResponse", "IResponse()", 2), m_true_en_binner(0), m_app_en_binner(0), m_irfs() {}
+  IResponse::IResponse(): m_os("IResponse", "IResponse()", 2), m_true_en_binner(nullptr), m_app_en_binner(nullptr), m_irfs() {}
 
 }

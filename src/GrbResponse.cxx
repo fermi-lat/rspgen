@@ -17,9 +17,9 @@
 namespace rspgen {
 
   GrbResponse::GrbResponse(double theta, double phi, const evtbin::Binner * true_en_binner, const evtbin::Binner * app_en_binner,
-    irfInterface::Irfs * irfs, const IWindow * window): m_theta(theta), m_phi(phi), m_window(0) {
+    irfInterface::Irfs * irfs, const IWindow * window): m_theta(theta), m_phi(phi), m_window(nullptr) {
     // Check inputs.
-    if (0 == true_en_binner || 0 == app_en_binner || 0 == irfs || 0 == window)
+    if (nullptr == true_en_binner || nullptr == app_en_binner || nullptr == irfs || nullptr == window)
       throw std::logic_error("GrbResponse constructor was passed a null pointer");
 
     // Clone inputs to become members.
@@ -31,7 +31,7 @@ namespace rspgen {
 
   GrbResponse::GrbResponse(double grb_ra, double grb_dec, double grb_time, double psf_radius, const std::string & resp_type,
     const std::string & spec_file, const std::string & sc_file, const std::string & sc_table,
-    const evtbin::Binner * true_en_binner): IResponse(resp_type, spec_file, true_en_binner), m_theta(0.), m_phi(0.), m_window(0) {
+    const evtbin::Binner * true_en_binner): IResponse(resp_type, spec_file, true_en_binner), m_theta(0.), m_phi(0.), m_window(nullptr) {
     // Process spacecraft data.
     std::unique_ptr<const tip::Table> table(tip::IFileSvc::instance().readTable(sc_file, sc_table));
 
@@ -61,7 +61,7 @@ namespace rspgen {
     response.clear();
     response.resize(m_app_en_binner->getNumBins(), 0.);
 
-    for (irf_cont_type::iterator itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
+    for (auto itor = m_irfs.begin(); itor != m_irfs.end(); ++itor) {
       irfInterface::Irfs * irfs = *itor;
 
       // Compute effective area, which is a function of true_energy and sc pointing direction only.
